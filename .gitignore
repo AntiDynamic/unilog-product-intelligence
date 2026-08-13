@@ -21,6 +21,7 @@ dist/
 *.egg-info/
 .coverage
 htmlcov/
+log/
 
 # IDE and OS files
 .idea/
