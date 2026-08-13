@@ -1,0 +1,117 @@
+{
+  "data_root": "\\mnt\\data",
+  "expected_files": [
+    "Unihack_ Sample Dataset - Input.csv",
+    "Unihack_ Expected Output - Delivery Format.csv",
+    "Sample-1000_Items.xlsx",
+    "Unilog-Sample_200_Items-Input-vs-Output.xlsx",
+    "UNILOG_INTERNAL_CONTENT_GUIDELINES.docx",
+    "Unilog_Master_UOM_Standards_Abbreviations_and_Terms.xlsx",
+    "Decimal_Fraction.xlsx",
+    "UniCat_Manufacturer_and_Brand_List.xlsx",
+    "Unicat_Lov_v1_0_Updated_With_Remarks.xlsx",
+    "FAUCETS_LOV.xlsx",
+    "Fittings_LOV.xlsx",
+    "Reference_Documents_Summary.xlsx"
+  ],
+  "files": [
+    {
+      "path": "\\mnt\\data\\Unihack_ Sample Dataset - Input.csv",
+      "name": "Unihack_ Sample Dataset - Input.csv",
+      "format": "csv",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Unihack_ Expected Output - Delivery Format.csv",
+      "name": "Unihack_ Expected Output - Delivery Format.csv",
+      "format": "csv",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Sample-1000_Items.xlsx",
+      "name": "Sample-1000_Items.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Unilog-Sample_200_Items-Input-vs-Output.xlsx",
+      "name": "Unilog-Sample_200_Items-Input-vs-Output.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\UNILOG_INTERNAL_CONTENT_GUIDELINES.docx",
+      "name": "UNILOG_INTERNAL_CONTENT_GUIDELINES.docx",
+      "format": "docx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Unilog_Master_UOM_Standards_Abbreviations_and_Terms.xlsx",
+      "name": "Unilog_Master_UOM_Standards_Abbreviations_and_Terms.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Decimal_Fraction.xlsx",
+      "name": "Decimal_Fraction.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\UniCat_Manufacturer_and_Brand_List.xlsx",
+      "name": "UniCat_Manufacturer_and_Brand_List.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Unicat_Lov_v1_0_Updated_With_Remarks.xlsx",
+      "name": "Unicat_Lov_v1_0_Updated_With_Remarks.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\FAUCETS_LOV.xlsx",
+      "name": "FAUCETS_LOV.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Fittings_LOV.xlsx",
+      "name": "Fittings_LOV.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    {
+      "path": "\\mnt\\data\\Reference_Documents_Summary.xlsx",
+      "name": "Reference_Documents_Summary.xlsx",
+      "format": "xlsx",
+      "available": false,
+      "size_bytes": null,
+      "sha256": null
+    }
+  ],
+  "available_file_count": 0,
+  "unavailable_file_count": 12
+}

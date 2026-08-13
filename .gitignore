@@ -28,3 +28,5 @@ log/
 .vscode/
 .DS_Store
 Thumbs.db
+
+.pytest-tmp/

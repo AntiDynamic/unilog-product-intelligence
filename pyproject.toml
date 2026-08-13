@@ -13,6 +13,7 @@ authors = [{ name = "UniLog Product Intelligence contributors" }]
 dependencies = [
   "fastapi>=0.115,<1.0",
   "google-genai>=1.0,<2.0",
+  "openpyxl>=3.1,<4.0",
   "pandas>=2.2,<3.0",
   "pydantic>=2.10,<3.0",
   "pydantic-settings>=2.7,<3.0",
@@ -25,10 +26,13 @@ dev = [
   "pytest>=8.3,<9.0",
   "pytest-cov>=6.0,<7.0",
   "ruff>=0.9,<1.0",
+  "types-openpyxl>=3.1,<4.0",
 ]
 
 [project.scripts]
 unilog-api = "unilog_product_intelligence.api:run"
+unilog-inspect-data = "unilog_product_intelligence.data.cli:inspect_data_main"
+unilog-validate-delivery = "unilog_product_intelligence.data.cli:validate_delivery_main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/unilog_product_intelligence"]
