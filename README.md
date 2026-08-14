@@ -81,3 +81,10 @@ then load official master/reference data and persist ingestion runs in PostgreSQ
 - [Gemini API research](docs/research/gemini-api.md)
 - [Architecture decisions](docs/decisions/)
 - [Canonical domain model](src/unilog_product_intelligence/domain/truth.py)
+## Phase 3 update
+
+The supplied input and delivery-template CSVs are now inspected without copying product rows. Phase 3
+adds deterministic registries, conservative resolution outcomes, duplicate review signals, validation,
+and an observed-header delivery projection. See [the Phase 3 record](docs/phases/PHASE_3.md),
+[the deterministic-intelligence notes](docs/research/DETERMINISTIC_INTELLIGENCE.md), and the generated
+[aggregate diagnostic](docs/research/phase-3-diagnostic.json).

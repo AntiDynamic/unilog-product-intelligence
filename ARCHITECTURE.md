@@ -81,3 +81,10 @@ RAW → UNDERSTOOD → CLASSIFIED → ENRICHED → VALIDATED → READY → DELIV
 ```
 
 `REVIEW_REQUIRED`, `BLOCKED`, and `CONFLICTED` are explicit intermediate states.
+## Phase 3 deterministic intelligence
+
+`deterministic/` sits ahead of future enrichment services. It contains reversible normalizers,
+reference-registry interfaces, review-only fuzzy candidates, duplicate assessments, structural
+validators, metrics, and aggregate diagnostics. Registries are unavailable by default until
+approved reference data is loaded. The delivery adapter now preserves the observed 252-column
+contract and projects only raw input fields whose names already occur in that contract.

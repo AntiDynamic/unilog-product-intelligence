@@ -1,5 +1,7 @@
-"""Boundary from ProductTruth to the still-unavailable UniHack delivery contract."""
+"""Boundary from ProductTruth to the observed UniHack delivery contract."""
 
+import json
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -20,6 +22,19 @@ class DeliverySchemaContract(BaseModel):
     source_file: str | None = None
     headers: tuple[str, ...] = ()
 
+    @classmethod
+    def from_json(cls, path: str | Path) -> "DeliverySchemaContract":
+        """Load an exact header contract extracted from the supplied template."""
+
+        source = Path(path)
+        payload = json.loads(source.read_text(encoding="utf-8"))
+        headers = tuple(payload.get("headers", ()))
+        return cls(
+            available=bool(headers),
+            source_file=str(payload.get("source_file", source)),
+            headers=headers,
+        )
+
 
 class UniHackDeliveryRecord(BaseModel):
     """A delivery-shaped record created only from an observed official contract."""
@@ -36,19 +51,21 @@ class UniHackDeliveryRecord(BaseModel):
 
 
 class ProductTruthDeliveryAdapter:
-    """Isolated adapter; exact field semantics remain pending the real delivery file."""
+    """Isolated adapter that maps only source fields sharing observed headers."""
 
     def __init__(self, contract: DeliverySchemaContract) -> None:
         self.contract = contract
 
     def to_record(self, product: ProductTruth) -> UniHackDeliveryRecord:
-        """Map only when the real header contract exists; do not invent official columns."""
+        """Map raw source values only when their names occur in the observed contract."""
 
-        del product
         if not self.contract.available or not self.contract.headers:
             raise DeliveryMappingPending(
                 "Exact UniHack delivery mapping is blocked until the official CSV is available."
             )
-        raise DeliveryMappingPending(
-            "Header contract is available, but field mappings require explicit contract review."
-        )
+        values = {
+            field.field_name: field.raw_value
+            for field in product.raw_inputs
+            if field.field_name in self.contract.headers
+        }
+        return UniHackDeliveryRecord(headers=self.contract.headers, values=values)
