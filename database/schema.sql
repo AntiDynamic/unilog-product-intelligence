@@ -263,3 +263,91 @@ CREATE INDEX IF NOT EXISTS idx_source_candidates_product ON source_candidates(pr
 CREATE INDEX IF NOT EXISTS idx_source_retrievals_url ON source_retrievals(canonical_url);
 CREATE INDEX IF NOT EXISTS idx_document_chunks_document ON document_chunks(document_id);
 CREATE INDEX IF NOT EXISTS idx_evidence_candidates_product ON evidence_candidates(product_id);
+
+-- Phase 6 evidence-grounded enrichment plans, candidates, validation, review, and cache.
+CREATE TABLE IF NOT EXISTS attribute_plans (
+    id TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL REFERENCES products(id),
+    attribute_id TEXT NOT NULL,
+    attribute_name TEXT NOT NULL,
+    applicability TEXT NOT NULL,
+    current_status TEXT NOT NULL,
+    current_value JSONB,
+    evidence_available BOOLEAN NOT NULL DEFAULT FALSE,
+    enrichment_decision TEXT NOT NULL,
+    validation_requirements JSONB NOT NULL DEFAULT '[]'::jsonb,
+    allowed_values JSONB NOT NULL DEFAULT '[]'::jsonb,
+    allowed_uom JSONB NOT NULL DEFAULT '[]'::jsonb,
+    reference_availability TEXT NOT NULL,
+    priority INTEGER NOT NULL,
+    reason TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (product_id, attribute_id)
+);
+
+CREATE TABLE IF NOT EXISTS enrichment_candidates (
+    id TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL REFERENCES products(id),
+    attribute_id TEXT NOT NULL,
+    value JSONB,
+    raw_value JSONB,
+    normalized_value TEXT,
+    uom TEXT,
+    source_id TEXT REFERENCES canonical_sources(id),
+    evidence_ids JSONB NOT NULL DEFAULT '[]'::jsonb,
+    evidence_text TEXT,
+    status TEXT NOT NULL,
+    validation_state TEXT NOT NULL,
+    candidate_reason TEXT NOT NULL,
+    model_metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+    cache_key TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (product_id, attribute_id, cache_key)
+);
+
+CREATE TABLE IF NOT EXISTS enrichment_validation_results (
+    id TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL REFERENCES products(id),
+    candidate_id TEXT REFERENCES enrichment_candidates(id),
+    attribute_id TEXT,
+    validator TEXT NOT NULL,
+    passed BOOLEAN NOT NULL,
+    severity TEXT NOT NULL,
+    message TEXT NOT NULL,
+    evidence_reference TEXT,
+    rule_reference TEXT,
+    actual_value JSONB,
+    expected_condition TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS enrichment_reviews (
+    id TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL REFERENCES products(id),
+    attribute_id TEXT NOT NULL,
+    current_value JSONB,
+    candidate_values JSONB NOT NULL DEFAULT '[]'::jsonb,
+    source_ids JSONB NOT NULL DEFAULT '[]'::jsonb,
+    evidence JSONB NOT NULL DEFAULT '[]'::jsonb,
+    validation_failures JSONB NOT NULL DEFAULT '[]'::jsonb,
+    recommended_action TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    state TEXT NOT NULL DEFAULT 'open',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS enrichment_cache (
+    cache_key TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL REFERENCES products(id),
+    source_content_hashes JSONB NOT NULL DEFAULT '[]'::jsonb,
+    prompt_version TEXT NOT NULL,
+    model_version TEXT NOT NULL,
+    schema_version TEXT NOT NULL,
+    result JSONB NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_attribute_plans_product ON attribute_plans(product_id);
+CREATE INDEX IF NOT EXISTS idx_enrichment_candidates_product ON enrichment_candidates(product_id);
+CREATE INDEX IF NOT EXISTS idx_enrichment_validation_product ON enrichment_validation_results(product_id);
+CREATE INDEX IF NOT EXISTS idx_enrichment_reviews_product ON enrichment_reviews(product_id);

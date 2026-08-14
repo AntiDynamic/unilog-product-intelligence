@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "attributes": {"type": "array", "items": {"type": "object"}}
+  },
+  "required": ["attributes"]
+}

@@ -35,10 +35,15 @@ types.
 ## Source-truth rules
 
 The readers preserve raw values. The normalization layer maps the official placeholder strings to
-`null` only in the normalized view and records `reason: placeholder`. The raw value remains in the
+
+ull` only in the normalized view and records `reason: placeholder`. The raw value remains in the
 row contract and in the planned `raw_product_inputs` JSONB storage.
 
-The official delivery file is treated as an external contract. Its exact header order must be
-extracted from the actual CSV and stored once in a JSON schema definition. No delivery headers are
-hard-coded in the application because the actual file is unavailable in this runtime.
+The official delivery file is treated as an external contract. Its exact header order is captured in
+docs/research/delivery-schema.json from the local contract; application validation uses that observed
+contract rather than inventing headers.
+## Current audit addendum
 
+The earlier `/mnt/data` availability result is historical. The supplied input and delivery CSVs
+are now present as ignored local runtime files; the ten official reference files are still absent.
+The current machine-readable audit is `reference-pack-audit.json`.

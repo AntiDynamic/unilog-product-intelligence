@@ -4,6 +4,6 @@
 references, ingestion runs, and validation events.
 
 The application assigns stable IDs and content-based idempotency keys. A PostgreSQL migration
-runner and persistence adapter will be added when the real source files are mounted and the
-database connection is introduced. Phase 1 does not silently substitute SQLite for PostgreSQL.
-
+runner remains a deployment concern; Phase 6 provides an injected persistence adapter when a
+database connection is supplied. Phase 1 does not silently substitute SQLite for PostgreSQL.
+Phase 6 adds `src/unilog_product_intelligence/enrichment/persistence.py`, a transactional DB-API-shaped PostgreSQL adapter for plans, candidates, validation results, review payloads, and enrichment cache rows. Composition code injects a configured connection; no driver is imported or opened implicitly, and SQLite is not substituted.

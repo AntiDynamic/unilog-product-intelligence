@@ -1,0 +1,11 @@
+{
+  "approved_sdk_boundary": "src/unilog_product_intelligence/providers/gemini.py",
+  "paths": [
+    {"caller": "agents/cli.py", "service": "GeminiExecutionService", "quota": "QuotaGuard", "breaker": "QuotaCircuitBreaker", "provider": "GeminiProvider", "sdk": "client.interactions.create", "status": "CONTROLLED"},
+    {"caller": "retrieval/cli.py", "service": "GeminiExecutionService", "quota": "QuotaGuard", "breaker": "QuotaCircuitBreaker", "provider": "GeminiProvider", "sdk": "client.interactions.create", "status": "CONTROLLED"},
+    {"caller": "enrichment/cli.py", "service": "GeminiExecutionService", "quota": "QuotaGuard", "breaker": "QuotaCircuitBreaker", "provider": "GeminiProvider", "sdk": "client.interactions.create", "status": "CONTROLLED"},
+    {"caller": "agents/orchestration.py", "service": "injected LLMProvider", "quota": "caller responsibility", "breaker": "caller responsibility", "provider": "abstract interface", "sdk": "none", "status": "CONTROLLED_BY_CONSTRUCTION"}
+  ],
+  "batch_sdk_call": "not present in current source",
+  "direct_sdk_bypasses": []
+}

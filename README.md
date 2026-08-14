@@ -28,10 +28,7 @@ Phase 0 is complete and the Phase 1 foundation is implemented:
 - PostgreSQL foundation DDL for datasets, files, rows, references, ingestion, and validation.
 - semantic ProductTruth entities, lifecycle rules, provenance/evidence, conflicts, audit events, and delivery boundary.
 
-The real UniHack files listed by the challenge were not mounted in this Windows runtime, so the
-checked-in inventory records them as unavailable. No product records, fabricated examples,
-Gemini calls, enrichment pipeline, frontend, or mock product responses have been added.
-
+The supplied UniHack input and delivery-contract CSVs are available locally and are deliberately excluded from Git. The official ten-file reference pack, including the 200-row comparison workbook, is not available; no LOV/UOM compliance or ground-truth accuracy claim is made. Phase 6 evidence-grounded enrichment, deterministic validation, bounded repair, cache invalidation, idempotency guards, and an injected PostgreSQL persistence adapter are implemented. Live model egress remains evidence-gated and requires explicit authorization.
 ## Quick start
 
 ```powershell
@@ -63,8 +60,7 @@ uv run unilog-validate-delivery path/to/delivery.csv docs/research/delivery-sche
 
 ## Scope and next step
 
-The next implementation increment is to mount the real files and run the generated inspection,
-then load official master/reference data and persist ingestion runs in PostgreSQL. See
+The next safe increment is to place any supplied official reference files under the local `data/external/` directory, rerun the reference audit, and then provide an explicitly authorized manufacturer-source/evidence set for a bounded live run. PostgreSQL persistence is available through the injected Phase 6 adapter; no implicit database connection is opened. See
 [the Phase 1 record](docs/phases/PHASE_1.md), [the data-foundation notes](docs/research/DATA_FOUNDATION.md),
 [the phase roadmap](docs/phases/roadmap.md), and [the development guide](DEVELOPMENT.md).
 
@@ -88,3 +84,17 @@ adds deterministic registries, conservative resolution outcomes, duplicate revie
 and an observed-header delivery projection. See [the Phase 3 record](docs/phases/PHASE_3.md),
 [the deterministic-intelligence notes](docs/research/DETERMINISTIC_INTELLIGENCE.md), and the generated
 [aggregate diagnostic](docs/research/phase-3-diagnostic.json).
+
+## Phase 6 local run
+
+Keep challenge/reference files in `data/external/` (ignored by Git), or pass an explicit local path:
+
+```powershell
+.venv\Scripts\python.exe -m unilog_product_intelligence.enrichment.cli `
+  --input "data/external/Unihack_ Sample Dataset - Input.csv" --limit 3
+```
+
+The run is fail-closed when no verified manufacturer evidence is attached. Read the generated
+[reference-pack audit](docs/research/reference-pack-audit.json) and
+[Phase 6 readiness record](docs/research/phase-6-validation.md) before enabling any authorized
+live model run.

@@ -12,7 +12,7 @@ license = { text = "MIT" }
 authors = [{ name = "UniLog Product Intelligence contributors" }]
 dependencies = [
   "fastapi>=0.115,<1.0",
-  "google-genai>=1.0,<2.0",
+  "google-genai>=2.0,<3.0",
   "openpyxl>=3.1,<4.0",
   "pandas>=2.2,<3.0",
   "pydantic>=2.10,<3.0",
@@ -35,6 +35,9 @@ unilog-inspect-data = "unilog_product_intelligence.data.cli:inspect_data_main"
 unilog-validate-delivery = "unilog_product_intelligence.data.cli:validate_delivery_main"
 unilog-phase4 = "unilog_product_intelligence.agents.cli:phase4_main"
 unilog-phase5 = "unilog_product_intelligence.retrieval.cli:phase5_main"
+unilog-phase6 = "unilog_product_intelligence.enrichment.cli:phase6_main"
+unilog-cost-plan = "unilog_product_intelligence.application.scale_cli:cost_plan_main"
+unilog-gemini-diagnostics = "unilog_product_intelligence.application.scale_cli:diagnostics_main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/unilog_product_intelligence"]
@@ -61,4 +64,6 @@ python_version = "3.11"
 strict = true
 warn_unreachable = true
 exclude = ['^\\.venv/']
+
+
 

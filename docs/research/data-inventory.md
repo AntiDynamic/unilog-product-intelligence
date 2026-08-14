@@ -27,3 +27,10 @@ The next data-foundation execution should look for these files when they are mad
 Phase 1 must record availability, headers, row counts, and checksums for files actually present.
 It must treat the supplied delivery CSV as an immutable external output contract.
 
+
+## Current Windows audit
+
+The two supplied CSVs are now available as local/private runtime files. They are not tracked or
+published. The official reference files remain unavailable; see `reference-pack-audit.json` for
+current hashes, parser checks, and the exact roots scanned. The `/mnt/data` statement above is the
+historical Phase 0 observation.

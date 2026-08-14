@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     gemini_api_key: SecretStr | None = None
     gemini_model: str = GEMINI_MODEL
+    live_external_execution: bool = False
     database_url: str = "postgresql+psycopg://localhost/unilog"
 
 

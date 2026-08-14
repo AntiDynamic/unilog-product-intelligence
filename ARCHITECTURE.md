@@ -71,7 +71,7 @@ candidates, conflicts, validation events, audit events, lifecycle state, and exp
 factors. Raw ingestion snapshots remain separate and immutable.
 
 The delivery adapter is isolated in `delivery/adapter.py`. It refuses to invent exact mappings when
-the official delivery CSV is unavailable. Source authority and evidence are explicit; model
+the observed delivery contract is unavailable. Source authority and evidence are explicit; model
 confidence is separate from system assessment, and no aggregate confidence score is claimed.
 
 Phase 2 lifecycle transitions are constrained by `domain/lifecycle.py`:
@@ -97,4 +97,14 @@ Deterministic application tools expose only typed manufacturer/brand/taxonomy/LO
 
 Phase 5 introduces a policy-controlled external-source boundary. `DomainResolver` and `ManufacturerDiscoveryAgent` may produce candidate domains, but `SourceVerifier` is the only authority gate. Verified manufacturer domains form an allowlist; marketplace/distributor hosts are permanently non-authoritative. `SourceFetcher` is the only HTTP boundary and enforces protocol, size, timeout, retry, rate, and content-hash constraints. `HtmlParser`/`PdfParser` produce location-preserving documents before `EvidenceExtractor` uses structured Gemini output and URL Context for a specific approved URL. Search is reserved for unresolved discovery.
 
-Source cache, retrieval, document, chunk, and evidence-candidate tables are defined in `database/schema.sql`. Retrieved content is untrusted data and cannot override policies. Phase 5 attaches evidence-linked candidates and preserves conflicts; Phase 6 will perform evidence-grounded enrichment.
+Source cache, retrieval, document, chunk, and evidence-candidate tables are defined in `database/schema.sql`. Retrieved content is untrusted data and cannot override policies. Phase 5 attaches evidence-linked candidates and preserves conflicts; Phase 6 performs evidence-grounded enrichment.
+## Phase 6 evidence-grounded enrichment
+
+Phase 6 adds `enrichment/`: a deterministic category-aware `AttributePlanner`, a narrow
+`EvidenceGroundedEnrichmentAgent`, and a structured `ValidationPipeline`. Provider output remains a
+candidate until source/evidence, applicability, LOV, UOM, format, and conflict checks pass.
+`EnrichmentService` applies accepted candidates through the ProductTruth service and emits audit,
+validation, conflict, and human-review payloads. `ReferencePack` reports
+`REFERENCE_AVAILABLE`/`REFERENCE_UNAVAILABLE` explicitly; missing official vocabularies are never
+fabricated. Publication is a deterministic `READY`, `REVIEW_REQUIRED`, or `BLOCKED` decision.
+Commerce descriptions remain deferred to Phase 7.

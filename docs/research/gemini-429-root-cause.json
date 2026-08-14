@@ -1,0 +1,9 @@
+{
+  "live_request_made": false,
+  "observed_failure": {"http_status": 429, "provider_code": "too_many_requests", "search_reached": false},
+  "application_fixes": ["single retry owner", "rolling TPM", "product budget enforcement", "provider circuit breaker", "typed 429 metadata"],
+  "provider_limits": {"rpm": "UNKNOWN", "tpm": "UNKNOWN", "rpd": "UNKNOWN", "spend": "UNKNOWN", "tier": "UNKNOWN"},
+  "declared_sdk": "google-genai>=2.0,<3.0",
+  "runtime_sdk_previously_reported": "1.75.0",
+  "next_required_check": "reconcile pyproject.toml, uv.lock, and canonical runtime before live testing"
+}

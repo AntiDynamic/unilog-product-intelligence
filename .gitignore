@@ -30,3 +30,30 @@ log/
 Thumbs.db
 
 .pytest-tmp/
+
+# Local/private challenge and reference data
+# Keep the runtime-data contract files visible while ignoring all payloads.
+data/external/*
+!data/external/.gitkeep
+!data/external/README.md
+data/reference/
+data/raw/
+data/cache/
+source-cache/
+evidence-cache/
+manufacturer-documents/
+*.jsonl
+
+# Challenge datasets may also be supplied at the repository root or nested locally.
+Unihack_ Sample Dataset - Input.csv
+Unihack_ Expected Output - Delivery Format.csv
+Sample-1000_Items.xlsx
+Unilog-Sample_200_Items-Input-vs-Output.xlsx
+UNILOG_INTERNAL_CONTENT_GUIDELINES.docx
+Unilog_Master_UOM_Standards_Abbreviations_and_Terms.xlsx
+Decimal_Fraction.xlsx
+UniCat_Manufacturer_and_Brand_List.xlsx
+Unicat_Lov_v1_0_Updated_With_Remarks.xlsx
+FAUCETS_LOV.xlsx
+Fittings_LOV.xlsx
+Reference_Documents_Summary.xlsx

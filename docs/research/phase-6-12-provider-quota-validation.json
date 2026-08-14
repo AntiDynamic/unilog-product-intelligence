@@ -1,0 +1,38 @@
+{
+  "conclusion": "LIVE_PRODUCT_REQUEST_FAILED_OTHER",
+  "environment": {
+    "sdk_version": "2.18.1",
+    "model": "gemini-3.5-flash-lite",
+    "live_external_execution": true,
+    "gemini_key_configured": true,
+    "lockfile_check": "PASS"
+  },
+  "project": {
+    "project_association": "PROJECT_ASSOCIATION_UNKNOWN",
+    "billing_status": "UNKNOWN",
+    "usage_tier": "UNKNOWN",
+    "provider_limits": "UNKNOWN"
+  },
+  "product": {
+    "row_index": 2,
+    "mpn": "DCB518ASTS06G",
+    "manufacturer": "Freud Inc",
+    "description": "DCB518ASTS06G Diablo 1/2x18in Sanding Belt 6pc"
+  },
+  "execution": {
+    "logical_request_id": "UNOBSERVED_CLI_EXECUTION",
+    "boundary": "GeminiExecutionService -> QuotaGuard -> QuotaCircuitBreaker -> GeminiProvider",
+    "provider_attempt_count": null,
+    "sdk_retry_count": null,
+    "http_status": null,
+    "provider_error_code": null,
+    "quota_dimension": "UNKNOWN",
+    "retry_after_seconds": null,
+    "circuit_state": "UNKNOWN",
+    "stdout_summary": "No CLI summary or error payload was emitted",
+    "retry_performed": false
+  },
+  "tokens": {"input": null, "output": null, "cached": null, "thought": null, "tool_use": null, "total": null},
+  "search": {"invoked": false, "query_count": null, "tool_steps": []},
+  "note": "Exactly one real product process was launched. No second request was made. The absence of telemetry prevents a success or provider-429 claim."
+}

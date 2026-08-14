@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 
+from unilog_product_intelligence.application.execution import GeminiExecutionService
 from unilog_product_intelligence.application.product_truth import ProductTruthService
 from unilog_product_intelligence.config import Settings
 from unilog_product_intelligence.data.readers import read_tabular_file
@@ -49,7 +50,7 @@ def phase4_main() -> int:
             )
         )
         return 0
-    orchestrator = ProductOrchestrator(GeminiProvider(Settings()))
+    orchestrator = ProductOrchestrator(GeminiExecutionService(GeminiProvider(Settings())))
     results = []
     service = ProductTruthService()
     for row in selected:

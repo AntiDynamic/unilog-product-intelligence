@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {"type": "string", "enum": ["REPAIRED", "REVIEW_REQUIRED"]},
+    "value": {},
+    "normalized_value": {"type": ["string", "null"]},
+    "reason": {"type": "string"}
+  },
+  "required": ["status", "reason"]
+}

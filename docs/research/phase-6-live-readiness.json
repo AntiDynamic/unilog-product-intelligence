@@ -1,0 +1,88 @@
+{
+  "artifact_version": "phase6-live-readiness-v1",
+  "generated_on": "2026-08-14",
+  "working_data": {
+    "input_file": {
+      "name": "Unihack_ Sample Dataset - Input.csv",
+      "rows": 1000,
+      "columns": 6,
+      "sha256": "ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+      "handling": "local-only; ignored by Git"
+    },
+    "delivery_contract": {
+      "name": "Unihack_ Expected Output - Delivery Format.csv",
+      "rows": 1,
+      "columns": 252,
+      "sha256": "3304b26f4c3fc3cd5d51b32161cf1900c26e6a7fe238578e53f6f7132df7c580",
+      "handling": "local-only; ignored by Git"
+    },
+    "official_reference_pack": {
+      "expected_files": 10,
+      "available_files": 0,
+      "status": "REFERENCE_UNAVAILABLE",
+      "audit": "docs/research/reference-pack-audit.json"
+    }
+  },
+  "safe_dry_run": {
+    "rows": 3,
+    "live_requested": false,
+    "gemini_key_configured": true,
+    "external_model_calls": 0,
+    "external_call_authorization": "live execution was not attempted; local-data egress requires explicit authorization",
+    "metrics": {
+      "products": 3,
+      "agent_calls": 0,
+      "ready": 0,
+      "review_required": 3,
+      "blocked": 0,
+      "candidates": 0,
+      "conflicts": 0
+    }
+  },
+  "stage_trace": [
+    {
+      "stage": "raw_input",
+      "status": "PASS",
+      "evidence": "1000 rows parsed with six stable headers; no row-width errors"
+    },
+    {
+      "stage": "reference_discovery",
+      "status": "BLOCKED",
+      "classification": "REFERENCE_UNAVAILABLE",
+      "evidence": "none of the ten official reference filenames was found"
+    },
+    {
+      "stage": "manufacturer_resolution",
+      "status": "BLOCKED",
+      "classification": "MANUFACTURER_UNRESOLVED",
+      "evidence": "raw rows contain supplied-input manufacturer text, but no verified manufacturer domain or source URL/profile is attached"
+    },
+    {
+      "stage": "evidence_extraction",
+      "status": "BLOCKED",
+      "classification": "NO_VERIFIED_EVIDENCE",
+      "evidence": "Phase 6 exposes only available authoritative/high manufacturer evidence to the agent; the dry-run has zero evidence references"
+    },
+    {
+      "stage": "enrichment",
+      "status": "SKIPPED",
+      "evidence": "agent_calls=0 and candidates=0; no provider call is allowed without verified evidence"
+    },
+    {
+      "stage": "validation_publication",
+      "status": "REVIEW_REQUIRED",
+      "evidence": "all three dry-run results are REVIEW_REQUIRED, never READY"
+    }
+  ],
+  "first_blocker": {
+    "classification": "MANUFACTURER_UNRESOLVED",
+    "stage": "manufacturer_resolution",
+    "reason": "A verified manufacturer domain/source URL and retrieval evidence must be supplied before Phase 6 can make a source-backed proposal."
+  },
+  "official_ground_truth": {
+    "available": false,
+    "expected_file": "Unilog-Sample_200_Items-Input-vs-Output.xlsx",
+    "metrics": null,
+    "reason": "The official 200-row input-vs-output reference file was not present in the scanned project, Downloads, or attachment roots."
+  }
+}

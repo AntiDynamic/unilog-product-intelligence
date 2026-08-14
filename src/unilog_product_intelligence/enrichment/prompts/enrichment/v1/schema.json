@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "candidates": {"type": "array", "items": {"type": "object"}},
+    "unresolved_attributes": {"type": "array", "items": {"type": "string"}}
+  },
+  "required": ["candidates", "unresolved_attributes"]
+}

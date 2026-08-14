@@ -21,11 +21,12 @@ class GeminiProviderError(RuntimeError):
 class GeminiProvider(LLMProvider):
     """Uses current Interactions structured output and explicit built-in tools."""
 
-    def __init__(self, settings: Settings, client: Any | None = None, max_retries: int = 2) -> None:
+    def __init__(self, settings: Settings, client: Any | None = None, max_retries: int = 0) -> None:
         self.model = settings.gemini_model
         self._api_key = settings.gemini_api_key
         self._client = client
         self._max_retries = max_retries
+        self._live_external_execution = settings.live_external_execution
 
     @property
     def api_key_configured(self) -> bool:
@@ -47,6 +48,10 @@ class GeminiProvider(LLMProvider):
         api_key = self._api_key
         if api_key is None:
             raise GeminiConfigurationError("GEMINI_API_KEY is required for Gemini execution")
+        if self._client is None and not self._live_external_execution:
+            raise GeminiConfigurationError(
+                "LIVE_EXTERNAL_EXECUTION=true is required for live Gemini calls"
+            )
         client = self._client or Client(api_key=api_key.get_secret_value())
         started = monotonic()
         for attempt in range(self._max_retries + 1):
@@ -54,7 +59,6 @@ class GeminiProvider(LLMProvider):
                 arguments: dict[str, Any] = {
                     "model": self.model,
                     "input": request.input_text,
-                    "response_format": _format(request.response_schema),
                 }
                 if tools:
                     arguments["tools"] = tools

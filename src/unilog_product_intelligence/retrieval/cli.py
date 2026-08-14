@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 
+from unilog_product_intelligence.application.execution import GeminiExecutionService
 from unilog_product_intelligence.application.product_truth import ProductTruthService
 from unilog_product_intelligence.config import Settings
 from unilog_product_intelligence.data.readers import read_tabular_file
@@ -87,7 +88,7 @@ def phase5_main() -> int:
         )
         return 0
     source_url = canonicalize_url(args.source_url)
-    provider = GeminiProvider(Settings())
+    provider = GeminiExecutionService(GeminiProvider(Settings()))
     service = ManufacturerIntelligenceService(
         SourceFetcher(), extractor=EvidenceExtractor(provider), parser=HtmlParser()
     )

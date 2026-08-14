@@ -36,9 +36,9 @@ files are recorded as unavailable without fabricated metrics.
 `unilog-validate-delivery` consumes one generated JSON delivery schema and reports missing,
 unexpected, duplicate, reordered, and wrong-width data.
 
-The Phase 0 Gemini adapter intentionally raises `NotImplementedError` for generation. This is a
-guardrail: tests can prove no network call happens before the Phase 4 integration is designed.
-
+The Gemini adapter is provider-neutral and configuration-driven. External generation remains bounded
+by explicit evidence/source gates; tests use fakes and no live call is required for the deterministic
+suite.
 ## Data handling
 
 Do not add invented product records. Runtime data belongs outside the repository unless the

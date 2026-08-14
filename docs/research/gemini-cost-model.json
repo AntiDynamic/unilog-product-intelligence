@@ -1,0 +1,19 @@
+{
+  "model": "gemini-3.5-flash-lite",
+  "input_rows": 1000,
+  "distinct_manufacturer_groups": 76,
+  "pricing": {
+    "input_usd_per_million": 0.3,
+    "output_usd_per_million": 2.5,
+    "source": "https://ai.google.dev/gemini-api/docs/pricing",
+    "status": "CONFIGURED_ASSUMPTION"
+  },
+  "scenarios": {
+    "deterministic_only": {"gemini_calls": 0, "estimated_cost_usd": 0.0},
+    "gemini_no_cache": {"gemini_calls": 1000, "input_tokens": 800000, "output_tokens": 300000, "estimated_cost_usd": 0.99},
+    "implicit_cache_25pct_projected": {"cached_tokens": 200000, "estimated_cost_usd": 0.93, "status": "PROJECTED"},
+    "batch_50pct_discount_projected": {"estimated_cost_usd": 0.495, "status": "PROJECTED"},
+    "search_group_upper_bound": {"manufacturer_groups": 76, "actual_queries": null}
+  },
+  "live_measurement": {"gemini_calls": 0, "cache_tokens": null, "search_queries": null, "status": "BLOCKED_BY_PROVIDER_QUOTA"}
+}
