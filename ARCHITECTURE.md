@@ -88,3 +88,8 @@ reference-registry interfaces, review-only fuzzy candidates, duplicate assessmen
 validators, metrics, and aggregate diagnostics. Registries are unavailable by default until
 approved reference data is loaded. The delivery adapter now preserves the observed 252-column
 contract and projects only raw input fields whose names already occur in that contract.
+## Phase 4 Gemini orchestration
+
+Phase 4 adds a provider-neutral `LLMProvider` implementation backed by the required `gemini-3.5-flash-lite` model and current Gemini Interactions structured-output primitive. `ProductOrchestrator` owns the bounded state machine and invokes Product Understanding, Classification, and Attribute Extraction specialists with versioned file-backed prompts. Strict Pydantic DTOs are mapped through `ProductTruthService`; model output never writes directly to persistence or verified truth.
+
+Deterministic application tools expose only typed manufacturer/brand/taxonomy/LOV/UOM/fraction lookups and structural attribute validation. Unloaded registries return `reference_data_unavailable`. No search, web retrieval, content generation, UI, arbitrary SQL/filesystem/HTTP, or recursive agent spawning is enabled. Provider telemetry preserves latency, request IDs, token fields when available, and retry counts; cache keys include task, prompt version, and rendered context.

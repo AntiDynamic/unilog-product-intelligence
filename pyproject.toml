@@ -33,6 +33,7 @@ dev = [
 unilog-api = "unilog_product_intelligence.api:run"
 unilog-inspect-data = "unilog_product_intelligence.data.cli:inspect_data_main"
 unilog-validate-delivery = "unilog_product_intelligence.data.cli:validate_delivery_main"
+unilog-phase4 = "unilog_product_intelligence.agents.cli:phase4_main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/unilog_product_intelligence"]

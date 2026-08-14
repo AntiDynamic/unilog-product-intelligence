@@ -1,0 +1,1 @@
+TASK: Identify supported product type, family, semantic features, and concise evidence. Distinguish directly_present, inferred, and unknown. Preserve useful terminology. Output only the requested JSON schema.

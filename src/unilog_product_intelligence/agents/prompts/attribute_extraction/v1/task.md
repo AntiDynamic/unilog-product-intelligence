@@ -1,0 +1,1 @@
+TASK: For each attribute provide raw evidence, normalized candidate only when known, unit when explicit, and directly_present/inferred/unknown. Avoid duplicates and preserve ambiguity. Output only the requested JSON schema.

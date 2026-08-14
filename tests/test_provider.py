@@ -2,12 +2,13 @@ import pytest
 
 from unilog_product_intelligence.config import Settings
 from unilog_product_intelligence.providers import GeminiProvider, LLMRequest, LocalProvider
+from unilog_product_intelligence.providers.gemini import GeminiConfigurationError
 
 
-def test_gemini_provider_does_not_call_network_in_phase_zero() -> None:
+def test_gemini_provider_requires_key_before_network_execution() -> None:
     provider = GeminiProvider(Settings(_env_file=None))
 
-    with pytest.raises(NotImplementedError, match="disabled in Phase 0"):
+    with pytest.raises(GeminiConfigurationError, match="GEMINI_API_KEY"):
         provider.generate(LLMRequest(task="test", input_text="no network call"))
 
 

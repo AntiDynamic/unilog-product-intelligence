@@ -1,34 +1,84 @@
-"""Gemini adapter boundary.
+"""Bounded Gemini Interactions adapter with no domain dependencies."""
 
-No network call is made in Phase 0. The official ``google-genai`` dependency and model
-contract are recorded so Phase 4 can add a real, bounded, observable implementation.
-"""
+from time import monotonic, sleep
+from typing import Any
 
 from google.genai import Client
 
-from unilog_product_intelligence.config import GEMINI_MODEL, Settings
+from unilog_product_intelligence.config import Settings
 
 from .base import LLMProvider, LLMRequest, LLMResponse
 
 
-class GeminiProvider(LLMProvider):
-    """Configuration-only Gemini provider placeholder for Phase 0."""
+class GeminiConfigurationError(RuntimeError):
+    """Raised when the provider has no API key configured."""
 
-    def __init__(self, settings: Settings) -> None:
+
+class GeminiProviderError(RuntimeError):
+    """Sanitized Gemini SDK failure."""
+
+
+class GeminiProvider(LLMProvider):
+    """Uses the current Interactions primitive for strict JSON responses."""
+
+    def __init__(self, settings: Settings, client: Any | None = None, max_retries: int = 2) -> None:
         self.model = settings.gemini_model
-        self._api_key_configured = settings.gemini_api_key is not None
-        self._client_type = Client
+        self._api_key = settings.gemini_api_key
+        self._client = client
+        self._max_retries = max_retries
 
     @property
     def api_key_configured(self) -> bool:
-        """Whether a key is configured, without exposing its value."""
-
-        return self._api_key_configured
+        return self._api_key is not None
 
     def generate(self, request: LLMRequest) -> LLMResponse:
-        """Reject calls until the Phase 4 integration is deliberately implemented."""
+        if not self.api_key_configured:
+            raise GeminiConfigurationError("GEMINI_API_KEY is required for Gemini execution")
+        api_key = self._api_key
+        if api_key is None:
+            raise GeminiConfigurationError("GEMINI_API_KEY is required for Gemini execution")
+        client = self._client or Client(api_key=api_key.get_secret_value())
+        started = monotonic()
+        for attempt in range(self._max_retries + 1):
+            try:
+                response = client.interactions.create(
+                    model=self.model,
+                    input=request.input_text,
+                    response_format=_format(request.response_schema),
+                )
+                usage = getattr(response, "usage_metadata", None)
+                return LLMResponse(
+                    output_text=str(getattr(response, "output_text", "")),
+                    model=self.model,
+                    input_tokens=_usage(usage, "prompt_token_count"),
+                    output_tokens=_usage(usage, "candidates_token_count"),
+                    cached_tokens=_usage(usage, "cached_content_token_count"),
+                    total_tokens=_usage(usage, "total_token_count"),
+                    latency_ms=round((monotonic() - started) * 1000),
+                    request_id=getattr(response, "id", None),
+                    retry_count=attempt,
+                )
+            except Exception as error:
+                if attempt == self._max_retries or not _transient(error):
+                    raise GeminiProviderError("Gemini request failed") from error
+                sleep(0.25 * 2**attempt)
+        raise AssertionError("unreachable")
 
-        del request
-        raise NotImplementedError(
-            f"Gemini calls are intentionally disabled in Phase 0 for model {GEMINI_MODEL}."
-        )
+
+def _format(schema: dict[str, Any] | None) -> dict[str, Any] | None:
+    return (
+        None
+        if schema is None
+        else {"type": "text", "mime_type": "application/json", "schema": schema}
+    )
+
+
+def _usage(usage: Any, name: str) -> int | None:
+    value = getattr(usage, name, None) if usage else None
+    return value if isinstance(value, int) else None
+
+
+def _transient(error: Exception) -> bool:
+    return getattr(error, "status_code", None) in {408, 429, 500, 502, 503, 504} or isinstance(
+        error, TimeoutError
+    )
