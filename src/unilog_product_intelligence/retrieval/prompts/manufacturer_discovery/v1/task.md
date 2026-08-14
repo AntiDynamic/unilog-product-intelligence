@@ -1,0 +1,1 @@
+TASK: Identify candidate official manufacturer domains only when the application has not already resolved one. Search is discovery only. Return structured candidates, concise evidence, and unresolved status when uncertain. Do not claim ownership from model confidence alone.

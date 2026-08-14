@@ -1,0 +1,1 @@
+TASK: Extract structured evidence candidates with attribute, raw value, normalized value only when deterministic, unit, source text, page/location, evidence type, and status. Preserve conflicts; do not write ProductTruth directly. Output only the requested JSON schema.

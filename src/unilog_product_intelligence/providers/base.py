@@ -27,6 +27,7 @@ class LLMResponse:
     total_tokens: int | None = None
     retry_count: int = 0
     estimated_cost_usd: float | None = None
+    tool_use_input_tokens: int | None = None
 
 
 class LLMProvider(ABC):

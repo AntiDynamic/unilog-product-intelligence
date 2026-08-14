@@ -177,3 +177,89 @@ CREATE INDEX IF NOT EXISTS idx_attribute_candidates_attribute ON attribute_candi
 CREATE INDEX IF NOT EXISTS idx_product_evidence_product ON product_evidence(product_id);
 CREATE INDEX IF NOT EXISTS idx_product_conflicts_product ON product_conflicts(product_id);
 CREATE INDEX IF NOT EXISTS idx_product_audit_events_product ON product_audit_events(product_id);
+-- Phase 5 manufacturer source registry, retrieval cache, parsed documents, and evidence lineage.
+CREATE TABLE IF NOT EXISTS manufacturer_domains (
+    id TEXT PRIMARY KEY,
+    manufacturer_id TEXT NOT NULL,
+    domain TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('verified_manufacturer_source', 'candidate_manufacturer_source', 'non_authoritative', 'rejected', 'unavailable')),
+    source TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    score NUMERIC,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (manufacturer_id, domain)
+);
+
+CREATE TABLE IF NOT EXISTS source_candidates (
+    id TEXT PRIMARY KEY,
+    product_id TEXT REFERENCES products(id),
+    manufacturer_id TEXT NOT NULL,
+    canonical_url TEXT NOT NULL,
+    original_url TEXT NOT NULL,
+    source_kind TEXT NOT NULL,
+    decision TEXT NOT NULL,
+    metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS source_retrievals (
+    id TEXT PRIMARY KEY,
+    source_id TEXT NOT NULL REFERENCES canonical_sources(id),
+    canonical_url TEXT NOT NULL,
+    content_hash TEXT,
+    retrieval_status TEXT NOT NULL,
+    cache_status TEXT NOT NULL,
+    content_type TEXT,
+    http_status INTEGER,
+    etag TEXT,
+    last_modified TEXT,
+    bytes_read BIGINT,
+    fetched_at TIMESTAMPTZ,
+    parser_version TEXT,
+    raw_metadata JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+
+CREATE TABLE IF NOT EXISTS documents (
+    id TEXT PRIMARY KEY,
+    source_id TEXT NOT NULL REFERENCES canonical_sources(id),
+    page_count INTEGER,
+    content_hash TEXT NOT NULL,
+    parser TEXT NOT NULL,
+    parser_version TEXT NOT NULL,
+    parsed_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (source_id, content_hash)
+);
+
+CREATE TABLE IF NOT EXISTS document_chunks (
+    id TEXT PRIMARY KEY,
+    document_id TEXT NOT NULL REFERENCES documents(id),
+    page INTEGER,
+    section TEXT,
+    text TEXT NOT NULL,
+    location JSONB NOT NULL DEFAULT '{}'::jsonb,
+    table_metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+    image_metadata JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+
+CREATE TABLE IF NOT EXISTS evidence_candidates (
+    id TEXT PRIMARY KEY,
+    product_id TEXT REFERENCES products(id),
+    source_id TEXT NOT NULL REFERENCES canonical_sources(id),
+    attribute TEXT NOT NULL,
+    raw_value TEXT,
+    normalized_candidate TEXT,
+    unit TEXT,
+    source_text TEXT NOT NULL,
+    page INTEGER,
+    location JSONB NOT NULL DEFAULT '{}'::jsonb,
+    evidence_type TEXT NOT NULL,
+    status TEXT NOT NULL,
+    model_confidence NUMERIC,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_manufacturer_domains_manufacturer ON manufacturer_domains(manufacturer_id);
+CREATE INDEX IF NOT EXISTS idx_source_candidates_product ON source_candidates(product_id);
+CREATE INDEX IF NOT EXISTS idx_source_retrievals_url ON source_retrievals(canonical_url);
+CREATE INDEX IF NOT EXISTS idx_document_chunks_document ON document_chunks(document_id);
+CREATE INDEX IF NOT EXISTS idx_evidence_candidates_product ON evidence_candidates(product_id);
