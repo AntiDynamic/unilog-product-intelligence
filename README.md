@@ -2,7 +2,7 @@
 
 Evidence-constrained product intelligence for industrial commerce.
 
-This repository is the Phase 1 data-foundation implementation for the UniHack 2026 challenge. The
+This repository is the Phase 2 canonical ProductTruth implementation for the UniHack 2026 challenge. The
 planned system transforms limited, messy product information into reliable, standardized,
 commerce-ready intelligence through:
 
@@ -26,6 +26,7 @@ Phase 0 is complete and the Phase 1 foundation is implemented:
 - CSV/XLSX readers with raw-value preservation and field-level normalization provenance;
 - generated data inventory and official-delivery header validation;
 - PostgreSQL foundation DDL for datasets, files, rows, references, ingestion, and validation.
+- semantic ProductTruth entities, lifecycle rules, provenance/evidence, conflicts, audit events, and delivery boundary.
 
 The real UniHack files listed by the challenge were not mounted in this Windows runtime, so the
 checked-in inventory records them as unavailable. No product records, fabricated examples,
@@ -73,8 +74,10 @@ then load official master/reference data and persist ingestion runs in PostgreSQ
 - [Development](DEVELOPMENT.md)
 - [Phase 0 record](docs/phases/phase-0.md)
 - [Phase 1 record](docs/phases/PHASE_1.md)
+- [Phase 2 record](docs/phases/PHASE_2.md)
 - [Phase roadmap](docs/phases/roadmap.md)
 - [Data inventory](docs/research/data-inventory.md)
 - [Data foundation](docs/research/DATA_FOUNDATION.md)
 - [Gemini API research](docs/research/gemini-api.md)
 - [Architecture decisions](docs/decisions/)
+- [Canonical domain model](src/unilog_product_intelligence/domain/truth.py)

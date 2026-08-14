@@ -63,3 +63,21 @@ evidence.
 The supplied UniHack delivery CSV is an external adapter contract. It must preserve the supplied
 headers exactly, including order and spelling. The wide delivery representation must not become
 the internal domain model.
+## Canonical ProductTruth boundary
+
+`ProductTruth` is the semantic internal model between raw UniLog input and delivery. It contains
+structured identity, classification, attributes, descriptions, digital assets, sources, evidence,
+candidates, conflicts, validation events, audit events, lifecycle state, and explicit quality
+factors. Raw ingestion snapshots remain separate and immutable.
+
+The delivery adapter is isolated in `delivery/adapter.py`. It refuses to invent exact mappings when
+the official delivery CSV is unavailable. Source authority and evidence are explicit; model
+confidence is separate from system assessment, and no aggregate confidence score is claimed.
+
+Phase 2 lifecycle transitions are constrained by `domain/lifecycle.py`:
+
+```text
+RAW → UNDERSTOOD → CLASSIFIED → ENRICHED → VALIDATED → READY → DELIVERED
+```
+
+`REVIEW_REQUIRED`, `BLOCKED`, and `CONFLICTED` are explicit intermediate states.
