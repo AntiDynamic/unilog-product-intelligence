@@ -70,6 +70,16 @@ def phase4_main() -> int:
                 "state": job.state.value,
                 "agent_runs": len(job.runs),
                 "attributes": len(product.attributes),
+                "runs": [
+                    {
+                        "task": run.task,
+                        "status": run.status,
+                        "request_id": run.request_id,
+                        "latency_ms": run.latency_ms,
+                        "error": run.error,
+                    }
+                    for run in job.runs
+                ],
             }
         )
     print(json.dumps({"status": "completed", "rows_selected": len(results), "results": results}))

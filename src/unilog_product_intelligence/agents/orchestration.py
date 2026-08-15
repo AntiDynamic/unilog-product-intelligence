@@ -205,7 +205,7 @@ class ProductOrchestrator:
             )
             return parsed
         except Exception as error:
-            run.status, run.error = "failed", type(error).__name__
+            run.status, run.error = "failed", str(error)[:200]
             raise RuntimeError("agent execution failed") from error
         finally:
             run.completed_at = datetime.now(UTC)
