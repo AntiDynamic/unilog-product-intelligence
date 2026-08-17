@@ -540,16 +540,23 @@ class ProductValidationHarness:
         ) -> tuple[SourceRecord, ManufacturerProfile] | None:
             nonlocal identity_match_score, identity_match_classification, source_verified
             mfg_name = _extract_manufacturer(p)
-            verified_candidates = [
-                c for c in disc.candidates
+            verified_candidates = tuple(
+                c
+                for c in disc.candidates
                 if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
-            ]
+            )
+            candidate_candidates = tuple(
+                c
+                for c in disc.candidates
+                if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
+            )
             if not verified_candidates:
                 return None
             profile = ManufacturerProfile(
                 manufacturer_id=mfg_name,
                 canonical_name=mfg_name,
                 verified_domains=tuple(c.domain for c in verified_candidates),
+                candidate_domains=tuple(c.domain for c in candidate_candidates),
             )
             # Record generated URLs
             if disc.search_result_urls:

@@ -155,10 +155,16 @@ def _build_pipeline(
             or ""
         )
         # Separate verified candidates vs unverified candidate domains
-        verified_candidates = [
-            c for c in disc.candidates
+        verified_candidates = tuple(
+            c
+            for c in disc.candidates
             if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
-        ]
+        )
+        candidate_candidates = tuple(
+            c
+            for c in disc.candidates
+            if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
+        )
         if not verified_candidates:
             # If no verified domain exists, do NOT create a profile that falsely claims candidate domains are verified.
             return None
@@ -167,6 +173,7 @@ def _build_pipeline(
             manufacturer_id=mfg_name or "unknown",
             canonical_name=mfg_name or "unknown",
             verified_domains=tuple(c.domain for c in verified_candidates),
+            candidate_domains=tuple(c.domain for c in candidate_candidates),
         )
         candidates = source_disc.discover(
             product, profile, candidate_urls=disc.search_result_urls

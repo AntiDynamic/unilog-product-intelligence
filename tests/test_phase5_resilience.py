@@ -36,6 +36,7 @@ from unilog_product_intelligence.retrieval import (
     SourceVerifier,
 )
 from unilog_product_intelligence.retrieval.core import (
+    CacheStatus,
     RetrievalStatus,
     SourceDecision,
     SourceKind,
@@ -1306,6 +1307,7 @@ def test_source_fetcher_rejects_unverified_candidate_source() -> None:
     )
 
     result = fetcher.fetch(candidate_source)
+    assert result.cache_status == CacheStatus.INVALID
     assert result.source.retrieval_status == RetrievalStatus.BLOCKED
     assert result.error == "source_not_verified"
 
@@ -1377,6 +1379,45 @@ def test_verified_catalog_domain_full_pipeline_success() -> None:
 
     fetch_res = fetcher.fetch(verified_source)
     assert fetch_res.source.retrieval_status == RetrievalStatus.SUCCESS
+
+
+def test_gemini_candidate_cannot_bypass_policy() -> None:
+    """Gemini-discovered candidates with CANDIDATE_MANUFACTURER_SOURCE cannot bypass policy."""
+    from unilog_product_intelligence.retrieval.agents import DiscoveryResult
+    from unilog_product_intelligence.retrieval.core import DomainCandidate
+
+    disc = DiscoveryResult(
+        candidates=[
+            DomainCandidate(
+                domain="unverified.example",
+                source="gemini",
+                reason="search_result",
+                status=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+            )
+        ]
+    )
+
+    verified_candidates = tuple(
+        c for c in disc.candidates if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+    )
+    assert verified_candidates == ()
+
+    profile = ManufacturerProfile(
+        manufacturer_id="Acme",
+        canonical_name="Acme",
+        verified_domains=tuple(c.domain for c in verified_candidates),
+        candidate_domains=tuple(
+            c.domain
+            for c in disc.candidates
+            if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
+        ),
+    )
+    assert "unverified.example" not in profile.verified_domains
+    assert "unverified.example" in profile.candidate_domains
+
+    # SourcePolicy must reject this domain
+    policy = SourcePolicy()
+    assert policy.allowed_domain("https://unverified.example/product/123", profile) is False
 
 
 
