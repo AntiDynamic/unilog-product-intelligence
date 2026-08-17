@@ -58,11 +58,39 @@ python -c "from unilog_product_intelligence.data.delivery import save_delivery_s
 uv run unilog-validate-delivery path/to/delivery.csv docs/research/delivery-schema.json
 ```
 
+## Pipeline Execution & Benchmark Modes
+
+UNILOG supports two distinct, transparent execution modes:
+
+### Mode A: `LIVE_DETERMINISTIC` (Default)
+Fast, zero-cost deterministic baseline for measuring HTTP retrieval, taxonomy classification, and normalization rules.
+```powershell
+python scripts/run_pipeline.py --mode live-deterministic --limit 50 --output delivery_det_50.csv
+python scripts/evaluate_delivery_50.py --output delivery_det_50.csv --traces delivery_det_50_traces.json
+```
+- **Provider**: `DeterministicEvaluationProvider`
+- **Gemini API Cost**: $0.00 (0 API calls, 0 tokens)
+- **Retrieval**: Live HTTP fetching on verified manufacturer domains
+- **Purpose**: Fast regression testing of domain resolution, MPN normalization, and source discovery.
+
+### Mode B: `LIVE_GEMINI`
+Real end-to-end AI product intelligence with evidence-grounded Gemini enrichment.
+```powershell
+python scripts/run_pipeline.py --mode live-gemini --limit 50 --output delivery_gemini_50.csv
+python scripts/evaluate_delivery_50.py --output delivery_gemini_50.csv --traces delivery_gemini_50_traces.json
+```
+- **Provider**: `GeminiProvider` (requires `GEMINI_API_KEY`)
+- **Model**: `gemini-3.5-flash-lite` (or configured `GEMINI_MODEL`)
+- **Telemetry**: Captures real model request IDs, token usage, latency, and tool calls per phase.
+- **Fail-Closed**: Aborts immediately with `GeminiConfigurationError` if `GEMINI_API_KEY` is missing (no silent fallback).
+- **Purpose**: Real commerce-ready AI enrichment and feature extraction.
+
 ## Scope and next step
 
 The next safe increment is to place any supplied official reference files under the local `data/external/` directory, rerun the reference audit, and then provide an explicitly authorized manufacturer-source/evidence set for a bounded live run. PostgreSQL persistence is available through the injected Phase 6 adapter; no implicit database connection is opened. See
 [the Phase 1 record](docs/phases/PHASE_1.md), [the data-foundation notes](docs/research/DATA_FOUNDATION.md),
 [the phase roadmap](docs/phases/roadmap.md), and [the development guide](DEVELOPMENT.md).
+
 
 ## Documentation
 

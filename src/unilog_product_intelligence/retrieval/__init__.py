@@ -19,9 +19,11 @@ from .core import (
     SourceVerifier,
     canonicalize_url,
 )
+from .mpn_normalizer import MpnHypothesis, MpnHypothesisType, MpnNormalizer
 from .service import ManufacturerIntelligenceService
 from .source_discovery import (
     DeterministicUrlStrategy,
+    MpnMatchClassification,
     ProductIdentityMatch,
     ProductIdentityMatcher,
     ProductSourceCandidate,
@@ -38,6 +40,10 @@ __all__ = [
     "HtmlParser",
     "ManufacturerIntelligenceService",
     "ManufacturerProfile",
+    "MpnHypothesis",
+    "MpnHypothesisType",
+    "MpnMatchClassification",
+    "MpnNormalizer",
     "ParsedDocument",
     "Phase5FailureReason",
     "SafeNetworkTargetResolver",

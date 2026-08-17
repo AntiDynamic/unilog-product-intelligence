@@ -1,29 +1,29 @@
 # ruff: noqa: E402 E501
 """End-to-end UNILOG pipeline runner: Input CSV -> Delivery CSV.
 
-Usage
------
-    python scripts/run_pipeline.py \
-        --input "Unihack_ Sample Dataset - Input.csv" \
-        --output delivery_output.csv \
-        [--limit 50] \
-        [--timeout 10] \
-        [--schema docs/research/delivery-schema.json]
+Supports two explicit execution modes:
+  1. LIVE_DETERMINISTIC (--mode live-deterministic, default):
+     - Uses DeterministicEvaluationProvider (zero Gemini cost/API calls).
+     - Live HTTP retrieval enabled for verified manufacturer domains.
+     - Deterministic rule-based Phase 4 extraction & Phase 6 enrichment.
+     - Fast, reproducible regression benchmark for retrieval and taxonomy.
 
-The script reads each input row, runs it through the full Phase65Pipeline
-(Phase 4 -> Phase 5 -> Phase 6), maps the result to the UniHack 252-column
-delivery format, and writes the output CSV incrementally (one row at a time,
-flushed after each write).
-
-No values are fabricated.  Columns that cannot be derived are left empty.
+  2. LIVE_GEMINI (--mode live-gemini):
+     - Uses real GeminiProvider (requires GEMINI_API_KEY).
+     - Live Gemini orchestration for Phase 4 understanding & Phase 6 enrichment.
+     - Live HTTP retrieval and targeted Gemini search for Phase 5 discovery.
+     - Captures real model names, token counts, request IDs, and latencies.
+     - Fails closed immediately if GEMINI_API_KEY is not configured (no silent fallback).
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import json
 import sys
 import time
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -32,9 +32,6 @@ _ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_ROOT / "src"))
 
 from unilog_product_intelligence.agents.orchestration import ProductOrchestrator  # noqa: E402
-from unilog_product_intelligence.application.evaluation import (
-    DeterministicEvaluationProvider,  # noqa: E402
-)
 from unilog_product_intelligence.application.phase65 import Phase65Pipeline  # noqa: E402
 from unilog_product_intelligence.application.product_truth import ProductTruthService  # noqa: E402
 from unilog_product_intelligence.data.readers import read_tabular_file  # noqa: E402
@@ -53,6 +50,11 @@ from unilog_product_intelligence.enrichment.agent import (
 from unilog_product_intelligence.enrichment.planner import AttributePlanner  # noqa: E402
 from unilog_product_intelligence.enrichment.service import EnrichmentService  # noqa: E402
 from unilog_product_intelligence.enrichment.validation import ValidationPipeline  # noqa: E402
+from unilog_product_intelligence.providers.factory import (  # noqa: E402
+    ExecutionMode,
+    GeminiConfigurationError,
+    build_provider,
+)
 from unilog_product_intelligence.retrieval.agents import (  # noqa: E402
     DiscoveryResult,
     ManufacturerDiscoveryAgent,
@@ -109,9 +111,15 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["deterministic", "live-gemini"],
-        default="deterministic",
-        help="Execution mode: deterministic (zero Gemini API calls, rule-based) or live-gemini (uses real GeminiProvider)",
+        choices=["live-deterministic", "live-gemini", "deterministic", "gemini"],
+        default="live-deterministic",
+        help=(
+            "Pipeline execution mode:\n"
+            "  live-deterministic (default): DeterministicEvaluationProvider with live HTTP retrieval "
+            "(zero Gemini cost/calls; measures deterministic retrieval & normalization)\n"
+            "  live-gemini: Real GeminiProvider with live HTTP retrieval and real AI enrichment "
+            "(requires GEMINI_API_KEY; measures real end-to-end AI product intelligence)"
+        ),
     )
     parser.add_argument(
         "--timeout",
@@ -122,7 +130,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-live",
         action="store_true",
-        help="Skip live HTTP retrieval (use deterministic provider only; faster, less complete)",
+        help="Skip live HTTP retrieval (use provider-only without live network fetching)",
     )
     return parser.parse_args()
 
@@ -232,6 +240,30 @@ def main() -> None:
               file=sys.stderr)
         sys.exit(1)
 
+    # ── Resolve execution mode and provider (Fail-Closed on missing config) ───
+    exec_mode = ExecutionMode.from_str(args.mode)
+    try:
+        provider = build_provider(exec_mode)
+    except GeminiConfigurationError as err:
+        print(f"\nERROR: {err}\n", file=sys.stderr)
+        print("To run in LIVE_GEMINI mode, ensure GEMINI_API_KEY is set in your environment or .env file.", file=sys.stderr)
+        print("Alternatively, use `--mode live-deterministic` for zero-cost deterministic execution.", file=sys.stderr)
+        sys.exit(1)
+
+    provider_name = type(provider).__name__
+    provider_model = getattr(provider, "model", "deterministic-evaluator")
+
+    print("=" * 65)
+    print("UNILOG PRODUCT INTELLIGENCE PIPELINE")
+    print("=" * 65)
+    print(f"Execution Mode: {exec_mode.value}")
+    print(f"Provider:       {provider_name}")
+    print(f"Model:          {provider_model}")
+    print(f"Live Network:   {not args.no_live}")
+    print(f"Input:          {input_path}")
+    print(f"Output:         {output_path}")
+    print("=" * 65)
+
     # ── Load schema and configure adapter ────────────────────────────────────
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)
@@ -239,7 +271,6 @@ def main() -> None:
     print(f"Loaded delivery schema: {len(headers)} columns")
 
     # ── Load input rows ───────────────────────────────────────────────────────
-    print(f"Reading input: {input_path}")
     read_result = read_tabular_file(input_path)
     rows = read_result.rows
     if args.limit:
@@ -249,23 +280,6 @@ def main() -> None:
 
     # ── Wire pipeline ─────────────────────────────────────────────────────────
     truth_service = ProductTruthService()
-    if args.mode == "live-gemini":
-        from unilog_product_intelligence.config import Settings
-        from unilog_product_intelligence.providers.gemini import GeminiProvider
-
-        settings = Settings()
-        if not settings.gemini_api_key:
-            print(
-                "ERROR: GEMINI_API_KEY environment variable is not configured for live-gemini mode.",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        provider = GeminiProvider(settings=settings)
-        print("Using provider: GeminiProvider (live-gemini mode)")
-    else:
-        provider = DeterministicEvaluationProvider()
-        print("Using provider: DeterministicEvaluationProvider (deterministic mode)")
-
     fetcher = SourceFetcher(timeout=args.timeout or 3.5, max_retries=0, requests_per_second=5.0)
     source_disc = ProductSourceDiscoveryService(fetcher=fetcher)
     pipeline = _build_pipeline(
@@ -316,7 +330,74 @@ def main() -> None:
                 blocker = f" [{result.blocker}]" if result.blocker else ""
                 print(f"{status}{blocker} ({duration}ms)")
 
-                # Capture structured observable execution trace
+                # Phase 4 Telemetry
+                p4_runs = result.phase4_job.runs if result.phase4_job else []
+                p4_model = p4_runs[0].model if p4_runs and p4_runs[0].model else (provider_model if p4_runs else None)
+                p4_calls = len(p4_runs)
+                p4_input_tokens = sum(r.input_tokens for r in p4_runs if r.input_tokens is not None) if any(r.input_tokens is not None for r in p4_runs) else None
+                p4_output_tokens = sum(r.output_tokens for r in p4_runs if r.output_tokens is not None) if any(r.output_tokens is not None for r in p4_runs) else None
+                p4_cached_tokens = sum(r.cached_tokens for r in p4_runs if r.cached_tokens is not None) if any(r.cached_tokens is not None for r in p4_runs) else None
+                p4_total_tokens = sum(r.total_tokens for r in p4_runs if r.total_tokens is not None) if any(r.total_tokens is not None for r in p4_runs) else None
+                p4_latency_ms = sum(r.latency_ms for r in p4_runs if r.latency_ms is not None) if any(r.latency_ms is not None for r in p4_runs) else None
+                p4_request_ids = [r.request_id for r in p4_runs if r.request_id]
+                p4_error = next((r.error for r in p4_runs if r.error), None)
+                p4_status = "FAILED" if result.phase4_job and result.phase4_job.state.value == "failed" else "COMPLETED"
+
+                # Phase 5 Telemetry
+                disc = result.discovery
+                p5_search_requested = bool(disc and disc.search_requested)
+                p5_search_tool_calls = disc.search_tool_calls if disc else 0
+                p5_search_calls = 1 if (disc and disc.search_tool_calls > 0) else 0
+                p5_search_result_count = disc.search_result_count if disc else 0
+                p5_search_result_urls = list(disc.search_result_urls) if disc else []
+                p5_model = disc.model if disc else None
+                p5_input_tokens = disc.input_tokens if disc else None
+                p5_output_tokens = disc.output_tokens if disc else None
+                p5_cached_tokens = disc.cached_tokens if disc else None
+                p5_latency_ms = disc.latency_ms if disc else None
+                p5_request_id = disc.request_id if disc else None
+                p5_failure_reason = (
+                    result.blocker
+                    or (result.manufacturer_job.failure_reason.value if result.manufacturer_job and result.manufacturer_job.failure_reason else None)
+                    or (disc.failure_reason.value if disc and disc.failure_reason else None)
+                )
+
+                # Phase 6 Telemetry
+                enrich = result.enrichment
+                p6_calls = enrich.metrics.agent_calls if enrich else 0
+                p6_input_tokens = enrich.metrics.input_tokens if (enrich and enrich.metrics.input_tokens > 0) else None
+                p6_output_tokens = enrich.metrics.output_tokens if (enrich and enrich.metrics.output_tokens > 0) else None
+                p6_cached_tokens = enrich.metrics.cached_tokens if (enrich and enrich.metrics.cached_tokens > 0) else None
+                p6_latency_ms = None
+                p6_error = enrich.error if enrich else None
+                p6_status = enrich.status.value if enrich else "UNKNOWN"
+                p6_publication_state = enrich.publication_state.value if enrich else "REVIEW_REQUIRED"
+
+                p6_candidates = enrich.candidates if enrich else ()
+                p6_planned = len(enrich.attribute_plans) if enrich else 0
+                p6_proposed = len(p6_candidates)
+                p6_validated = sum(
+                    1
+                    for c in p6_candidates
+                    if getattr(c, "status", None) in {"VERIFIED", "ENRICHED", "NORMALIZED"}
+                    or getattr(getattr(c, "status", None), "value", None) in {"VERIFIED", "ENRICHED", "NORMALIZED"}
+                    or getattr(c, "validation_state", "") in {"VALID", "PASSED"}
+                )
+                p6_review = sum(
+                    1
+                    for c in p6_candidates
+                    if getattr(c, "status", None) == "REVIEW_REQUIRED"
+                    or getattr(getattr(c, "status", None), "value", None) == "REVIEW_REQUIRED"
+                    or getattr(c, "validation_state", "") == "REVIEW_REQUIRED"
+                )
+                p6_rejected = sum(
+                    1
+                    for c in p6_candidates
+                    if getattr(c, "status", None) == "REJECTED"
+                    or getattr(getattr(c, "status", None), "value", None) == "REJECTED"
+                    or getattr(c, "validation_state", "") == "REJECTED"
+                )
+
                 traces.append(
                     {
                         "row_number": row_num,
@@ -338,114 +419,121 @@ def main() -> None:
                             if getattr(result.product_truth.identity, "brand", None)
                             else ""
                         ),
-                        "domain_candidates": [
-                            {
-                                "domain": c.domain,
-                                "status": c.status.value,
-                                "source": c.source,
-                                "reason": c.reason,
-                            }
-                            for c in (result.discovery.candidates if result.discovery else ())
-                        ],
-                        "verified_domains": [
-                            c.domain
-                            for c in (result.discovery.candidates if result.discovery else ())
-                            if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
-                        ],
-                        "retrieval_strategies_attempted": list(
-                            result.discovery.retrieval_strategies_attempted
-                            if result.discovery
-                            else ()
-                        ),
-                        "candidate_urls": list(
-                            result.discovery.search_result_urls if result.discovery else ()
-                        ),
-                        "fetched_urls": [
-                            s.uri for s in result.product_truth.sources if s.uri
-                        ],
-                        "source_decision": (
-                            result.manufacturer_job.state.value
-                            if result.manufacturer_job
-                            else "none"
-                        ),
-                        "source_status": (
-                            "success"
-                            if any(
-                                s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
-                                for s in result.product_truth.sources
-                            )
-                            else "not_found"
-                        ),
-                        "identity_score": (
-                            1.0
-                            if any(
-                                s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
-                                for s in result.product_truth.sources
-                            )
-                            else 0.0
-                        ),
-                        "identity_classification": (
-                            "STRONG_MATCH"
-                            if any(
-                                s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
-                                for s in result.product_truth.sources
-                            )
-                            else None
-                        ),
-                        "evidence_count": len(result.product_truth.evidence),
-                        "attributes_planned": (
-                            len(result.enrichment.candidates) if result.enrichment else 0
-                        ),
-                        "attributes_candidate": (
-                            len(result.enrichment.candidates) if result.enrichment else 0
-                        ),
-                        "attributes_validated": (
-                            sum(
-                                1
-                                for c in result.enrichment.candidates
-                                if c.validation_result
-                                and c.validation_result.status.value == "VALID"
-                            )
-                            if result.enrichment
-                            else 0
-                        ),
-                        "attributes_review": (
-                            sum(
-                                1
-                                for c in result.enrichment.candidates
-                                if c.validation_result
-                                and c.validation_result.status.value == "REVIEW_REQUIRED"
-                            )
-                            if result.enrichment
-                            else 0
-                        ),
-                        "attributes_rejected": (
-                            sum(
-                                1
-                                for c in result.enrichment.candidates
-                                if c.validation_result
-                                and c.validation_result.status.value == "REJECTED"
-                            )
-                            if result.enrichment
-                            else 0
-                        ),
-                        "delivery_non_empty_fields": sum(
-                            1 for v in delivery.as_row() if v is not None and str(v).strip()
-                        ),
-                        "final_status": result.status.value,
-                        "publication_state": (
-                            result.enrichment.publication_state.value
-                            if result.enrichment
-                            else "REVIEW_REQUIRED"
-                        ),
-                        "failure_reason": result.blocker
-                        or (
-                            result.manufacturer_job.failure_reason.value
-                            if result.manufacturer_job and result.manufacturer_job.failure_reason
-                            else None
-                        ),
-                        "execution_mode": args.mode,
+                        "execution_mode": exec_mode.value,
                         "duration_ms": duration,
+                        "phase4": {
+                            "status": p4_status,
+                            "provider_model": p4_model,
+                            "provider_calls": p4_calls,
+                            "input_tokens": p4_input_tokens,
+                            "output_tokens": p4_output_tokens,
+                            "cached_tokens": p4_cached_tokens,
+                            "total_tokens": p4_total_tokens,
+                            "latency_ms": p4_latency_ms,
+                            "request_ids": p4_request_ids,
+                            "error": p4_error,
+                        },
+                        "phase5": {
+                            "domain_candidates": [
+                                {
+                                    "domain": c.domain,
+                                    "status": c.status.value,
+                                    "source": c.source,
+                                    "reason": c.reason,
+                                }
+                                for c in (result.discovery.candidates if result.discovery else ())
+                            ],
+                            "verified_domains": [
+                                c.domain
+                                for c in (result.discovery.candidates if result.discovery else ())
+                                if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+                            ],
+                            "retrieval_strategies_attempted": list(
+                                result.discovery.retrieval_strategies_attempted
+                                if result.discovery
+                                else ()
+                            ),
+                            "candidate_urls": list(
+                                result.discovery.search_result_urls if result.discovery else ()
+                            ),
+                            "fetched_urls": [
+                                s.uri for s in result.product_truth.sources if s.uri
+                            ],
+                            "source_decision": (
+                                result.manufacturer_job.state.value
+                                if result.manufacturer_job
+                                else "none"
+                            ),
+                            "source_status": (
+                                "success"
+                                if any(
+                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                    for s in result.product_truth.sources
+                                )
+                                else "not_found"
+                            ),
+                            "identity_score": (
+                                1.0
+                                if any(
+                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                    for s in result.product_truth.sources
+                                )
+                                else 0.0
+                            ),
+                            "identity_classification": (
+                                "STRONG_MATCH"
+                                if any(
+                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                    for s in result.product_truth.sources
+                                )
+                                else None
+                            ),
+                            "evidence_count": len(result.product_truth.evidence),
+                            "search_requested": p5_search_requested,
+                            "search_tool_calls": p5_search_tool_calls,
+                            "search_calls": p5_search_calls,
+                            "search_result_count": p5_search_result_count,
+                            "search_result_urls": p5_search_result_urls,
+                            "model": p5_model,
+                            "input_tokens": p5_input_tokens,
+                            "output_tokens": p5_output_tokens,
+                            "cached_tokens": p5_cached_tokens,
+                            "latency_ms": p5_latency_ms,
+                            "request_id": p5_request_id,
+                            "failure_reason": p5_failure_reason,
+                        },
+                        "phase6": {
+                            "status": p6_status,
+                            "publication_state": p6_publication_state,
+                            "enrichment_model": provider_model if p6_calls > 0 else None,
+                            "enrichment_calls": p6_calls,
+                            "attributes_planned": p6_planned,
+                            "attributes_candidate": p6_proposed,
+                            "attributes_validated": p6_validated,
+                            "attributes_review": p6_review,
+                            "attributes_rejected": p6_rejected,
+                            "input_tokens": p6_input_tokens,
+                            "output_tokens": p6_output_tokens,
+                            "cached_tokens": p6_cached_tokens,
+                            "latency_ms": p6_latency_ms,
+                            "error": p6_error,
+                        },
+                        "delivery": {
+                            "non_empty_fields": sum(
+                                1 for v in delivery.as_row() if v is not None and str(v).strip()
+                            ),
+                            "total_fields": len(headers),
+                            "completeness_pct": round(
+                                sum(1 for v in delivery.as_row() if v is not None and str(v).strip())
+                                / len(headers)
+                                * 100,
+                                2,
+                            ),
+                        },
+                        "final_status": result.status.value,
+                        "publication_state": p6_publication_state,
+                        "blocker": result.blocker,
+                        "failure_reason": p5_failure_reason,
                     }
                 )
 
@@ -459,13 +547,13 @@ def main() -> None:
 
     # ── Write traces JSON ─────────────────────────────────────────────────────
     traces_path = output_path.with_name(f"{output_path.stem}_traces.json")
-    import json
-    from datetime import UTC, datetime
-
     with traces_path.open("w", encoding="utf-8") as f:
         json.dump(
             {
-                "execution_mode": args.mode,
+                "execution_mode": exec_mode.value,
+                "provider": provider_name,
+                "model": provider_model,
+                "live_http_retrieval": not args.no_live,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "total_rows": total,
                 "stats": stats,
@@ -477,15 +565,16 @@ def main() -> None:
     print(f"Traces: {traces_path}")
 
     # ── Print summary ─────────────────────────────────────────────────────────
-    print("\n" + "=" * 60)
+    print("\n" + "=" * 65)
     print("PIPELINE COMPLETE")
     print(f"Output: {output_path}")
+    print(f"Mode:   {exec_mode.value}")
     print(f"Rows:   {total}")
     print(f"  ENRICHED:        {stats.get('enriched', 0):4d}")
     print(f"  REVIEW_REQUIRED: {stats.get('review_required', 0):4d}")
     print(f"  BLOCKED:         {stats.get('blocked', 0):4d}")
     print(f"  ERRORS:          {stats.get('error', 0):4d}")
-    print("=" * 60)
+    print("=" * 65)
 
 
 if __name__ == "__main__":

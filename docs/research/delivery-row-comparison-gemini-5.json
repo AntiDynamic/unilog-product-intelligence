@@ -1,0 +1,220 @@
+[
+  {
+    "row_number": 2,
+    "input": {
+      "mpn": "DCB518ASTS06G",
+      "part_manuf": "Freud Inc (2435)",
+      "description": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Freud Inc",
+      "resolved_brand": "Diablo",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "verified_domains": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "mfr_url": "https://diablotools.com/products/DCB518ASTS06G",
+      "has_candidate_source": true,
+      "is_verified_source": true,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 21
+    },
+    "delivery": {
+      "non_empty_fields": 63,
+      "total_fields": 252,
+      "completeness_pct": 25.0
+    },
+    "status": {
+      "final_status": "ENRICHED",
+      "failure_reason": null
+    }
+  },
+  {
+    "row_number": 3,
+    "input": {
+      "mpn": "3MABR-7100075678",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P150 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 3
+    },
+    "delivery": {
+      "non_empty_fields": 17,
+      "total_fields": 252,
+      "completeness_pct": 6.75
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 4,
+    "input": {
+      "mpn": "3MABR-7100045865",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P120 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 3
+    },
+    "delivery": {
+      "non_empty_fields": 17,
+      "total_fields": 252,
+      "completeness_pct": 6.75
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 5,
+    "input": {
+      "mpn": "3MABR-7100048736",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P80 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 3
+    },
+    "delivery": {
+      "non_empty_fields": 17,
+      "total_fields": 252,
+      "completeness_pct": 6.75
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 6,
+    "input": {
+      "mpn": "3MABR-7100075690",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P180 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 3
+    },
+    "delivery": {
+      "non_empty_fields": 17,
+      "total_fields": 252,
+      "completeness_pct": 6.75
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  }
+]

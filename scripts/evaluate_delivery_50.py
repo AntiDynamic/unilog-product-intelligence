@@ -178,8 +178,14 @@ def evaluate(
     expected_path: Path = EXPECTED_PATH,
     schema_path: Path = SCHEMA_PATH,
     traces_path: Path | None = TRACES_PATH,
+    eval_json_path: Path | None = None,
+    eval_md_path: Path | None = None,
+    row_comp_path: Path | None = None,
 ) -> dict[str, Any]:
     """Execute complete trustworthy evaluation."""
+    target_json_path = eval_json_path or EVAL_JSON_PATH
+    target_md_path = eval_md_path or EVAL_MD_PATH
+    target_row_path = row_comp_path or ROW_COMP_PATH
     # 1. Load input rows
     with input_path.open("r", encoding="utf-8-sig") as f:
         input_rows = list(csv.DictReader(f))
@@ -195,12 +201,12 @@ def evaluate(
 
     # 3. Load optional traces if present
     trace_map: dict[int, dict[str, Any]] = {}
-    execution_mode = "deterministic"
+    execution_mode = "LIVE_DETERMINISTIC"
     if traces_path and traces_path.is_file():
         try:
             with traces_path.open("r", encoding="utf-8") as f:
                 trace_data = json.load(f)
-                execution_mode = trace_data.get("execution_mode", "deterministic")
+                execution_mode = trace_data.get("execution_mode", "LIVE_DETERMINISTIC")
                 for t in trace_data.get("traces", []):
                     trace_map[t["row_number"]] = t
         except Exception:
@@ -617,21 +623,21 @@ def evaluate(
     }
 
     # 8. Write outputs
-    EVAL_JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with EVAL_JSON_PATH.open("w", encoding="utf-8") as f:
+    target_json_path.parent.mkdir(parents=True, exist_ok=True)
+    with target_json_path.open("w", encoding="utf-8") as f:
         json.dump(evaluation_report, f, indent=2)
 
-    with ROW_COMP_PATH.open("w", encoding="utf-8") as f:
+    with target_row_path.open("w", encoding="utf-8") as f:
         json.dump(row_traces, f, indent=2)
 
     # 9. Generate markdown report
     md_content = _build_markdown_report(evaluation_report, row_traces)
-    with EVAL_MD_PATH.open("w", encoding="utf-8") as f:
+    with target_md_path.open("w", encoding="utf-8") as f:
         f.write(md_content)
 
-    print(f"Evaluation report written to: {EVAL_JSON_PATH}")
-    print(f"Markdown report written to:   {EVAL_MD_PATH}")
-    print(f"Row traces written to:        {ROW_COMP_PATH}")
+    print(f"Evaluation report written to: {target_json_path}")
+    print(f"Markdown report written to:   {target_md_path}")
+    print(f"Row traces written to:        {target_row_path}")
 
     return evaluation_report
 
@@ -719,5 +725,31 @@ def _build_markdown_report(report: dict[str, Any], traces: list[dict[str, Any]])
     return "\n".join(lines)
 
 
+def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Evaluate UNILOG delivery CSV against schema and ground truth")
+    parser.add_argument("--input", default=str(INPUT_PATH), help="Path to input CSV")
+    parser.add_argument("--output", default=str(OUTPUT_PATH), help="Path to generated delivery CSV")
+    parser.add_argument("--expected", default=str(EXPECTED_PATH), help="Path to expected delivery CSV")
+    parser.add_argument("--schema", default=str(SCHEMA_PATH), help="Path to schema JSON")
+    parser.add_argument("--traces", default=str(TRACES_PATH), help="Path to traces JSON")
+    parser.add_argument("--report-json", default=str(EVAL_JSON_PATH), help="Path to output eval JSON")
+    parser.add_argument("--report-md", default=str(EVAL_MD_PATH), help="Path to output eval MD")
+    parser.add_argument("--report-rows", default=str(ROW_COMP_PATH), help="Path to output row traces JSON")
+    args = parser.parse_args()
+
+    evaluate(
+        input_path=Path(args.input),
+        output_path=Path(args.output),
+        expected_path=Path(args.expected),
+        schema_path=Path(args.schema),
+        traces_path=Path(args.traces) if args.traces else None,
+        eval_json_path=Path(args.report_json),
+        eval_md_path=Path(args.report_md),
+        row_comp_path=Path(args.report_rows),
+    )
+
+
 if __name__ == "__main__":
-    evaluate()
+    main()

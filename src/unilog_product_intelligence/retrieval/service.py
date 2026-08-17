@@ -78,6 +78,13 @@ class ManufacturerJob(BaseModel):
     estimated_cost_usd: float | None = None
 
 
+    identity_score: float | None = None
+    mpn_match_type: str | None = None
+    raw_mpn_match: bool | None = None
+    transformed_mpn_match: bool | None = None
+    identity_rejection_reason: str | None = None
+
+
 class ManufacturerIntelligenceService:
     """One bounded source workflow. It never performs broad crawling or final enrichment."""
 
@@ -124,7 +131,12 @@ class ManufacturerIntelligenceService:
             job.state = ManufacturerJobState.FETCHED
             parsed = self.parser.parse(fetched)
             identity = ProductIdentityMatcher().match(product, parsed)
-            if identity.identity_score < 0.6:
+            job.identity_score = identity.identity_score
+            job.mpn_match_type = identity.mpn_match_type.value
+            job.raw_mpn_match = identity.raw_mpn_match
+            job.transformed_mpn_match = identity.transformed_mpn_match
+            job.identity_rejection_reason = identity.rejection_reason
+            if identity.identity_score < 0.6 or not identity.matched_mpn:
                 job.state = ManufacturerJobState.REVIEW_REQUIRED
                 job.error = f"source_not_relevant_to_product:{identity.classification}"
                 job.failure_reason = Phase5FailureReason.PRODUCT_IDENTITY_MISMATCH

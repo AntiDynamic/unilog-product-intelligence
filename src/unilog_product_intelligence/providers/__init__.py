@@ -1,7 +1,18 @@
-"""LLM provider ports and adapters."""
+"""LLM provider ports, adapters, and factory."""
 
 from .base import LLMProvider, LLMRequest, LLMResponse
-from .gemini import GeminiProvider
+from .factory import ExecutionMode, build_provider
+from .gemini import GeminiConfigurationError, GeminiProvider, GeminiProviderError
 from .local import LocalProvider
 
-__all__ = ["GeminiProvider", "LLMProvider", "LLMRequest", "LLMResponse", "LocalProvider"]
+__all__ = [
+    "ExecutionMode",
+    "GeminiConfigurationError",
+    "GeminiProvider",
+    "GeminiProviderError",
+    "LLMProvider",
+    "LLMRequest",
+    "LLMResponse",
+    "LocalProvider",
+    "build_provider",
+]
