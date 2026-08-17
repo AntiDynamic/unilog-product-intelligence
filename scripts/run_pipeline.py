@@ -25,6 +25,7 @@ import csv
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 # ── Resolve project root so imports work whether run from root or scripts/ ─────
 _ROOT = Path(__file__).resolve().parent.parent
@@ -105,6 +106,12 @@ def _parse_args() -> argparse.Namespace:
         type=int,
         default=None,
         help="Process only the first N rows (default: all rows)",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["deterministic", "live-gemini"],
+        default="deterministic",
+        help="Execution mode: deterministic (zero Gemini API calls, rule-based) or live-gemini (uses real GeminiProvider)",
     )
     parser.add_argument(
         "--timeout",
@@ -242,7 +249,23 @@ def main() -> None:
 
     # ── Wire pipeline ─────────────────────────────────────────────────────────
     truth_service = ProductTruthService()
-    provider = DeterministicEvaluationProvider()
+    if args.mode == "live-gemini":
+        from unilog_product_intelligence.config import Settings
+        from unilog_product_intelligence.providers.gemini import GeminiProvider
+
+        settings = Settings()
+        if not settings.gemini_api_key:
+            print(
+                "ERROR: GEMINI_API_KEY environment variable is not configured for live-gemini mode.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        provider = GeminiProvider(settings=settings)
+        print("Using provider: GeminiProvider (live-gemini mode)")
+    else:
+        provider = DeterministicEvaluationProvider()
+        print("Using provider: DeterministicEvaluationProvider (deterministic mode)")
+
     fetcher = SourceFetcher(timeout=args.timeout or 3.5, max_retries=0, requests_per_second=5.0)
     source_disc = ProductSourceDiscoveryService(fetcher=fetcher)
     pipeline = _build_pipeline(
@@ -252,6 +275,7 @@ def main() -> None:
     # ── Open output CSV for incremental writing ───────────────────────────────
     output_path.parent.mkdir(parents=True, exist_ok=True)
     stats = {"enriched": 0, "review_required": 0, "blocked": 0, "error": 0}
+    traces: list[dict[str, Any]] = []
 
     with output_path.open("w", newline="", encoding="utf-8-sig") as out_file:
         writer = csv.writer(out_file, quoting=csv.QUOTE_MINIMAL)
@@ -292,6 +316,139 @@ def main() -> None:
                 blocker = f" [{result.blocker}]" if result.blocker else ""
                 print(f"{status}{blocker} ({duration}ms)")
 
+                # Capture structured observable execution trace
+                traces.append(
+                    {
+                        "row_number": row_num,
+                        "product_id": f"row-{row_num}",
+                        "input_mpn": mpn,
+                        "input_manufacturer": manuf,
+                        "input_brand_fields": {
+                            "Unilog_Brand": str(row.raw_values.get("Unilog_Brand") or ""),
+                            "E1_Brand": str(row.raw_values.get("E1_Brand") or ""),
+                            "DIB_Brand": str(row.raw_values.get("DIB_Brand") or ""),
+                        },
+                        "resolved_manufacturer": (
+                            str(result.product_truth.identity.manufacturer.normalized_value or "")
+                            if getattr(result.product_truth.identity, "manufacturer", None)
+                            else ""
+                        ),
+                        "resolved_brand": (
+                            str(result.product_truth.identity.brand.normalized_value or "")
+                            if getattr(result.product_truth.identity, "brand", None)
+                            else ""
+                        ),
+                        "domain_candidates": [
+                            {
+                                "domain": c.domain,
+                                "status": c.status.value,
+                                "source": c.source,
+                                "reason": c.reason,
+                            }
+                            for c in (result.discovery.candidates if result.discovery else ())
+                        ],
+                        "verified_domains": [
+                            c.domain
+                            for c in (result.discovery.candidates if result.discovery else ())
+                            if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+                        ],
+                        "retrieval_strategies_attempted": list(
+                            result.discovery.retrieval_strategies_attempted
+                            if result.discovery
+                            else ()
+                        ),
+                        "candidate_urls": list(
+                            result.discovery.search_result_urls if result.discovery else ()
+                        ),
+                        "fetched_urls": [
+                            s.uri for s in result.product_truth.sources if s.uri
+                        ],
+                        "source_decision": (
+                            result.manufacturer_job.state.value
+                            if result.manufacturer_job
+                            else "none"
+                        ),
+                        "source_status": (
+                            "success"
+                            if any(
+                                s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                for s in result.product_truth.sources
+                            )
+                            else "not_found"
+                        ),
+                        "identity_score": (
+                            1.0
+                            if any(
+                                s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                for s in result.product_truth.sources
+                            )
+                            else 0.0
+                        ),
+                        "identity_classification": (
+                            "STRONG_MATCH"
+                            if any(
+                                s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                for s in result.product_truth.sources
+                            )
+                            else None
+                        ),
+                        "evidence_count": len(result.product_truth.evidence),
+                        "attributes_planned": (
+                            len(result.enrichment.candidates) if result.enrichment else 0
+                        ),
+                        "attributes_candidate": (
+                            len(result.enrichment.candidates) if result.enrichment else 0
+                        ),
+                        "attributes_validated": (
+                            sum(
+                                1
+                                for c in result.enrichment.candidates
+                                if c.validation_result
+                                and c.validation_result.status.value == "VALID"
+                            )
+                            if result.enrichment
+                            else 0
+                        ),
+                        "attributes_review": (
+                            sum(
+                                1
+                                for c in result.enrichment.candidates
+                                if c.validation_result
+                                and c.validation_result.status.value == "REVIEW_REQUIRED"
+                            )
+                            if result.enrichment
+                            else 0
+                        ),
+                        "attributes_rejected": (
+                            sum(
+                                1
+                                for c in result.enrichment.candidates
+                                if c.validation_result
+                                and c.validation_result.status.value == "REJECTED"
+                            )
+                            if result.enrichment
+                            else 0
+                        ),
+                        "delivery_non_empty_fields": sum(
+                            1 for v in delivery.as_row() if v is not None and str(v).strip()
+                        ),
+                        "final_status": result.status.value,
+                        "publication_state": (
+                            result.enrichment.publication_state.value
+                            if result.enrichment
+                            else "REVIEW_REQUIRED"
+                        ),
+                        "failure_reason": result.blocker
+                        or (
+                            result.manufacturer_job.failure_reason.value
+                            if result.manufacturer_job and result.manufacturer_job.failure_reason
+                            else None
+                        ),
+                        "execution_mode": args.mode,
+                        "duration_ms": duration,
+                    }
+                )
+
             except Exception as err:
                 # Write empty row to preserve row alignment
                 writer.writerow([None] * len(headers))
@@ -299,6 +456,25 @@ def main() -> None:
                 stats["error"] += 1
                 duration = int((time.perf_counter() - t0) * 1000)
                 print(f"ERROR: {type(err).__name__}: {err} ({duration}ms)")
+
+    # ── Write traces JSON ─────────────────────────────────────────────────────
+    traces_path = output_path.with_name(f"{output_path.stem}_traces.json")
+    import json
+    from datetime import UTC, datetime
+
+    with traces_path.open("w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "execution_mode": args.mode,
+                "timestamp": datetime.now(UTC).isoformat(),
+                "total_rows": total,
+                "stats": stats,
+                "traces": traces,
+            },
+            f,
+            indent=2,
+        )
+    print(f"Traces: {traces_path}")
 
     # ── Print summary ─────────────────────────────────────────────────────────
     print("\n" + "=" * 60)

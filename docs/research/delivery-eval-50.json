@@ -1,56 +1,86 @@
 {
-  "benchmark_sample_size": 50,
+  "benchmark_sample_size": 1,
+  "execution_mode": "live-gemini",
   "schema": {
     "header_count_match": true,
-    "gen_header_count": 252,
-    "expected_header_count": 252,
+    "gen_header_count": 5,
+    "expected_header_count": 5,
     "headers_identical": true,
     "missing_headers": [],
     "extra_headers": []
   },
+  "ground_truth": {
+    "ground_truth_records_available": 0,
+    "ground_truth_reference_rows_in_file": 0
+  },
   "identity_metrics": {
-    "manufacturer_accuracy_pct": 32.0,
-    "manufacturer_correct_count": 16,
-    "brand_accuracy_pct": 100.0,
-    "brand_correct_count": 50,
-    "mpn_accuracy_pct": 100.0,
-    "classpath_accuracy_pct": 100.0
+    "manufacturer_resolved_count": 0,
+    "manufacturer_resolved_rate_pct": 0.0,
+    "manufacturer_ground_truth_accuracy_pct": null,
+    "brand_resolved_count": 0,
+    "brand_resolved_rate_pct": 0.0,
+    "brand_ground_truth_accuracy_pct": null,
+    "mpn_exact_match_count": 0,
+    "mpn_normalized_match_count": 0,
+    "mpn_different_count": 0,
+    "mpn_missing_count": 1,
+    "mpn_integrity_rate_pct": 0.0
+  },
+  "taxonomy_metrics": {
+    "classpath_generated_count": 0,
+    "classpath_generated_rate_pct": 0.0,
+    "average_classpath_depth": 0.0,
+    "classpath_ground_truth_accuracy_pct": null
   },
   "retrieval_metrics": {
-    "domain_resolution_rate_pct": 100.0,
-    "domain_resolved_count": 50,
-    "authoritative_source_discovery_rate_pct": 80.0,
-    "authoritative_sources_found": 40
+    "domain_candidate_count": 0,
+    "domain_candidate_rate_pct": 0.0,
+    "verified_domain_count": 0,
+    "verified_domain_rate_pct": 0.0,
+    "candidate_source_found_count": 0,
+    "candidate_source_rate_pct": 0.0,
+    "verified_source_found_count": 0,
+    "verified_source_rate_pct": 0.0,
+    "source_fetch_success_count": 0,
+    "source_fetch_success_rate_pct": 0.0,
+    "exact_product_verified_count": 0,
+    "exact_product_verified_rate_pct": 0.0,
+    "authoritative_source_rate_pct": 0.0
+  },
+  "evidence_metrics": {
+    "products_with_authoritative_evidence": 0,
+    "products_with_evidence_rate_pct": 0.0,
+    "evidence_items_total": 0,
+    "average_evidence_items_per_enriched_product": 0.0,
+    "evidence_without_source": 0,
+    "evidence_without_quote": 0
   },
   "enrichment_metrics": {
-    "products_with_evidence": 40,
-    "evidence_rate_pct": 80.0,
-    "total_attributes_populated": 93,
-    "average_attributes_per_product": 1.86
+    "attributes_populated_in_delivery": 0,
+    "average_attributes_per_product": 0.0,
+    "products_with_attributes": 0
   },
-  "delivery_metrics": {
-    "average_non_empty_fields_per_product": 19.58,
-    "min_non_empty_fields": 15,
-    "max_non_empty_fields": 49,
-    "average_completeness_pct": 7.77
+  "delivery_completeness": {
+    "core_identity_completeness_pct": 0.0,
+    "taxonomy_completeness_pct": 0.0,
+    "description_completeness_pct": 0.0,
+    "features_completeness_pct": 0.0,
+    "attributes_completeness_pct": 0.0,
+    "urls_completeness_pct": 0.0,
+    "assets_completeness_pct": 0.0,
+    "commercial_completeness_pct": 0.0,
+    "overall_delivery_completeness_pct": 0.0,
+    "average_non_empty_fields_per_product": 0.0,
+    "min_non_empty_fields": 0,
+    "max_non_empty_fields": 0
   },
   "status_distribution": {
-    "ENRICHED": 40,
-    "REVIEW_REQUIRED": 10,
+    "ENRICHED": 0,
+    "REVIEW_REQUIRED": 1,
     "BLOCKED": 0,
     "ERRORS": 0
   },
   "failure_taxonomy": {
-    "SOURCE_NOT_FOUND": 10
-  },
-  "distributor_case_count": 10,
-  "top_bottlenecks": [
-    {
-      "rank": 1,
-      "bottleneck": "SOURCE_NOT_FOUND for 3M (Rows 3-8) & Mirka (Rows 9-12)",
-      "affected_rows": 10,
-      "impact_pct": 20.0,
-      "root_cause": "3m.com and mirka.com drops or redirects crawler requests without search link resolution."
-    }
-  ]
+    "SOURCE_NOT_FOUND": 1
+  }
 }
