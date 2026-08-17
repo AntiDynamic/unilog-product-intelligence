@@ -62,7 +62,9 @@ from unilog_product_intelligence.retrieval.core import (  # noqa: E402
     ManufacturerProfile,
     SourceDecision,
     SourceFetcher,
+    SourcePolicy,
     SourceRecord,
+    SourceVerifier,
     _host,
 )
 from unilog_product_intelligence.retrieval.service import (
@@ -152,10 +154,19 @@ def _build_pipeline(
             or product.raw_value("Part_Manuf")
             or ""
         )
+        # Separate verified candidates vs unverified candidate domains
+        verified_candidates = [
+            c for c in disc.candidates
+            if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+        ]
+        if not verified_candidates:
+            # If no verified domain exists, do NOT create a profile that falsely claims candidate domains are verified.
+            return None
+
         profile = ManufacturerProfile(
             manufacturer_id=mfg_name or "unknown",
             canonical_name=mfg_name or "unknown",
-            verified_domains=tuple(c.domain for c in disc.candidates),
+            verified_domains=tuple(c.domain for c in verified_candidates),
         )
         candidates = source_disc.discover(
             product, profile, candidate_urls=disc.search_result_urls
@@ -164,18 +175,22 @@ def _build_pipeline(
             return None
         best = candidates[0]
         best_domain = _host(best.url)
-        return (
-            SourceRecord(
-                canonical_url=best.url,
-                original_url=best.url,
-                source_kind=best.source_kind,
-                decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
-                manufacturer_id=profile.manufacturer_id,
-                manufacturer_domain=best_domain,
-                product_id=product.product_id,
-            ),
-            profile,
+
+        # Ensure the discovered candidate is verified against the profile
+        candidate_source = SourceRecord(
+            canonical_url=best.url,
+            original_url=best.url,
+            source_kind=best.source_kind,
+            decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+            manufacturer_id=profile.manufacturer_id,
+            manufacturer_domain=best_domain,
+            product_id=product.product_id,
         )
+        verified_source = SourceVerifier(SourcePolicy()).verify_source(candidate_source, profile)
+        if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
+            return None
+
+        return verified_source, profile
 
     return Phase65Pipeline(
         orchestrator=ProductOrchestrator(provider, truth_service),  # type: ignore[arg-type]

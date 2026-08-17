@@ -47,7 +47,9 @@ from unilog_product_intelligence.retrieval.core import (
     ManufacturerProfile,
     SourceDecision,
     SourceFetcher,
+    SourcePolicy,
     SourceRecord,
+    SourceVerifier,
     _host,
 )
 from unilog_product_intelligence.retrieval.core import (
@@ -274,10 +276,16 @@ class LiveBenchmarkRunner:
         ) -> tuple[SourceRecord, ManufacturerProfile] | None:
             nonlocal best_candidate_match, source_verified
             mfg_name = _extract_manufacturer(p)
+            verified_candidates = [
+                c for c in disc.candidates
+                if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+            ]
+            if not verified_candidates:
+                return None
             profile = ManufacturerProfile(
                 manufacturer_id=mfg_name,
                 canonical_name=mfg_name,
-                verified_domains=tuple(c.domain for c in disc.candidates),
+                verified_domains=tuple(c.domain for c in verified_candidates),
             )
             candidate_strategies.extend(disc.retrieval_strategies_attempted)
             if disc.search_result_urls:
@@ -293,16 +301,23 @@ class LiveBenchmarkRunner:
             source_verified = True
             best_domain = _host(best.url)
 
+            candidate_source = SourceRecord(
+                canonical_url=best.url,
+                original_url=best.url,
+                source_kind=best.source_kind,
+                decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+                manufacturer_id=profile.manufacturer_id,
+                manufacturer_domain=best_domain,
+                product_id=p.product_id,
+            )
+            verified_source = SourceVerifier(SourcePolicy()).verify_source(
+                candidate_source, profile
+            )
+            if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
+                return None
+
             return (
-                SourceRecord(
-                    canonical_url=best.url,
-                    original_url=best.url,
-                    source_kind=best.source_kind,
-                    decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
-                    manufacturer_id=profile.manufacturer_id,
-                    manufacturer_domain=best_domain,
-                    product_id=p.product_id,
-                ),
+                verified_source,
                 profile,
             )
 

@@ -15,6 +15,7 @@ from unilog_product_intelligence.retrieval.agents import ManufacturerDiscoveryAg
 from unilog_product_intelligence.retrieval.core import (
     DomainResolver,
     ManufacturerProfile,
+    SourceDecision,
     SourceFetcher,
 )
 from unilog_product_intelligence.retrieval.source_discovery import ProductSourceDiscoveryService
@@ -60,10 +61,15 @@ def main() -> None:
 
     fetcher = SourceFetcher()
     src_disc = ProductSourceDiscoveryService(fetcher=fetcher)
+    verified = tuple(
+        c.domain
+        for c in disc_res.candidates
+        if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+    )
     profile = ManufacturerProfile(
         manufacturer_id=mfg_name,
         canonical_name=mfg_name,
-        verified_domains=tuple(c.domain for c in disc_res.candidates),
+        verified_domains=verified,
     )
     src_cands = src_disc.discover(prod, profile, candidate_urls=disc_res.search_result_urls)
     print(f"Source discovery candidates found: {len(src_cands)}")

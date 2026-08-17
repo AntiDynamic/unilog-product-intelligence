@@ -52,7 +52,9 @@ from unilog_product_intelligence.retrieval.core import (
     RetrievalStatus,
     SourceDecision,
     SourceFetcher,
+    SourcePolicy,
     SourceRecord,
+    SourceVerifier,
     _host,
 )
 from unilog_product_intelligence.retrieval.core import (
@@ -538,10 +540,16 @@ class ProductValidationHarness:
         ) -> tuple[SourceRecord, ManufacturerProfile] | None:
             nonlocal identity_match_score, identity_match_classification, source_verified
             mfg_name = _extract_manufacturer(p)
+            verified_candidates = [
+                c for c in disc.candidates
+                if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+            ]
+            if not verified_candidates:
+                return None
             profile = ManufacturerProfile(
                 manufacturer_id=mfg_name,
                 canonical_name=mfg_name,
-                verified_domains=tuple(c.domain for c in disc.candidates),
+                verified_domains=tuple(c.domain for c in verified_candidates),
             )
             # Record generated URLs
             if disc.search_result_urls:
@@ -559,18 +567,21 @@ class ProductValidationHarness:
             source_verified = True
             urls_fetched.append(best.url)
             best_domain = _host(best.url)
-            return (
-                SourceRecord(
-                    canonical_url=best.url,
-                    original_url=best.url,
-                    source_kind=best.source_kind,
-                    decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
-                    manufacturer_id=profile.manufacturer_id,
-                    manufacturer_domain=best_domain,
-                    product_id=p.product_id,
-                ),
-                profile,
+            candidate_source = SourceRecord(
+                canonical_url=best.url,
+                original_url=best.url,
+                source_kind=best.source_kind,
+                decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+                manufacturer_id=profile.manufacturer_id,
+                manufacturer_domain=best_domain,
+                product_id=p.product_id,
             )
+            verified_source = SourceVerifier(SourcePolicy()).verify_source(
+                candidate_source, profile
+            )
+            if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
+                return None
+            return verified_source, profile
 
         pipeline = Phase65Pipeline(
             orchestrator=ProductOrchestrator(self.provider, self.truth_service),

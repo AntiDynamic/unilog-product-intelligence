@@ -1250,3 +1250,133 @@ def test_redirect_to_external_domain_rejected() -> None:
     assert result.error == "redirect_external_domain"
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# 15. Authority Boundary & Verified vs Candidate Domain Regression Tests
+# ──────────────────────────────────────────────────────────────────────────────
+
+
+def test_candidate_domain_not_placed_in_verified_domains() -> None:
+    """Unverified candidate domains from discovery are NOT placed into verified_domains."""
+    from unilog_product_intelligence.retrieval.agents import DiscoveryResult
+    from unilog_product_intelligence.retrieval.core import DomainCandidate
+
+    disc = DiscoveryResult(
+        candidates=[
+            DomainCandidate(
+                domain="candidate.example.com",
+                status=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+                source="gemini_search",
+                reason="Unverified search result",
+            ),
+            DomainCandidate(
+                domain="distributor.example.com",
+                status=SourceDecision.NON_AUTHORITATIVE,
+                source="gemini_search",
+                reason="Distributor domain",
+            ),
+        ]
+    )
+
+    verified_candidates = [
+        c for c in disc.candidates
+        if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+    ]
+    assert verified_candidates == []
+
+    # Creating profile with verified candidates leaves verified_domains empty
+    profile = ManufacturerProfile(
+        manufacturer_id="Acme Corp",
+        canonical_name="Acme Corp",
+        verified_domains=tuple(c.domain for c in verified_candidates),
+    )
+    assert profile.verified_domains == ()
+    assert "candidate.example.com" not in profile.verified_domains
+
+
+def test_source_fetcher_rejects_unverified_candidate_source() -> None:
+    """SourceFetcher refuses to fetch sources whose decision is not VERIFIED_MANUFACTURER_SOURCE."""
+    fetcher = SourceFetcher()
+    candidate_source = SourceRecord(
+        canonical_url="https://candidate.example.com/product/123",
+        original_url="https://candidate.example.com/product/123",
+        source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
+        decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+        manufacturer_id="Acme Corp",
+        manufacturer_domain="candidate.example.com",
+    )
+
+    result = fetcher.fetch(candidate_source)
+    assert result.source.retrieval_status == RetrievalStatus.BLOCKED
+    assert result.error == "source_not_verified"
+
+
+def test_recovery_cannot_promote_unverified_candidate_source() -> None:
+    """Recovery enforces source verification and refuses unverified candidate domains."""
+    from unilog_product_intelligence.retrieval.service import ManufacturerJob, ManufacturerJobState
+
+    fetcher = _fetcher(_FakeHttpPool({
+        "https://unverified.example.com/product/ABC123": b"<html><body>ABC123 Acme</body></html>"
+    }))
+    service = ManufacturerIntelligenceService(fetcher=fetcher)
+    product = _product(mpn="ABC123", manufacturer="Acme Corp")
+    profile = _profile(verified_domains=("verified.example.com",))
+
+    failed_job = ManufacturerJob(
+        product_id=product.product_id,
+        state=ManufacturerJobState.FAILED,
+        failure_reason=Phase5FailureReason.SOURCE_FETCH_FAILED,
+    )
+
+    # Candidate URL is on an unverified domain
+    product, job = service.recover(
+        product,
+        profile,
+        failed_job,
+        candidate_urls=("https://unverified.example.com/product/ABC123",),
+    )
+
+    assert job.state == ManufacturerJobState.REVIEW_REQUIRED
+    assert job.failure_reason in {
+        Phase5FailureReason.DOMAIN_UNVERIFIED,
+        Phase5FailureReason.PRODUCT_SOURCE_NOT_FOUND,
+    }
+
+
+def test_verified_catalog_domain_full_pipeline_success() -> None:
+    """Verified catalog domain discovers candidate, verifies source, and fetches successfully."""
+    from unilog_product_intelligence.retrieval.source_discovery import ProductSourceDiscoveryService
+
+    product_url = "https://diablotools.com/products/DCB518ASTS06G"
+    product_html = (
+        b"<!DOCTYPE html><html><head><title>Diablo DCB518ASTS06G Sanding Belt</title></head>"
+        b"<body><h1>Diablo DCB518ASTS06G</h1>"
+        b"<p>MPN: DCB518ASTS06G Freud Inc Diablo</p></body></html>"
+    )
+
+    fetcher = _fetcher(_FakeHttpPool({product_url: product_html}))
+    service = ProductSourceDiscoveryService(fetcher)
+    product = _product(mpn="DCB518ASTS06G", manufacturer="Freud Inc")
+    profile = _profile(verified_domains=("diablotools.com",))
+
+    candidates = service.discover(product, profile)
+    assert len(candidates) > 0
+    best = candidates[0]
+    assert best.url == product_url
+    assert best.matched_mpn is True
+
+    candidate_source = SourceRecord(
+        canonical_url=best.url,
+        original_url=best.url,
+        source_kind=best.source_kind,
+        decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+        manufacturer_id=profile.manufacturer_id,
+        manufacturer_domain="diablotools.com",
+    )
+    verified_source = SourceVerifier(SourcePolicy()).verify_source(candidate_source, profile)
+    assert verified_source.decision == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+
+    fetch_res = fetcher.fetch(verified_source)
+    assert fetch_res.source.retrieval_status == RetrievalStatus.SUCCESS
+
+
+

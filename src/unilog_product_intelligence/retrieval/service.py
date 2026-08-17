@@ -211,16 +211,28 @@ class ManufacturerIntelligenceService:
             )
             return product, recovery_job
         best = found[0]
-        recovery_source = SourceRecord(
+        candidate_source = SourceRecord(
             canonical_url=best.url,
             original_url=best.url,
             source_kind=best.source_kind,
-            decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+            decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
             manufacturer_id=profile.manufacturer_id,
             manufacturer_domain=_host_of(best.url),
             product_id=product.product_id,
         )
-        return self.process(product, recovery_source, profile)
+        verified_source = self.verifier.verify_source(
+            candidate_source, profile, _product_terms(product)
+        )
+        if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
+            recovery_job = failed_job.model_copy(
+                update={
+                    "state": ManufacturerJobState.REVIEW_REQUIRED,
+                    "error": verified_source.decision.value,
+                    "failure_reason": Phase5FailureReason.DOMAIN_UNVERIFIED,
+                }
+            )
+            return product, recovery_job
+        return self.process(product, verified_source, profile)
 
     def _attach_candidates(
         self, product: ProductTruth, candidates: list[EvidenceCandidate]

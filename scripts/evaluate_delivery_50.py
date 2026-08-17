@@ -160,9 +160,6 @@ def evaluate() -> None:
         if has_url and has_evidence:
             status = "ENRICHED"
             reason = None
-        elif is_distributor and not has_url:
-            status = "REVIEW_REQUIRED"
-            reason = "SOURCE_NOT_FOUND"
         elif not has_url:
             status = "REVIEW_REQUIRED"
             reason = "SOURCE_NOT_FOUND"
