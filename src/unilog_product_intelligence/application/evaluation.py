@@ -187,6 +187,8 @@ class ProductExecutionTrace(BaseModel):
 class DeterministicEvaluationProvider(LLMProvider):
     """Deterministic, zero-network LLMProvider for reproducible offline evaluation."""
 
+    model: str = "deterministic-evaluator"
+
     def generate(self, request: LLMRequest) -> LLMResponse:
         # Phase 4 understanding / classification / extraction from input text
         task = request.task

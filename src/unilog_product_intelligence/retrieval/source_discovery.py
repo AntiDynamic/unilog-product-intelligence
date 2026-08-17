@@ -7,13 +7,18 @@ import re
 import xml.etree.ElementTree as ET
 from collections.abc import Iterable
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import PurePosixPath
 from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from unilog_product_intelligence.domain.truth import ProductTruth
-from unilog_product_intelligence.retrieval.mpn_normalizer import MpnHypothesis, MpnNormalizer
+from unilog_product_intelligence.retrieval.mpn_normalizer import (
+    MpnHypothesis,
+    MpnHypothesisType,
+    MpnNormalizer,
+)
 
 from .core import (
     DocumentLink,
@@ -107,6 +112,14 @@ def _get_retrieval_profile(domains: tuple[str, ...]) -> ManufacturerRetrievalPro
     return None
 
 
+class MpnMatchClassification(StrEnum):
+    RAW_EXACT = "RAW_EXACT"
+    LOSSLESS_NORMALIZED = "LOSSLESS_NORMALIZED"
+    VERIFIED_TRANSFORMED = "VERIFIED_TRANSFORMED"
+    EXPLORATORY_ONLY = "EXPLORATORY_ONLY"
+    NO_MATCH = "NO_MATCH"
+
+
 class ProductSourceCandidate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -121,6 +134,11 @@ class ProductSourceCandidate(BaseModel):
     identity_score: float = Field(ge=0, le=1)
     domain_score: float = Field(ge=0, le=1)
     relevance_score: float = Field(ge=0, le=1)
+    mpn_match_type: MpnMatchClassification = MpnMatchClassification.NO_MATCH
+    raw_mpn_match: bool = False
+    normalized_mpn_match: bool = False
+    transformed_mpn_match: bool = False
+    rejection_reason: str | None = None
 
 
 class ProductSourceDiscoveryService:
@@ -157,7 +175,9 @@ class ProductSourceDiscoveryService:
             product.raw_value("Mfg_Part_Num") or ""
         ).strip()
         normalizer = MpnNormalizer()
-        mpn_hypotheses = normalizer.normalize(raw_mpn)
+        mpn_hypotheses = normalizer.normalize(
+            raw_mpn, manufacturer_hint=profile.canonical_name or profile.manufacturer_id
+        )
         domains = tuple(_host(domain) for domain in profile.verified_domains)
         if not domains:
             return []
@@ -214,6 +234,11 @@ class ProductSourceDiscoveryService:
                     identity_score=match.identity_score,
                     domain_score=1.0,
                     relevance_score=match.relevance_score,
+                    mpn_match_type=match.mpn_match_type,
+                    raw_mpn_match=match.raw_mpn_match,
+                    normalized_mpn_match=match.normalized_mpn_match,
+                    transformed_mpn_match=match.transformed_mpn_match,
+                    rejection_reason=match.rejection_reason,
                 )
                 return cand
             return None
@@ -390,66 +415,204 @@ class ProductIdentityMatch(BaseModel):
     identity_score: float = Field(ge=0, le=1)
     relevance_score: float = Field(ge=0, le=1)
     matched_mpn: bool = False
+    mpn_match_type: MpnMatchClassification = MpnMatchClassification.NO_MATCH
+    raw_mpn_match: bool = False
+    normalized_mpn_match: bool = False
+    transformed_mpn_match: bool = False
+    transformation_type: str | None = None
+    transformation_confidence: float = 0.0
     matched_manufacturer: bool = False
     matched_brand: bool = False
+    title_match: bool = False
+    description_match: float = 0.0
     classification: str
+    rejection_reason: str | None = None
 
 
 class ProductIdentityMatcher:
-    """Explainable identity matching using whole-token normalization and MPN hypotheses."""
+    """Explainable identity matching using whole-token normalization and MPN hypotheses.
+
+    Enforces strict identity hierarchy:
+      1. RAW_EXACT: Exact raw MPN matched on page (highest confidence).
+      2. LOSSLESS_NORMALIZED: Lossless separator/casing variation matched.
+      3. VERIFIED_TRANSFORMED: Transformed MPN explicitly supported by manufacturer rule
+         + additional product signal.
+      4. EXPLORATORY_ONLY: Generic heuristic hypothesis matched -> REJECTED for identity.
+      5. NO_MATCH: No MPN matched.
+    """
 
     def match(self, product: ProductTruth, document: object) -> ProductIdentityMatch:
         title = str(getattr(document, "title", "") or "")
         chunks = getattr(document, "chunks", [])
         body_text = " ".join(str(getattr(chunk, "text", "")) for chunk in chunks)
-        metadata_text = " ".join(_structured_values(getattr(document, "structured_metadata", {})))
-        text = " ".join((title, body_text, metadata_text))
+        structured_meta = getattr(document, "structured_metadata", {})
+        structured_text = " ".join(_structured_values(structured_meta))
+        full_text = " ".join((title, body_text, structured_text))
+
         raw_mpn = _product_value(product, "manufacturer_part_number") or str(
             product.raw_value("Mfg_Part_Num") or ""
-        )
+        ).strip()
         manufacturer = _product_value(product, "manufacturer") or str(
             product.raw_value("Part_Manuf") or ""
-        )
-        brand = _first_product_value(product, ("brand", "product_family"))
+        ).strip()
+        brand = _first_product_value(product, ("brand", "product_family")) or str(
+            product.raw_value("Unilog_Brand")
+            or product.raw_value("E1_Brand")
+            or product.raw_value("DIB_Brand")
+            or ""
+        ).strip()
 
+        # Generate hypotheses with manufacturer context
         normalizer = MpnNormalizer()
-        hypotheses = normalizer.normalize(raw_mpn)
+        hypotheses = normalizer.normalize(raw_mpn, manufacturer_hint=manufacturer)
 
-        best_mpn_match = False
-        mpn_conf = 0.0
+        # Check whole-token matching for each hypothesis
+        raw_match = bool(raw_mpn and _is_literal_token_match(raw_mpn, full_text))
+        normalized_match = False
+        verified_transform_match = False
+        exploratory_match = False
+        best_transform_type: str | None = None
+        best_transform_conf: float = 0.0
+
         for hyp in hypotheses:
-            if _identity_present(hyp.value, text):
-                best_mpn_match = True
-                if hyp.confidence > mpn_conf:
-                    mpn_conf = hyp.confidence
+            if _is_exact_token_match(hyp.value, full_text):
+                if hyp.hypothesis_type == MpnHypothesisType.RAW:
+                    if _is_literal_token_match(hyp.value, full_text):
+                        raw_match = True
+                    else:
+                        normalized_match = True
+                elif (
+                    hyp.is_lossless
+                    or hyp.hypothesis_type == MpnHypothesisType.LOSSLESS_NORMALIZED
+                    or hyp.hypothesis_type == MpnHypothesisType.ALPHANUMERIC_COMPACT
+                ):
+                    normalized_match = True
+                elif (
+                    hyp.identity_eligible
+                    or hyp.hypothesis_type == MpnHypothesisType.VERIFIED_MANUFACTURER_TRANSFORM
+                ):
+                    verified_transform_match = True
+                    if hyp.confidence > best_transform_conf:
+                        best_transform_conf = hyp.confidence
+                        best_transform_type = hyp.hypothesis_type.value
+                else:
+                    exploratory_match = True
+                    if hyp.confidence > best_transform_conf:
+                        best_transform_conf = hyp.confidence
+                        best_transform_type = hyp.hypothesis_type.value
 
-        matched_manufacturer = _identity_present(_base_identity(manufacturer), text)
-        matched_brand = _identity_present(brand, text)
-        title_match = bool(raw_mpn and any(_identity_present(h.value, title) for h in hypotheses))
+        # Determine MPN match classification
+        if raw_match:
+            mpn_match_type = MpnMatchClassification.RAW_EXACT
+            mpn_conf = 1.0
+            is_mpn_verified = True
+        elif normalized_match:
+            mpn_match_type = MpnMatchClassification.LOSSLESS_NORMALIZED
+            mpn_conf = 0.95
+            is_mpn_verified = True
+        elif verified_transform_match:
+            mpn_match_type = MpnMatchClassification.VERIFIED_TRANSFORMED
+            mpn_conf = 0.85
+            is_mpn_verified = True
+        elif exploratory_match:
+            mpn_match_type = MpnMatchClassification.EXPLORATORY_ONLY
+            mpn_conf = 0.20
+            is_mpn_verified = False
+        else:
+            mpn_match_type = MpnMatchClassification.NO_MATCH
+            mpn_conf = 0.0
+            is_mpn_verified = False
 
+        # Check manufacturer, brand, title, description consistency
+        matched_manufacturer = _identity_present(_base_identity(manufacturer), full_text)
+        matched_brand = bool(brand and _identity_present(brand, full_text))
+
+        # Title match requires raw, normalized, or verified transformed MPN in title
+        title_hypotheses = [h for h in hypotheses if (h.is_lossless or h.identity_eligible)]
+        title_match = bool(
+            title_hypotheses
+            and any(_is_exact_token_match(h.value, title) for h in title_hypotheses)
+        )
+        desc_overlap = _description_overlap(product, full_text.casefold())
+
+        # Base score calculation
         score = (
-            0.50 * (mpn_conf if best_mpn_match else 0.0)
-            + 0.20 * matched_manufacturer
-            + 0.10 * matched_brand
-            + 0.10 * title_match
-            + 0.10 * _description_overlap(product, text.casefold())
+            0.50 * mpn_conf
+            + 0.20 * (1.0 if matched_manufacturer else 0.0)
+            + 0.10 * (1.0 if matched_brand else 0.0)
+            + 0.10 * (1.0 if title_match else 0.0)
+            + 0.10 * desc_overlap
         )
-        classification = (
-            "EXACT_MATCH"
-            if score >= 0.8 and best_mpn_match
-            else "STRONG_MATCH"
-            if score >= 0.6 and best_mpn_match
-            else "WEAK_MATCH"
-            if score >= 0.35
-            else "MISMATCH"
-        )
+
+        rejection_reason: str | None = None
+        classification: str
+
+        if mpn_match_type in {
+            MpnMatchClassification.RAW_EXACT,
+            MpnMatchClassification.LOSSLESS_NORMALIZED,
+        }:
+            # CASE 1 & CASE 2: RAW_EXACT or LOSSLESS_NORMALIZED
+            has_context = (
+                matched_manufacturer
+                or matched_brand
+                or desc_overlap >= 0.15
+                or title_match
+            )
+            if has_context and score >= 0.8:
+                classification = "EXACT_MATCH"
+            elif has_context and score >= 0.6:
+                classification = "STRONG_MATCH"
+            elif has_context:
+                classification = "WEAK_MATCH"
+            else:
+                classification = "WEAK_MATCH"
+                rejection_reason = "MANUFACTURER_BRAND_MISMATCH"
+                score = min(score, 0.55)
+
+        elif mpn_match_type == MpnMatchClassification.VERIFIED_TRANSFORMED:
+            # CASE 3: VERIFIED_TRANSFORMED
+            mfg_or_brand_matched = matched_manufacturer or matched_brand
+            has_additional_signal = (
+                (matched_manufacturer and matched_brand) or title_match or (desc_overlap >= 0.15)
+            )
+            if mfg_or_brand_matched and has_additional_signal and score >= 0.6:
+                classification = "STRONG_MATCH"
+            elif not mfg_or_brand_matched:
+                classification = "WEAK_MATCH"
+                rejection_reason = "TRANSFORMED_MPN_REQUIRES_MANUFACTURER_MATCH"
+                score = min(score, 0.55)
+            else:
+                classification = "WEAK_MATCH"
+                rejection_reason = "TRANSFORMED_MPN_REQUIRES_ADDITIONAL_SIGNAL"
+                score = min(score, 0.55)
+
+        elif mpn_match_type == MpnMatchClassification.EXPLORATORY_ONLY:
+            # CASE 4: EXPLORATORY_ONLY (never accepted as verified identity)
+            classification = "WEAK_MATCH"
+            rejection_reason = "EXPLORATORY_MPN_UNVERIFIED"
+            score = min(score, 0.45)
+
+        else:
+            # CASE 5, 6, 7: NO MPN MATCH
+            classification = "WEAK_MATCH" if score >= 0.35 else "MISMATCH"
+            rejection_reason = "MPN_NOT_FOUND"
+
         return ProductIdentityMatch(
             identity_score=round(score, 3),
             relevance_score=round(score, 3),
-            matched_mpn=best_mpn_match,
+            matched_mpn=is_mpn_verified and (rejection_reason is None),
+            mpn_match_type=mpn_match_type,
+            raw_mpn_match=raw_match,
+            normalized_mpn_match=normalized_match,
+            transformed_mpn_match=verified_transform_match or exploratory_match,
+            transformation_type=best_transform_type,
+            transformation_confidence=best_transform_conf,
             matched_manufacturer=matched_manufacturer,
             matched_brand=matched_brand,
+            title_match=title_match,
+            description_match=round(desc_overlap, 3),
             classification=classification,
+            rejection_reason=rejection_reason,
         )
 
 
@@ -662,6 +825,52 @@ def _structured_values(value: object) -> list[str]:
         else:
             values.append(str(value))
     return values
+
+
+def _is_literal_token_match(target: str, text: str) -> bool:
+    """Check whether target appears literally as a standalone compound token in text."""
+    if not target or not text:
+        return False
+    target_clean = target.strip()
+    if not target_clean:
+        return False
+    target_lower = target_clean.casefold()
+    compound_tokens = re.findall(r"[A-Za-z0-9][A-Za-z0-9._/-]*", text)
+    for token in compound_tokens:
+        clean_tok = token.rstrip(".,;:!?'\"").casefold()
+        if clean_tok == target_lower:
+            return True
+    return False
+
+
+def _is_exact_token_match(target: str, text: str) -> bool:
+    """Check whether target appears as a complete, bounded token or separator-variant in text."""
+    if not target or not text:
+        return False
+    target_clean = target.strip()
+    if not target_clean:
+        return False
+    # 1. Literal match first
+    if _is_literal_token_match(target_clean, text):
+        return True
+    target_key = _identity_key(target_clean)
+    if not target_key:
+        return False
+
+    # 1. Compound tokens (e.g. '49-94-0013', 'DCB518ASTS06G', 'ABC-123')
+    compound_tokens = re.findall(r"[A-Za-z0-9][A-Za-z0-9._/-]*", text)
+    for token in compound_tokens:
+        if _identity_key(token) == target_key:
+            return True
+
+    # 2. If target has separators (e.g. '49-94-0013'), match flexible whitespace/punctuation
+    parts = [re.escape(p) for p in re.split(r"[-_\s/.]+", target_clean) if p]
+    if len(parts) > 1:
+        pattern = r"(?<![A-Za-z0-9])" + r"[-_\s/.]+".join(parts) + r"(?![A-Za-z0-9])"
+        if re.search(pattern, text, re.IGNORECASE):
+            return True
+
+    return False
 
 
 def _identity_present(value: str | None, text: str) -> bool:
