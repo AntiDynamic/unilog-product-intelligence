@@ -3,6 +3,7 @@
 from .adapter import (
     DeliveryMappingPending,
     DeliverySchemaContract,
+    Phase65ResultDeliveryAdapter,
     ProductTruthDeliveryAdapter,
     UniHackDeliveryRecord,
 )
@@ -10,6 +11,7 @@ from .adapter import (
 __all__ = [
     "DeliveryMappingPending",
     "DeliverySchemaContract",
+    "Phase65ResultDeliveryAdapter",
     "ProductTruthDeliveryAdapter",
     "UniHackDeliveryRecord",
 ]

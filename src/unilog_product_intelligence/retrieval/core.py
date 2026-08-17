@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
+import socket
 import time
 from collections import defaultdict
 from collections.abc import Callable, Mapping
+from contextlib import suppress
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from html.parser import HTMLParser
@@ -15,13 +18,13 @@ from ipaddress import ip_address
 from pathlib import PurePosixPath
 from typing import Any, Protocol
 from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest
+from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest, LLMResponse
 
 
 class RetrievalDTO(BaseModel):
@@ -52,6 +55,7 @@ class CacheStatus(StrEnum):
     HIT = "cache_hit"
     MISS = "cache_miss"
     STALE = "cache_stale"
+    REVALIDATED = "cache_revalidated"
     INVALID = "cache_invalid"
 
 
@@ -72,6 +76,22 @@ class EvidenceStatus(StrEnum):
     CALCULATED = "calculated"
     INFERRED = "inferred"
     UNRESOLVED = "unresolved"
+
+
+class Phase5FailureReason(StrEnum):
+    """Granular Phase 5 retrieval failure classification for observability."""
+
+    MANUFACTURER_UNKNOWN = "manufacturer_unknown"
+    DOMAIN_UNKNOWN = "domain_unknown"
+    DOMAIN_UNVERIFIED = "domain_unverified"
+    PRODUCT_SOURCE_NOT_FOUND = "product_source_not_found"
+    PRODUCT_IDENTITY_MISMATCH = "product_identity_mismatch"
+    SOURCE_FETCH_FAILED = "source_fetch_failed"
+    SOURCE_PARSE_FAILED = "source_parse_failed"
+    NO_AUTHORITATIVE_EVIDENCE = "no_authoritative_evidence"
+    GEMINI_BILLING_FAILURE = "gemini_billing_failure"
+    GEMINI_RATE_LIMIT = "gemini_rate_limit"
+    RETRIEVAL_REQUIRES_REVIEW = "retrieval_requires_review"
 
 
 class ManufacturerProfile(RetrievalDTO):
@@ -119,6 +139,14 @@ class FetchResult(RetrievalDTO):
     error: str | None = None
 
 
+class DocumentLink(RetrievalDTO):
+    url: str
+    anchor_text: str = ""
+    rel: tuple[str, ...] = ()
+    content_type: str | None = None
+    location: str | None = None
+
+
 class DocumentChunk(RetrievalDTO):
     chunk_id: str = Field(default_factory=lambda: "chunk-" + str(uuid4()))
     document_id: str
@@ -137,6 +165,10 @@ class ParsedDocument(RetrievalDTO):
     content_hash: str
     parser: str
     parser_version: str
+    title: str | None = None
+    canonical_url: str | None = None
+    links: list[DocumentLink] = Field(default_factory=list)
+    structured_metadata: dict[str, Any] = Field(default_factory=dict)
     chunks: list[DocumentChunk] = Field(default_factory=list)
     parsed_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
@@ -251,6 +283,83 @@ class SourceVerifier:
 
 
 class DomainResolver:
+    """Resolve domains from persisted profiles or a small audited manufacturer catalog."""
+
+    # Audited manufacturer-to-domain catalog.
+    # Keys are normalised manufacturer/brand names (lowercase, no punctuation).
+    # Values are ordered tuples of official domains — first entry is preferred.
+    # A single manufacturer may appear under multiple name/brand aliases.
+    # This catalog must NOT be extended with guessed domains; every entry must
+    # correspond to a publicly verified manufacturer-owned website.
+    _known_manufacturer_domains: dict[str, tuple[str, ...]] = {
+        # Freud / Diablo
+        "freud": ("diablotools.com", "freudtools.com", "info.freudtools.com"),
+        "freud inc": ("diablotools.com", "freudtools.com", "info.freudtools.com"),
+        "diablo": ("diablotools.com", "freudtools.com", "info.freudtools.com"),
+        "diablo tools": ("diablotools.com", "freudtools.com"),
+        "stanley black decker": ("dewalt.com", "blackanddecker.com", "stanleytools.com"),
+        # DeWalt
+        "dewalt": ("dewalt.com",),
+        "de walt": ("dewalt.com",),
+        # Milwaukee Tool
+        "milwaukee": ("www.milwaukeetool.com", "milwaukeetool.com"),
+        "milwaukee tool": ("www.milwaukeetool.com", "milwaukeetool.com"),
+        "milwaukee electric tool": ("www.milwaukeetool.com", "milwaukeetool.com"),
+        "milwaukee accessory": ("www.milwaukeetool.com", "milwaukeetool.com"),
+        "milwaukee accessories": ("www.milwaukeetool.com", "milwaukeetool.com"),
+        "milw": ("www.milwaukeetool.com", "milwaukeetool.com"),
+        # Makita
+        "makita": ("makita.com",),
+        "makita usa": ("makita.com",),
+        # Festool
+        "festool": ("festoolusa.com", "festool.com"),
+        "festool usa": ("festoolusa.com", "festool.com"),
+        # Mirka
+        "mirka": ("mirka.com", "mirkausa.com"),
+        "mirka abrasives": ("mirka.com", "mirkausa.com"),
+        "mirka abrasives inc": ("mirka.com", "mirkausa.com"),
+        "mirka inc": ("mirka.com", "mirkausa.com"),
+        # Black & Decker
+        "black decker": ("blackanddecker.com",),
+        "black and decker": ("blackanddecker.com",),
+        # Leviton
+        "leviton": ("leviton.com",),
+        "leviton manufacturing": ("leviton.com",),
+        # Kichler
+        "kichler": ("kichler.com",),
+        "kichler lighting": ("kichler.com",),
+        # SATCO / Nuvo
+        "satco": ("satco.com",),
+        "satco products": ("satco.com",),
+        "nuvo": ("satco.com",),
+        # Philips Lighting / Signify
+        "philips": ("signify.com", "usa.lighting.philips.com"),
+        "philips lighting": ("signify.com", "usa.lighting.philips.com"),
+        "phillips lighting": ("signify.com", "usa.lighting.philips.com"),
+        "signify": ("signify.com",),
+        # Trex
+        "trex": ("trex.com",),
+        "trex company": ("trex.com",),
+        # TimberTech
+        "timbertech": ("timbertech.com",),
+        "azek": ("timbertech.com", "azek.com"),
+        # Bosch
+        "bosch": ("boschtools.com", "bosch-home.com"),
+        "robert bosch": ("boschtools.com",),
+        "bosch tools": ("boschtools.com",),
+        # Ridgid
+        "ridgid": ("ridgid.com",),
+        # Husky / Stanley
+        "stanley": ("stanleytools.com",),
+        # Lutron
+        "lutron": ("lutron.com",),
+        "lutron electronics": ("lutron.com",),
+        # Honeywell
+        "honeywell": ("honeywell.com",),
+        # 3M
+        "3m": ("3m.com",),
+    }
+
     def __init__(self, profiles: Mapping[str, ManufacturerProfile] | None = None) -> None:
         self._profiles = dict(profiles or {})
         self._verified_cache: dict[str, str] = {}
@@ -261,8 +370,22 @@ class DomainResolver:
             self._verified_cache[profile.manufacturer_id] = domain
 
     def resolve(
-        self, manufacturer_id: str, manufacturer_name: str, known_url: str | None = None
+        self,
+        manufacturer_id: str,
+        manufacturer_name: str,
+        known_url: str | None = None,
+        brand: str | None = None,
     ) -> tuple[DomainCandidate, ...]:
+        """Resolve manufacturer domains using a priority-ordered strategy.
+
+        Priority:
+          1. In-process verified domain cache (fastest, zero network)
+          2. Registered ManufacturerProfile with verified domains
+          3. Registered ManufacturerProfile with candidate domains
+          4. Audited manufacturer domain catalog (by manufacturer name)
+          5. Audited catalog lookup by brand name (handles distributor Part_Manuf)
+          6. Known product URL origin (candidate only)
+        """
         profile = self._profiles.get(manufacturer_id)
         if manufacturer_id in self._verified_cache:
             domain = self._verified_cache[manufacturer_id]
@@ -275,6 +398,17 @@ class DomainResolver:
                     score=1.0,
                 ),
             )
+        if profile and profile.verified_domains:
+            return tuple(
+                DomainCandidate(
+                    domain=d,
+                    source="manufacturer_registry",
+                    reason="registered_verified_domain",
+                    status=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+                    score=1.0,
+                )
+                for d in profile.verified_domains
+            )
         if profile and profile.candidate_domains:
             return tuple(
                 DomainCandidate(
@@ -285,6 +419,35 @@ class DomainResolver:
                 )
                 for d in profile.candidate_domains
             )
+        # Catalog lookup by manufacturer name
+        catalog_domains = self._known_manufacturer_domains.get(
+            _manufacturer_key(manufacturer_name), ()
+        )
+        if catalog_domains:
+            return tuple(
+                DomainCandidate(
+                    domain=domain,
+                    source="audited_manufacturer_domain_catalog",
+                    reason="manufacturer_name_match",
+                    status=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+                    score=0.95,
+                )
+                for domain in catalog_domains
+            )
+        # Catalog lookup by brand name — handles distributor Part_Manuf
+        if brand:
+            brand_domains = self._known_manufacturer_domains.get(_manufacturer_key(brand), ())
+            if brand_domains:
+                return tuple(
+                    DomainCandidate(
+                        domain=domain,
+                        source="audited_manufacturer_domain_catalog",
+                        reason="brand_name_match",
+                        status=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+                        score=0.90,
+                    )
+                    for domain in brand_domains
+                )
         if known_url:
             return (
                 DomainCandidate(
@@ -313,8 +476,129 @@ class DomainResolver:
         return tuple(values)
 
 
-class _BoundedRedirectHandler(HTTPRedirectHandler):
-    max_redirections = 3
+class _NoRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(
+        self,
+        req: Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> None:
+        return None
+
+    def http_error_301(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return fp
+
+    def http_error_302(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return fp
+
+    def http_error_303(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return fp
+
+    def http_error_307(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return fp
+
+    def http_error_308(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return fp
+
+
+class SafeNetworkTargetResolver:
+    """Rejects unsafe literal and DNS-resolved network targets."""
+
+    def __init__(self, lookup: Callable[..., Any] | None = None) -> None:
+        self.lookup = lookup or socket.getaddrinfo
+        self._validated_hosts: set[str] = set()
+
+    def validate(self, url: str) -> None:
+        parts = urlsplit(canonicalize_url(url))
+        host = parts.hostname or ""
+        if host in self._validated_hosts:
+            return
+        if parts.port not in {None, 80, 443}:
+            raise ValueError("unsafe_port")
+        try:
+            literal = ip_address(host)
+        except ValueError:
+            literal = None
+        if literal is not None:
+            _validate_ip(literal)
+            self._validated_hosts.add(host)
+            return
+        try:
+            addresses = self.lookup(
+                host,
+                parts.port or (443 if parts.scheme == "https" else 80),
+                type=socket.SOCK_STREAM,
+            )
+        except OSError as error:
+            raise ValueError("dns_resolution_failed") from error
+        for address in addresses:
+            sockaddr = address[4]
+            _validate_ip(ip_address(sockaddr[0]))
+        self._validated_hosts.add(host)
+
+
+def _validate_ip(address: Any) -> None:
+    if (
+        address.is_private
+        or address.is_loopback
+        or address.is_link_local
+        or address.is_reserved
+        or address.is_multicast
+        or address.is_unspecified
+    ):
+        raise ValueError("private_network_target")
+
+
+def _content_length(value: object) -> int:
+    try:
+        parsed = int(str(value))
+    except (TypeError, ValueError):
+        return 0
+    return max(0, parsed)
+
+
+def _effective_content_type(header: str, body: bytes) -> str:
+    normalized = header.casefold().strip()
+    sample = body.lstrip()[:512].lower()
+    if body.startswith(b"%PDF-"):
+        return (
+            "application/pdf"
+            if normalized in {"", "application/octet-stream", "text/plain"}
+            else normalized
+        )
+    if sample.startswith((b"<!doctype html", b"<html", b"<head", b"<body")):
+        return (
+            "text/html"
+            if normalized in {"", "application/octet-stream", "text/plain"}
+            else normalized
+        )
+    if sample.startswith((b"<?xml", b"<urlset", b"<sitemapindex")):
+        return (
+            "text/xml"
+            if normalized in {"", "application/octet-stream", "text/plain"}
+            else normalized
+        )
+    if body.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "image/png" if normalized in {"", "application/octet-stream"} else normalized
+    if body.startswith(b"\xff\xd8\xff"):
+        return "image/jpeg" if normalized in {"", "application/octet-stream"} else normalized
+    if normalized:
+        return normalized
+    return "application/octet-stream"
+
+
+def _retry_after(response: object) -> float | None:
+    headers = getattr(response, "headers", None)
+    value = headers.get("Retry-After") if headers is not None else None
+    if value is None:
+        return None
+    try:
+        return min(60.0, max(0.0, float(str(value).strip())))
+    except ValueError:
+        return None
 
 
 class SourceFetcher:
@@ -328,14 +612,46 @@ class SourceFetcher:
         timeout: float = 15.0,
         max_retries: int = 2,
         requests_per_second: float = 2.0,
+        resolver: SafeNetworkTargetResolver | None = None,
+        max_redirects: int = 3,
     ) -> None:
         self.cache = cache or SourceCache()
-        self.opener = opener or build_opener(_BoundedRedirectHandler()).open
+        self._custom_opener = opener is not None
+        self.opener = opener or build_opener(_NoRedirectHandler()).open
+        self.target_resolver = resolver or SafeNetworkTargetResolver()
+        self.max_redirects = max_redirects
         self.max_bytes = max_bytes
         self.timeout = timeout
         self.max_retries = max_retries
         self._last_request: dict[str, float] = defaultdict(float)
         self._interval = 1.0 / requests_per_second
+        socket.setdefaulttimeout(self.timeout)
+
+    def _open_source(self, request: Request, source: SourceRecord, timeout: float) -> Any:
+        current_url = request.full_url
+        original_scheme = urlsplit(current_url).scheme.casefold()
+        for _ in range(self.max_redirects + 1):
+            self.target_resolver.validate(current_url)
+            current_request = Request(
+                current_url,
+                headers=dict(request.header_items()),
+            )
+            response = self.opener(current_request, timeout=timeout)
+            status = int(getattr(response, "status", 200))
+            if status not in {301, 302, 303, 307, 308}:
+                return response
+            location = str(getattr(response, "headers", {}).get("Location", "") or "")
+            response.close()
+            if not location:
+                raise ValueError("redirect_missing_location")
+            next_url = canonicalize_url(urljoin(current_url, location))
+            next_parts = urlsplit(next_url)
+            if original_scheme == "https" and next_parts.scheme != "https":
+                raise ValueError("redirect_https_downgrade")
+            if not _same_or_subdomain(_host(next_url), source.manufacturer_domain):
+                raise ValueError("redirect_external_domain")
+            current_url = next_url
+        raise ValueError("redirect_limit_exceeded")
 
     def fetch(self, source: SourceRecord, refresh: bool = False) -> FetchResult:
         if source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
@@ -345,8 +661,9 @@ class SourceFetcher:
                 error="source_not_verified",
             )
         cached = self.cache.get(source.canonical_url, refresh=refresh)
-        if cached is not None:
+        if cached is not None and cached.cache_status is CacheStatus.HIT:
             return cached
+        stale = cached if cached is not None and cached.cache_status is CacheStatus.STALE else None
         host = _host(source.canonical_url)
         wait = self._interval - (time.monotonic() - self._last_request[host])
         if wait > 0:
@@ -356,19 +673,63 @@ class SourceFetcher:
         for attempt in range(self.max_retries + 1):
             try:
                 request = Request(
-                    source.canonical_url, headers={"User-Agent": "UniLogProductIntelligence/5.0"}
+                    source.canonical_url,
+                    headers={
+                        "User-Agent": "UniLogProductIntelligence/5.0",
+                        "Accept": (
+                            "text/html,application/pdf,application/json,text/plain;q=0.8,*/*;q=0.1"
+                        ),
+                    },
                 )
-                with self.opener(request, timeout=self.timeout) as response:
+                if stale is not None:
+                    if stale.source.etag:
+                        request.add_header("If-None-Match", stale.source.etag)
+                    if stale.source.last_modified:
+                        request.add_header("If-Modified-Since", stale.source.last_modified)
+                with self._open_source(request, source, timeout=self.timeout) as response:
                     status = int(getattr(response, "status", 200))
+                    if status == 304 and stale is not None:
+                        updated = stale.source.model_copy(
+                            update={"http_status": 304, "fetched_at": datetime.now(UTC)}
+                        )
+                        result = stale.model_copy(
+                            update={"source": updated, "cache_status": CacheStatus.REVALIDATED}
+                        )
+                        self.cache.put(result)
+                        return result
+                    if status >= 400:
+                        if status in {408, 429, 500, 502, 503, 504} and attempt < self.max_retries:
+                            response.close()
+                            time.sleep(_retry_after(response) or 0.25 * 2**attempt)
+                            continue
+                        return FetchResult(
+                            source=source.model_copy(
+                                update={
+                                    "retrieval_status": RetrievalStatus.HTTP_ERROR,
+                                    "http_status": status,
+                                }
+                            ),
+                            cache_status=CacheStatus.INVALID,
+                            error=f"http_{status}",
+                        )
                     content_type = (
                         str(response.headers.get("Content-Type", "")).split(";", 1)[0].casefold()
                     )
+                    length = response.headers.get("Content-Length")
+                    if length and _content_length(length) > self.max_bytes:
+                        raise ValueError("content_too_large")
+                    body = response.read(self.max_bytes + 1)
+                    if len(body) > self.max_bytes:
+                        raise ValueError("content_too_large")
+                    content_type = _effective_content_type(content_type, body)
                     if content_type not in {
                         "text/html",
                         "text/plain",
                         "application/pdf",
                         "application/json",
                         "text/xml",
+                        "application/xml",
+                        "application/xhtml+xml",
                         "image/png",
                         "image/jpeg",
                         "image/webp",
@@ -383,12 +744,6 @@ class SourceFetcher:
                             cache_status=CacheStatus.INVALID,
                             error="unsupported_content_type",
                         )
-                    length = response.headers.get("Content-Length")
-                    if length and int(length) > self.max_bytes:
-                        raise ValueError("content_too_large")
-                    body = response.read(self.max_bytes + 1)
-                    if len(body) > self.max_bytes:
-                        raise ValueError("content_too_large")
                     updated = source.model_copy(
                         update={
                             "retrieval_status": RetrievalStatus.SUCCESS,
@@ -421,17 +776,19 @@ class SourceFetcher:
                     error=str(error),
                 )
             except HTTPError as error:
-                if error.code not in {408, 429, 500, 502, 503, 504} or attempt >= self.max_retries:
-                    return FetchResult(
-                        source=source.model_copy(
-                            update={
-                                "retrieval_status": RetrievalStatus.HTTP_ERROR,
-                                "http_status": error.code,
-                            }
-                        ),
-                        cache_status=CacheStatus.INVALID,
-                        error=f"http_{error.code}",
-                    )
+                if error.code in {408, 429, 500, 502, 503, 504} and attempt < self.max_retries:
+                    time.sleep(_retry_after(error) or 0.25 * 2**attempt)
+                    continue
+                return FetchResult(
+                    source=source.model_copy(
+                        update={
+                            "retrieval_status": RetrievalStatus.HTTP_ERROR,
+                            "http_status": error.code,
+                        }
+                    ),
+                    cache_status=CacheStatus.INVALID,
+                    error=f"http_{error.code}",
+                )
             except (TimeoutError, URLError):
                 if attempt >= self.max_retries:
                     return FetchResult(
@@ -441,7 +798,7 @@ class SourceFetcher:
                         cache_status=CacheStatus.INVALID,
                         error="transient_fetch_failure",
                     )
-            time.sleep(0.25 * 2**attempt)
+                time.sleep(0.25 * 2**attempt)
         return FetchResult(source=source, cache_status=CacheStatus.INVALID, error="fetch_failed")
 
 
@@ -452,53 +809,192 @@ class SourceParser(Protocol):
 
 
 class _HTMLTextParser(HTMLParser):
+    _skip_tags = {"script", "style", "noscript", "template", "svg", "nav", "footer", "header"}
+    _block_tags = {"article", "section", "main", "p", "div", "li", "tr", "h1", "h2", "h3", "h4"}
+
     def __init__(self) -> None:
         super().__init__()
         self.title = ""
+        self.canonical_url: str | None = None
+        self.metadata: dict[str, str] = {}
+        self.blocks: list[tuple[str | None, str]] = []
+        self.links: list[tuple[str, str, tuple[str, ...], str | None]] = []
+        self.jsonld: list[str] = []
+        self._buffer: list[str] = []
+        self._section: str | None = None
+        self._skip_depth = 0
         self._in_title = False
-        self._parts: list[str] = []
-        self.links: list[str] = []
+        self._in_jsonld = False
+        self._jsonld_buffer: list[str] = []
+        self._anchor_href: str | None = None
+        self._anchor_text: list[str] = []
+        self._anchor_rel: tuple[str, ...] = ()
+        self._anchor_type: str | None = None
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        if tag == "script":
+            self._in_jsonld = (attributes.get("type") or "").casefold() == "application/ld+json"
+            self._skip_depth += 1
+            return
+        if tag in self._skip_tags:
+            self._skip_depth += 1
+            return
+        if self._skip_depth:
+            return
+        if tag in self._block_tags:
+            self._flush()
         if tag == "title":
             self._in_title = True
+        if tag in {"h1", "h2", "h3", "h4"}:
+            self._section = None
         if tag == "a":
-            href = dict(attrs).get("href")
-            if href:
-                self.links.append(href)
+            self._anchor_href = attributes.get("href")
+            self._anchor_text = []
+            self._anchor_rel = tuple((attributes.get("rel") or "").split())
+            self._anchor_type = attributes.get("type")
+        if tag == "link" and "canonical" in (attributes.get("rel") or "").casefold():
+            self.canonical_url = attributes.get("href")
+        if tag == "meta":
+            key = attributes.get("property") or attributes.get("name")
+            value = attributes.get("content")
+            if key and value:
+                self.metadata[key.casefold()] = value
 
     def handle_endtag(self, tag: str) -> None:
+        if tag == "script" and self._in_jsonld:
+            raw = "".join(self._jsonld_buffer).strip()
+            if raw:
+                self.jsonld.append(raw)
+            self._jsonld_buffer = []
+            self._in_jsonld = False
+            self._skip_depth = max(0, self._skip_depth - 1)
+            return
+        if tag in self._skip_tags:
+            self._skip_depth = max(0, self._skip_depth - 1)
+            return
+        if self._skip_depth:
+            return
         if tag == "title":
             self._in_title = False
+        if tag == "a" and self._anchor_href:
+            self.links.append(
+                (
+                    self._anchor_href,
+                    " ".join(self._anchor_text),
+                    self._anchor_rel,
+                    self._anchor_type,
+                )
+            )
+            self._anchor_href = None
+        if tag in self._block_tags:
+            self._flush()
 
     def handle_data(self, data: str) -> None:
+        if self._in_jsonld:
+            self._jsonld_buffer.append(data)
+            return
+        if self._skip_depth:
+            return
         text = re.sub(r"\s+", " ", data).strip()
+        if not text:
+            return
+        if self._in_title:
+            self.title += (" " if self.title else "") + text
+            return
+        if self._anchor_href:
+            self._anchor_text.append(text)
+        self._buffer.append(text)
+
+    def _flush(self) -> None:
+        text = " ".join(self._buffer).strip()
         if text:
-            if self._in_title:
-                self.title += text
-            self._parts.append(text)
+            self.blocks.append((self._section, text))
+        self._buffer = []
 
 
 class HtmlParser:
-    parser_version = "html-standardlib-v1"
+    parser_version = "html-structured-v2"
 
     def parse(self, fetch: FetchResult) -> ParsedDocument:
         parser = _HTMLTextParser()
-        parser.feed(fetch.body.decode("utf-8", errors="replace"))
-        text = " ".join(parser._parts)
+        html_text = fetch.body.decode("utf-8", errors="replace")
+        parser.feed(html_text)
+        parser._flush()
+        document_id = "document-" + str(uuid4())
+        base_url = fetch.source.canonical_url
+        links = [
+            DocumentLink(
+                url=canonicalize_url(urljoin(base_url, href)),
+                anchor_text=text,
+                rel=rel,
+                content_type=content_type,
+            )
+            for href, text, rel, content_type in parser.links
+            if href and not href.casefold().startswith(("javascript:", "mailto:"))
+        ]
+        links.extend(
+            DocumentLink(url=canonicalize_url(urljoin(base_url, href)), location="embedded_script")
+            for href in _embedded_catalog_links(html_text)
+            if _safe_joined_url(base_url, href) is not None
+        )
+        links = list({link.url: link for link in links}.values())
+        embedded_product = _embedded_product_metadata(html_text)
+        structured_metadata: dict[str, Any] = {
+            "meta": parser.metadata,
+            "json_ld": [],
+        }
+        if embedded_product:
+            structured_metadata["embedded_product"] = embedded_product
+        for raw in parser.jsonld:
+            try:
+                structured_metadata["json_ld"].append(json.loads(raw))
+            except json.JSONDecodeError:
+                continue
+        if parser.canonical_url:
+            with suppress(ValueError):
+                structured_metadata["canonical_url"] = canonicalize_url(
+                    urljoin(base_url, parser.canonical_url)
+                )
+        chunks = [
+            DocumentChunk(
+                document_id=document_id,
+                text=text,
+                section=section,
+                location={"url": fetch.source.canonical_url},
+            )
+            for section, text in parser.blocks
+        ]
+        if not chunks:
+            fallback_parts = [
+                parser.title,
+                parser.metadata.get("description"),
+                json.dumps(embedded_product, ensure_ascii=False, default=str)
+                if embedded_product
+                else None,
+            ]
+            fallback_text = " ".join(
+                part.strip() for part in fallback_parts if part and part.strip()
+            )
+            chunks = [
+                DocumentChunk(
+                    document_id=document_id,
+                    text=fallback_text,
+                    section="document_metadata",
+                    location={"url": fetch.source.canonical_url},
+                )
+            ]
         return ParsedDocument(
+            document_id=document_id,
             source_id=fetch.source.source_id,
             content_hash=fetch.source.content_hash or hashlib.sha256(fetch.body).hexdigest(),
             parser="html",
             parser_version=self.parser_version,
-            chunks=[
-                DocumentChunk(
-                    document_id="pending",
-                    text=text,
-                    section=parser.title or None,
-                    location={"url": fetch.source.canonical_url},
-                )
-            ],
+            title=parser.title or None,
+            canonical_url=structured_metadata.get("canonical_url"),
+            links=links,
+            structured_metadata=structured_metadata,
+            chunks=chunks,
         )
 
 
@@ -529,19 +1025,76 @@ class PdfParser:
         )
 
 
+class EvidenceSelector:
+    """Selects identity- and attribute-relevant chunks before model extraction."""
+
+    def select(
+        self,
+        document: ParsedDocument,
+        product_context: Mapping[str, object],
+        max_chunks: int = 8,
+        max_chars: int = 4000,
+    ) -> list[DocumentChunk]:
+        terms = self._terms(product_context)
+        ranked = sorted(
+            (
+                (self._score(chunk.text, terms), index, chunk)
+                for index, chunk in enumerate(document.chunks)
+            ),
+            key=lambda item: (-item[0], item[1]),
+        )
+        selected = [chunk for score, _, chunk in ranked if score > 0][:max_chunks]
+        if not selected:
+            selected = document.chunks[:max_chunks]
+        return [chunk.model_copy(update={"text": chunk.text[:max_chars]}) for chunk in selected]
+
+    @staticmethod
+    def _terms(product_context: Mapping[str, object]) -> tuple[str, ...]:
+        values: list[str] = []
+        for value in product_context.values():
+            text = str(value or "").strip()
+            if not text or text.casefold().startswith("--"):
+                continue
+            values.extend(
+                token.casefold() for token in re.findall(r"[A-Za-z0-9][A-Za-z0-9./-]{2,}", text)
+            )
+        return tuple(dict.fromkeys(values))
+
+    @staticmethod
+    def _score(text: str, terms: tuple[str, ...]) -> int:
+        normalized = text.casefold()
+        return sum(normalized.count(term) for term in terms)
+
+
 class EvidenceExtractor:
     """Structured extraction from parsed manufacturer content; no private reasoning is stored."""
 
     def __init__(self, provider: LLMProvider) -> None:
         self.provider = provider
+        self.last_response: LLMResponse | None = None
 
     def extract(
         self, document: ParsedDocument, url: str, product_context: Mapping[str, object]
     ) -> EvidenceExtractionResult:
-        context = "\n".join(
-            f"PAGE={chunk.page or ''} LOCATION={chunk.location} TEXT={chunk.text}"
-            for chunk in document.chunks
+        selected_chunks = EvidenceSelector().select(document, product_context)
+        context_parts = [
+            "DOCUMENT_METADATA="
+            + json.dumps(
+                {
+                    "title": document.title,
+                    "canonical_url": document.canonical_url,
+                    "structured_metadata": document.structured_metadata,
+                },
+                ensure_ascii=False,
+                default=str,
+            )[:8000]
+        ]
+        context_parts.extend(
+            f"PAGE={chunk.page or ''} SECTION={chunk.section or ''} "
+            f"LOCATION={chunk.location} TEXT={chunk.text}"
+            for chunk in selected_chunks
         )
+        context = "\n".join(context_parts)
         prompt = (
             _evidence_prompt()
             + "\n\nPRODUCT CONTEXT (data):\n"
@@ -560,7 +1113,12 @@ class EvidenceExtractor:
             if callable(generate_with_tools)
             else self.provider.generate(request)
         )
+        self.last_response = response
         result = EvidenceExtractionResult.model_validate_json(response.output_text)
+        if not result.candidates:
+            result = result.model_copy(
+                update={"candidates": _deterministic_evidence_candidates(document, url)}
+            )
         return result.model_copy(
             update={
                 "candidates": [
@@ -569,6 +1127,113 @@ class EvidenceExtractor:
                 ]
             }
         )
+
+
+def _deterministic_evidence_candidates(
+    document: ParsedDocument, url: str
+) -> list[EvidenceCandidate]:
+    """Use structured manufacturer catalog data or HTML metadata when model returns none."""
+    candidates: list[EvidenceCandidate] = []
+
+    embedded = document.structured_metadata.get("embedded_product")
+    product = embedded.get("product") if isinstance(embedded, dict) else None
+    if isinstance(product, dict):
+        fields = (
+            ("item_num", "Manufacturer Part Number"),
+            ("brand", "Brand"),
+            ("product_title", "Product Title"),
+            ("web_category", "Product Department"),
+            ("category", "Product Category"),
+            ("sub_category", "Product Subcategory"),
+            ("ideal_for", "Ideal For"),
+            ("application", "Application"),
+            ("body_copy", "Product Description"),
+            ("country_of_origin", "Country of Origin"),
+            ("status", "Product Status"),
+            ("list_price", "List Price"),
+            ("suggested_retail_price", "Suggested Retail Price"),
+            ("minimum_order_quantity", "Minimum Order Quantity"),
+        )
+        for key, attribute in fields:
+            value = product.get(key)
+            if value is None or value == "":
+                continue
+            raw_value = str(value)
+            candidates.append(
+                EvidenceCandidate(
+                    attribute=attribute,
+                    raw_value=raw_value,
+                    normalized_candidate=raw_value,
+                    source_id=document.source_id,
+                    url=url,
+                    source_text=f"{attribute}: {raw_value}",
+                    location={"embedded_field": key},
+                    evidence_type=EvidenceStatus.DIRECT,
+                    status=EvidenceStatus.DIRECT,
+                    model_confidence=1.0,
+                )
+            )
+        bullets = product.get("bullets")
+        if isinstance(bullets, list):
+            values = [str(bullet).strip() for bullet in bullets if bullet]
+            if values:
+                raw_value = "; ".join(values)
+                candidates.append(
+                    EvidenceCandidate(
+                        attribute="Product Features",
+                        raw_value=raw_value,
+                        normalized_candidate=raw_value,
+                        source_id=document.source_id,
+                        url=url,
+                        source_text=f"Product Features: {raw_value}",
+                        location={"embedded_field": "bullets"},
+                        evidence_type=EvidenceStatus.DIRECT,
+                        status=EvidenceStatus.DIRECT,
+                        model_confidence=1.0,
+                    )
+                )
+        return candidates
+
+    # Fallback to HTML title and meta metadata
+    if document.title:
+        clean_title = document.title.split("|")[0].split(" - ")[0].strip()
+        if clean_title:
+            candidates.append(
+                EvidenceCandidate(
+                    attribute="Product Title",
+                    raw_value=clean_title,
+                    normalized_candidate=clean_title,
+                    source_id=document.source_id,
+                    url=url,
+                    source_text=f"Title: {document.title}",
+                    location={"html_element": "title"},
+                    evidence_type=EvidenceStatus.DIRECT,
+                    status=EvidenceStatus.DIRECT,
+                    model_confidence=0.95,
+                )
+            )
+
+    meta = document.structured_metadata.get("meta")
+    if isinstance(meta, dict):
+        desc = meta.get("description") or meta.get("og:description")
+        if desc and str(desc).strip():
+            desc_val = str(desc).strip()
+            candidates.append(
+                EvidenceCandidate(
+                    attribute="Product Description",
+                    raw_value=desc_val,
+                    normalized_candidate=desc_val,
+                    source_id=document.source_id,
+                    url=url,
+                    source_text=f"Description: {desc_val}",
+                    location={"meta_property": "description"},
+                    evidence_type=EvidenceStatus.DIRECT,
+                    status=EvidenceStatus.DIRECT,
+                    model_confidence=0.95,
+                )
+            )
+
+    return candidates
 
 
 def canonicalize_url(value: str) -> str:
@@ -605,6 +1270,11 @@ def canonicalize_url(value: str) -> str:
     return urlunsplit((parts.scheme.casefold(), netloc, path, urlencode(query), ""))
 
 
+def _manufacturer_key(value: str) -> str:
+    without_code = re.sub(r"\([^)]*\)", "", value.casefold())
+    return re.sub(r"[^a-z0-9]+", " ", without_code).strip()
+
+
 def _host(url: str) -> str:
     value = url if "://" in url else "//" + url
     return (urlsplit(value).hostname or "").casefold().rstrip(".")
@@ -617,6 +1287,94 @@ def _origin(url: str) -> str:
 
 def _same_or_subdomain(host: str, parent: str) -> bool:
     return host == parent or host.endswith("." + parent)
+
+
+def _embedded_catalog_links(html_text: str) -> tuple[str, ...]:
+    """Recover product/category URLs stored in JavaScript-driven catalog state."""
+
+    raw_links = re.findall(
+        r"(?:(?:https?:)?\\/\\/[^\"'<>\\s]+|\\/(?:explore|product|products)\\/[^\"'<>\\s]+)",
+        html_text,
+        flags=re.IGNORECASE,
+    )
+    values: list[str] = []
+    for raw in raw_links:
+        value = raw.replace("\\/", "/").rstrip(".,;:)")
+        if value.startswith("//"):
+            value = "https:" + value
+        if value not in values:
+            values.append(value)
+    return tuple(values)
+
+
+def _embedded_product_metadata(html_text: str) -> dict[str, Any]:
+    """Recover the current product record from the manufacturer catalog state."""
+
+    marker = "window.freud.data.main"
+    start = html_text.find(marker)
+    if start < 0:
+        return {}
+    json_start = html_text.find("{", start)
+    if json_start < 0:
+        return {}
+    raw = _balanced_json_object(html_text, json_start)
+    if raw is None:
+        return {}
+    try:
+        catalog = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+    sku = str(catalog.get("initialsku") or "")
+    records = catalog.get("data")
+    if not isinstance(records, dict):
+        return {}
+    record = records.get(sku)
+    if not isinstance(record, dict):
+        record = next(
+            (
+                value
+                for value in records.values()
+                if isinstance(value, dict)
+                and isinstance(value.get("product"), dict)
+                and value["product"].get("item_num") == sku
+            ),
+            None,
+        )
+    product = record.get("product") if isinstance(record, dict) else None
+    if not isinstance(product, dict):
+        return {}
+    return {"initialsku": sku, "product": product}
+
+
+def _balanced_json_object(text: str, start: int) -> str | None:
+    depth = 0
+    quoted = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if quoted:
+            if escaped:
+                escaped = False
+            elif char == "\\\\":
+                escaped = True
+            elif char == '"':
+                quoted = False
+            continue
+        if char == '"':
+            quoted = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1]
+    return None
+
+
+def _safe_joined_url(base_url: str, href: str) -> str | None:
+    with suppress(ValueError):
+        return canonicalize_url(urljoin(base_url, href))
+    return None
 
 
 def _evidence_prompt() -> str:

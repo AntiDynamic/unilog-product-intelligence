@@ -1573,7 +1573,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115,<1.0" },
-    { name = "google-genai", specifier = ">=2.0,<3.0" },
+    { name = "google-genai", specifier = "==2.18.1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.15,<2.0" },
     { name = "openpyxl", specifier = ">=3.1,<4.0" },
     { name = "pandas", specifier = ">=2.2,<3.0" },

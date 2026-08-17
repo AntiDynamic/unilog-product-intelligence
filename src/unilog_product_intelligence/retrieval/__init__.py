@@ -2,12 +2,16 @@
 
 from .agents import DiscoveryResult, ManufacturerDiscoveryAgent
 from .core import (
+    DocumentLink,
     DomainResolver,
     EvidenceCandidate,
     EvidenceExtractor,
+    EvidenceSelector,
     HtmlParser,
     ManufacturerProfile,
     ParsedDocument,
+    Phase5FailureReason,
+    SafeNetworkTargetResolver,
     SourceCache,
     SourceFetcher,
     SourcePolicy,
@@ -16,15 +20,27 @@ from .core import (
     canonicalize_url,
 )
 from .service import ManufacturerIntelligenceService
+from .source_discovery import (
+    DeterministicUrlStrategy,
+    ProductIdentityMatch,
+    ProductIdentityMatcher,
+    ProductSourceCandidate,
+    ProductSourceDiscoveryService,
+)
 
 __all__ = [
+    "DeterministicUrlStrategy",
     "DomainResolver",
+    "DocumentLink",
+    "EvidenceSelector",
     "EvidenceCandidate",
     "EvidenceExtractor",
     "HtmlParser",
     "ManufacturerIntelligenceService",
     "ManufacturerProfile",
     "ParsedDocument",
+    "Phase5FailureReason",
+    "SafeNetworkTargetResolver",
     "SourceCache",
     "SourceFetcher",
     "SourcePolicy",
@@ -33,4 +49,8 @@ __all__ = [
     "canonicalize_url",
     "DiscoveryResult",
     "ManufacturerDiscoveryAgent",
+    "ProductIdentityMatch",
+    "ProductIdentityMatcher",
+    "ProductSourceCandidate",
+    "ProductSourceDiscoveryService",
 ]

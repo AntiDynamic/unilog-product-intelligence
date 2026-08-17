@@ -1,0 +1,83 @@
+{
+  "phase": "4->5->6",
+  "input": "data\\external\\Unihack_ Sample Dataset - Input.csv",
+  "reference_availability": "REFERENCE_UNAVAILABLE",
+  "reference_files": {},
+  "live_requested": true,
+  "gemini_key_configured": true,
+  "rows_requested": [
+    2
+  ],
+  "results": [
+    {
+      "row_number": 2,
+      "product_id": "unihack-row-2",
+      "input": "data\\external\\Unihack_ Sample Dataset - Input.csv",
+      "product": {
+        "Manufacturer Part Number": "DCB518ASTS06G",
+        "Product Description": "Diablo's 1/2\" x 18\" detail file sanding belts include break-through innovations that improve performance, extend sanding life, and increase productivity. Featuring a premium aluminum oxide blend, these belts remove material faster than other sanding belts and offer an extra-long sanding life. The stearate coating reduces build-up while the premium joint connection ensures the belt can withstand a variety of sanding applications such as heavy stock removal, planing and sanding. Clog-SHIELD™, Diablo's own blend of grinding agents, reduces loading while the superior grain bonding system, ENDURA-BOND™, delivers longer life and extreme durability.",
+        "Brand": "Diablo",
+        "Width": "1/2",
+        "Length": "18",
+        "Pack Quantity": "6",
+        "Product Title": "1/2\" x 18\" Detail File Sanding Belt Assorted Pack (6-pc)",
+        "Product Department": "Sanding",
+        "Product Category": "Sanding Belts",
+        "Product Subcategory": "1/2\" x 18\"",
+        "Ideal For": "Surface leveling and heavy stock removal; moderate stock removal; and final sanding",
+        "Application": "Fast removal, preparation, finish",
+        "Country of Origin": "United States",
+        "Product Status": "Active",
+        "List Price": "17.42",
+        "Suggested Retail Price": "15.47",
+        "Minimum Order Quantity": "1",
+        "Product Features": "Assorted Pack includes: (2) 50-Grit/Coarse grit sanding belts for surface leveling and heavy stock/paint removal, (2) 80-Grit/Medium grit sanding belts for moderate stock removal, and (2) 120-Grit/Fine grit sanding belts for final sanding; Premium aluminum oxide blend for fast material removal and extra-long sanding life; Stearate coating reduces pitch build-up or loading of the belt; Premium joint connection creates a strong bond, keeping the belt intact while sanding an array of applications; Clog-SHIELD™ reduces pitch build-up and clogging; ENDURA-BOND provides superior grit-to-backing bond for extreme durability",
+        "Manufacturer": "Freud Inc (2435)"
+      },
+      "sources": [
+        {
+          "url": "D:\\Users\\pares\\Documents\\ChatGPT\\UNILOG\\data\\external\\Unihack_ Sample Dataset - Input.csv",
+          "type": "supplied_input",
+          "authority": "medium",
+          "evidence": [
+            "DCB518ASTS06G",
+            "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+            "-- Unbranded --",
+            "Freud Inc (2435)",
+            "1/2\"",
+            "18\"",
+            "6pc"
+          ]
+        },
+        {
+          "url": "https://diablotools.com/products/DCB518ASTS06G",
+          "type": "manufacturer_page",
+          "authority": "authoritative",
+          "evidence": [
+            "Manufacturer Part Number: DCB518ASTS06G",
+            "Brand: Diablo",
+            "Product Title:  1/2\" x 18\" Detail File Sanding Belt Assorted Pack (6-pc)",
+            "Product Department: Sanding",
+            "Product Category: Sanding Belts",
+            "Product Subcategory: 1/2\" x 18\"",
+            "Ideal For: Surface leveling and heavy stock removal; moderate stock removal; and final sanding",
+            "Application: Fast removal, preparation, finish",
+            "Product Description: Diablo's 1/2\" x 18\" detail file sanding belts include break-through innovations that improve performance, extend sanding life, and increase productivity. Featuring a premium aluminum oxide blend, these belts remove material faster than other sanding belts and offer an extra-long sanding life. The stearate coating reduces build-up while the premium joint connection ensures the belt can withstand a variety of sanding applications such as heavy stock removal, planing and sanding. Clog-SHIELD™, Diablo's own blend of grinding agents, reduces loading while the superior grain bonding system, ENDURA-BOND™, delivers longer life and extreme durability.",
+            "Country of Origin: United States",
+            "Product Status: Active",
+            "List Price: 17.42",
+            "Suggested Retail Price: 15.47",
+            "Minimum Order Quantity: 1",
+            "Product Features: Assorted Pack includes: (2) 50-Grit/Coarse grit sanding belts for surface leveling and heavy stock/paint removal, (2) 80-Grit/Medium grit sanding belts for moderate stock removal, and (2) 120-Grit/Fine grit sanding belts for final sanding; Premium aluminum oxide blend for fast material removal and extra-long sanding life; Stearate coating reduces pitch build-up or loading of the belt; Premium joint connection creates a strong bond, keeping the belt intact while sanding an array of applications; Clog-SHIELD™ reduces pitch build-up and clogging; ENDURA-BOND provides superior grit-to-backing bond for extreme durability"
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "products": 1,
+    "attributes": 19,
+    "sources": 2,
+    "evidence": 22
+  }
+}

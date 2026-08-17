@@ -1,0 +1,34 @@
+{
+  "source_file": "data\\external\\Unihack_ Sample Dataset - Input.csv",
+  "sha256": "ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+  "total_rows": 1000,
+  "headers": [
+    "Mfg_Part_Num",
+    "Part_Desc",
+    "E1_Brand",
+    "Unilog_Brand",
+    "DIB_Brand",
+    "Part_Manuf"
+  ],
+  "placeholder_counts": {
+    "DIB_Brand": 755,
+    "E1_Brand": 799,
+    "Unilog_Brand": 1000
+  },
+  "normalization_opportunities": 2,
+  "exact_normalized_mpn_duplicate_groups": 1,
+  "rows_in_exact_normalized_mpn_duplicate_groups": 2,
+  "reference_data_availability": {
+    "manufacturer": "unavailable",
+    "brand": "unavailable",
+    "taxonomy": "unavailable",
+    "lov": "unavailable",
+    "uom": "unavailable",
+    "fraction": "unavailable",
+    "rules": "unavailable"
+  },
+  "notes": [
+    "No reference resolution was claimed because official manufacturer, brand, taxonomy, LOV, UOM, fraction, and rule files are unavailable.",
+    "Duplicate signals are exact normalized MPN groups only; they are review signals, not product merges."
+  ]
+}

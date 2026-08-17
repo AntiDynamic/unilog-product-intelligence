@@ -1,0 +1,177 @@
+{
+  "benchmark_timestamp": "2026-08-17T10:40:43.750073+00:00",
+  "execution_mode": "LIVE_INTERNET",
+  "total_products_benchmarked": 30,
+  "overall_metrics": {
+    "manufacturer_resolution_rate": 0.1667,
+    "brand_resolution_rate": 0.3667,
+    "domain_resolution_rate": 0.1667,
+    "authoritative_source_discovery_rate": 0.1,
+    "product_identity_match_rate": 0.1,
+    "evidence_extraction_rate": 0.0333,
+    "ready_rate": 0.0333,
+    "review_required_rate": 0.9667,
+    "blocked_rate": 0.0,
+    "deterministic_success_rate": 0.0333,
+    "site_search_success_rate": 0.0,
+    "sitemap_success_rate": 0.0,
+    "recovery_success_rate": 0.0,
+    "gemini_fallback_rate": 0.0,
+    "gemini_calls_per_product": 0.0,
+    "average_http_requests_per_product": 10.07,
+    "median_http_requests_per_product": 0,
+    "maximum_http_requests_per_product": 65,
+    "average_latency_ms": 11608.1,
+    "median_latency_ms": 26,
+    "maximum_latency_ms": 96240,
+    "duplicate_retrieval_rate": 0.0,
+    "security_rejection_count": 0
+  },
+  "status_distribution": {
+    "READY": 1,
+    "REVIEW_REQUIRED": 29,
+    "BLOCKED": 0
+  },
+  "category_metrics": {
+    "Brand more informative than Part_Manuf": {
+      "count": 5,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Distributor in Part_Manuf": {
+      "count": 1,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Distributor/dealer in Part_Manuf": {
+      "count": 8,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Known manufacturer": {
+      "count": 3,
+      "domain_resolution_rate": 0.3333,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Known manufacturer + explicit brand": {
+      "count": 3,
+      "domain_resolution_rate": 0.6667,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Known manufacturer + obvious MPN": {
+      "count": 7,
+      "domain_resolution_rate": 0.2857,
+      "ready_rate": 0.1429,
+      "review_required_rate": 0.8571,
+      "blocked_rate": 0.0
+    },
+    "Missing brand": {
+      "count": 7,
+      "domain_resolution_rate": 0.1429,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Missing manufacturer": {
+      "count": 1,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Missing/sparse input": {
+      "count": 3,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Multi-brand manufacturer": {
+      "count": 3,
+      "domain_resolution_rate": 0.6667,
+      "ready_rate": 0.3333,
+      "review_required_rate": 0.6667,
+      "blocked_rate": 0.0
+    },
+    "Potential MPN substring collision": {
+      "count": 4,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Similar MPN": {
+      "count": 4,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Site-search candidate": {
+      "count": 4,
+      "domain_resolution_rate": 0.25,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Sitemap candidate": {
+      "count": 2,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Standard direct URL candidate": {
+      "count": 2,
+      "domain_resolution_rate": 1.0,
+      "ready_rate": 0.5,
+      "review_required_rate": 0.5,
+      "blocked_rate": 0.0
+    },
+    "Strange description": {
+      "count": 1,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Unknown/uncommon manufacturer": {
+      "count": 4,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "Very short description": {
+      "count": 1,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    },
+    "family": {
+      "count": 4,
+      "domain_resolution_rate": 0.0,
+      "ready_rate": 0.0,
+      "review_required_rate": 1.0,
+      "blocked_rate": 0.0
+    }
+  },
+  "root_cause_breakdown": {
+    "DISTRIBUTOR_IN_PART_MANUF_UNRESOLVED": 5,
+    "DOMAIN_UNRESOLVED": 19,
+    "EVIDENCE_INSUFFICIENT": 2,
+    "INPUT_IDENTITY_PROBLEM": 1,
+    "IDENTITY_MISMATCH": 2
+  }
+}

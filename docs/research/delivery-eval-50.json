@@ -1,0 +1,56 @@
+{
+  "benchmark_sample_size": 50,
+  "schema": {
+    "header_count_match": true,
+    "gen_header_count": 252,
+    "expected_header_count": 252,
+    "headers_identical": true,
+    "missing_headers": [],
+    "extra_headers": []
+  },
+  "identity_metrics": {
+    "manufacturer_accuracy_pct": 32.0,
+    "manufacturer_correct_count": 16,
+    "brand_accuracy_pct": 100.0,
+    "brand_correct_count": 50,
+    "mpn_accuracy_pct": 100.0,
+    "classpath_accuracy_pct": 100.0
+  },
+  "retrieval_metrics": {
+    "domain_resolution_rate_pct": 100.0,
+    "domain_resolved_count": 50,
+    "authoritative_source_discovery_rate_pct": 80.0,
+    "authoritative_sources_found": 40
+  },
+  "enrichment_metrics": {
+    "products_with_evidence": 40,
+    "evidence_rate_pct": 80.0,
+    "total_attributes_populated": 93,
+    "average_attributes_per_product": 1.86
+  },
+  "delivery_metrics": {
+    "average_non_empty_fields_per_product": 19.58,
+    "min_non_empty_fields": 15,
+    "max_non_empty_fields": 49,
+    "average_completeness_pct": 7.77
+  },
+  "status_distribution": {
+    "ENRICHED": 40,
+    "REVIEW_REQUIRED": 10,
+    "BLOCKED": 0,
+    "ERRORS": 0
+  },
+  "failure_taxonomy": {
+    "SOURCE_NOT_FOUND": 10
+  },
+  "distributor_case_count": 10,
+  "top_bottlenecks": [
+    {
+      "rank": 1,
+      "bottleneck": "SOURCE_NOT_FOUND for 3M (Rows 3-8) & Mirka (Rows 9-12)",
+      "affected_rows": 10,
+      "impact_pct": 20.0,
+      "root_cause": "3m.com and mirka.com drops or redirects crawler requests without search link resolution."
+    }
+  ]
+}

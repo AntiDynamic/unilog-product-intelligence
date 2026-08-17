@@ -28,6 +28,14 @@ class LLMResponse:
     retry_count: int = 0
     estimated_cost_usd: float | None = None
     tool_use_input_tokens: int | None = None
+    search_call_count: int = 0
+    search_result_count: int = 0
+    search_queries: tuple[str, ...] = ()
+    search_result_urls: tuple[str, ...] = ()
+    search_suggestions: tuple[str, ...] = ()
+    url_context_call_count: int = 0
+    url_context_result_count: int = 0
+    url_context_urls: tuple[str, ...] = ()
 
 
 class LLMProvider(ABC):

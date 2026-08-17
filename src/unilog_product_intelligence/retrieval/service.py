@@ -31,6 +31,7 @@ from .core import (
     EvidenceStatus,
     HtmlParser,
     ManufacturerProfile,
+    Phase5FailureReason,
     SourceDecision,
     SourceFetcher,
     SourceKind,
@@ -38,6 +39,7 @@ from .core import (
     SourceRecord,
     SourceVerifier,
 )
+from .source_discovery import ProductIdentityMatcher, ProductSourceDiscoveryService
 
 
 class ManufacturerJobState(StrEnum):
@@ -60,9 +62,20 @@ class ManufacturerJob(BaseModel):
     cache_status: CacheStatus | None = None
     source_id: str | None = None
     error: str | None = None
+    failure_reason: Phase5FailureReason | None = None
     search_calls: int = 0
     url_context_calls: int = 0
+    url_context_result_count: int = 0
+    url_context_urls: tuple[str, ...] = ()
     evidence_count: int = 0
+    model: str | None = None
+    input_tokens: int | None = None
+    output_tokens: int | None = None
+    cached_tokens: int | None = None
+    total_tokens: int | None = None
+    latency_ms: int | None = None
+    request_id: str | None = None
+    estimated_cost_usd: float | None = None
 
 
 class ManufacturerIntelligenceService:
@@ -95,6 +108,7 @@ class ManufacturerIntelligenceService:
             if verified.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
                 job.state = ManufacturerJobState.REVIEW_REQUIRED
                 job.error = verified.decision.value
+                job.failure_reason = Phase5FailureReason.DOMAIN_UNVERIFIED
                 return product, job
             job.state = ManufacturerJobState.SOURCE_VERIFIED
             fetched = self.fetcher.fetch(verified, refresh=refresh)
@@ -105,12 +119,15 @@ class ManufacturerIntelligenceService:
             ):
                 job.state = ManufacturerJobState.FAILED
                 job.error = fetched.error or fetched.source.retrieval_status.value
+                job.failure_reason = Phase5FailureReason.SOURCE_FETCH_FAILED
                 return product, job
             job.state = ManufacturerJobState.FETCHED
             parsed = self.parser.parse(fetched)
-            if not _source_relevant(parsed, terms):
+            identity = ProductIdentityMatcher().match(product, parsed)
+            if identity.identity_score < 0.6:
                 job.state = ManufacturerJobState.REVIEW_REQUIRED
-                job.error = "source_not_relevant_to_product"
+                job.error = f"source_not_relevant_to_product:{identity.classification}"
+                job.failure_reason = Phase5FailureReason.PRODUCT_IDENTITY_MISMATCH
                 return product, job
             job.state = ManufacturerJobState.PARSED
             if self.extractor is None:
@@ -124,8 +141,23 @@ class ManufacturerIntelligenceService:
                     for field in product.raw_inputs
                 },
             )
+            response = self.extractor.last_response
+            if response is not None:
+                job.url_context_calls = response.url_context_call_count
+                job.url_context_result_count = response.url_context_result_count
+                job.url_context_urls = response.url_context_urls
+                job.model = response.model
+                job.input_tokens = response.input_tokens
+                job.output_tokens = response.output_tokens
+                job.cached_tokens = response.cached_tokens
+                job.total_tokens = response.total_tokens
+                job.latency_ms = response.latency_ms
+                job.request_id = response.request_id
+                job.estimated_cost_usd = response.estimated_cost_usd
             job.state = ManufacturerJobState.EVIDENCE_EXTRACTED
             job.evidence_count = len(extracted.candidates)
+            if not extracted.candidates:
+                job.failure_reason = Phase5FailureReason.NO_AUTHORITATIVE_EVIDENCE
             product = _attach_source(product, fetched.source)
             product = self._attach_candidates(product, extracted.candidates)
             job.state = ManufacturerJobState.COMPLETED
@@ -133,7 +165,62 @@ class ManufacturerIntelligenceService:
         except (RuntimeError, ValueError) as error:
             job.state = ManufacturerJobState.FAILED
             job.error = type(error).__name__
+            if job.failure_reason is None:
+                job.failure_reason = Phase5FailureReason.SOURCE_FETCH_FAILED
             return product, job
+
+    def recover(
+        self,
+        product: ProductTruth,
+        profile: ManufacturerProfile,
+        failed_job: ManufacturerJob,
+        candidate_urls: tuple[str, ...] = (),
+    ) -> tuple[ProductTruth, ManufacturerJob]:
+        """Attempt adaptive recovery when the primary source URL failed.
+
+        This method tries alternate candidate URLs produced by
+        ProductSourceDiscoveryService using the same SourceFetcher, SourceVerifier,
+        and ProductIdentityMatcher as the normal path.  No validation is bypassed.
+
+        Covers the following failure cases:
+          * SOURCE_FETCH_FAILED  — original URL returned 4xx/5xx or timed out.
+          * PRODUCT_IDENTITY_MISMATCH — page loaded but MPN/manufacturer not found.
+          * PRODUCT_SOURCE_NOT_FOUND  — no candidate matched on first attempt.
+
+        A repair is only accepted if the replacement source passes the same identity
+        and source-verification checks as the primary path.
+        """
+        recoverable = {
+            Phase5FailureReason.SOURCE_FETCH_FAILED,
+            Phase5FailureReason.PRODUCT_IDENTITY_MISMATCH,
+            Phase5FailureReason.PRODUCT_SOURCE_NOT_FOUND,
+        }
+        if failed_job.failure_reason not in recoverable:
+            return product, failed_job
+        if not candidate_urls and not profile.verified_domains:
+            return product, failed_job
+        discovery = ProductSourceDiscoveryService(self.fetcher)
+        found = discovery.discover(product, profile, candidate_urls=candidate_urls)
+        if not found:
+            recovery_job = failed_job.model_copy(
+                update={
+                    "state": ManufacturerJobState.REVIEW_REQUIRED,
+                    "error": "recovery_no_candidates_passed",
+                    "failure_reason": Phase5FailureReason.PRODUCT_SOURCE_NOT_FOUND,
+                }
+            )
+            return product, recovery_job
+        best = found[0]
+        recovery_source = SourceRecord(
+            canonical_url=best.url,
+            original_url=best.url,
+            source_kind=best.source_kind,
+            decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+            manufacturer_id=profile.manufacturer_id,
+            manufacturer_domain=_host_of(best.url),
+            product_id=product.product_id,
+        )
+        return self.process(product, recovery_source, profile)
 
     def _attach_candidates(
         self, product: ProductTruth, candidates: list[EvidenceCandidate]
@@ -251,3 +338,12 @@ def _source_relevant(document: object, terms: tuple[str, ...]) -> bool:
     text = " ".join(getattr(chunk, "text", "") for chunk in chunks).casefold()
     meaningful = tuple(term.casefold().strip() for term in terms if len(term.strip()) >= 3)
     return bool(meaningful) and any(term in text for term in meaningful)
+
+
+def _host_of(url: str) -> str:
+    """Return the netloc (host) of a URL for use as manufacturer_domain."""
+    from urllib.parse import urlparse
+
+    parsed = urlparse(url)
+    return parsed.netloc or url
+

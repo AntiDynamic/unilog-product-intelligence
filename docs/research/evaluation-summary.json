@@ -1,0 +1,76 @@
+{
+  "evaluation_timestamp": "2026-08-17T07:42:58.361311+00:00",
+  "total_products_evaluated": 75,
+  "execution_mode": "OFFLINE",
+  "dataset_info": {
+    "total_dataset_rows": 1000,
+    "distinct_manufacturers": 76,
+    "category_distributions": {
+      "A. Known manufacturer + obvious MPN": 518,
+      "G. Missing brand": 554,
+      "L. Standard direct URL candidate": 62,
+      "N. Products discoverable via sitemap": 518,
+      "W. Multi-brand manufacturer": 121,
+      "C. Distributor/dealer in Part_Manuf": 273,
+      "Q. Similar MPNs / family": 55,
+      "T. Sparse input": 127,
+      "J. Very short description": 92,
+      "R. Potential MPN substring collisions": 4,
+      "K. Relatively long description": 231,
+      "M. Site-search candidate": 242,
+      "I. Strange/abbreviated description": 124,
+      "E. Unknown/uncommon manufacturer": 168,
+      "F. Missing manufacturer": 41,
+      "D. Brand more informative than Part_Manuf": 187,
+      "X. Distributor != Manufacturer": 183,
+      "B. Known manufacturer + known brand": 226
+    }
+  },
+  "retrieval_metrics": {
+    "1_manufacturer_resolution_rate": 0.0667,
+    "2_brand_resolution_rate": 0.4133,
+    "3_domain_resolution_rate": 0.0667,
+    "4_authoritative_source_discovery_rate": 0.0,
+    "5_product_identity_match_rate": 0.0,
+    "6_evidence_extraction_rate": 0.0,
+    "7_deterministic_retrieval_success_rate": 0.0,
+    "8_site_search_success_rate": 0.0,
+    "9_sitemap_success_rate": 0.0,
+    "10_recovery_success_rate": 0.0,
+    "11_gemini_fallback_rate": 0.0,
+    "12_gemini_search_call_rate": 0.0,
+    "13_gemini_failure_rate": 0.0,
+    "14_average_http_requests_per_product": 0.0,
+    "15_median_http_requests_per_product": 0,
+    "16_maximum_http_requests_per_product": 0,
+    "17_cache_hit_rate": 0.0,
+    "18_duplicate_retrieval_rate": 0.0,
+    "19_average_retrieval_time_ms": 61.35,
+    "20_review_required_rate": 0.9733,
+    "21_blocked_rate": 0.0267,
+    "22_ready_rate": 0.0
+  },
+  "output_quality_metrics": {
+    "invention_rate": 0.0,
+    "evidence_grounding_rate": 0.0,
+    "false_ready_count": 0,
+    "false_review_count": 0,
+    "false_block_count": 0
+  },
+  "status_distribution": {
+    "READY_ENRICHED": 0,
+    "REVIEW_REQUIRED": 73,
+    "BLOCKED": 2
+  },
+  "failure_breakdown": {
+    "by_category": {
+      "ENVIRONMENT_FAILURE": 2,
+      "DOMAIN_RESOLUTION_FAILURE": 68,
+      "SOURCE_NOT_FOUND": 5
+    },
+    "by_severity": {
+      "HIGH": 75
+    },
+    "total_failures_recorded": 75
+  }
+}

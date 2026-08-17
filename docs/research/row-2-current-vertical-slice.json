@@ -1,0 +1,2302 @@
+{
+  "phase": "4->5->6",
+  "input": "data\\external\\Unihack_ Sample Dataset - Input.csv",
+  "reference_availability": "REFERENCE_UNAVAILABLE",
+  "reference_files": {},
+  "live_requested": true,
+  "gemini_key_configured": true,
+  "rows_requested": [
+    2
+  ],
+  "results": [
+    {
+      "row_number": 2,
+      "product_id": "unihack-row-2",
+      "input": "data\\external\\Unihack_ Sample Dataset - Input.csv",
+      "status": "REVIEW_REQUIRED",
+      "blocker": "GEMINI_BILLING_FAILURE",
+      "phase4": {
+        "job_id": "8b23549b-dd96-4155-b1a3-b0f31c5c0be1",
+        "product_id": "unihack-row-2",
+        "state": "candidates_accepted",
+        "runs": [
+          {
+            "agent": "product_understanding",
+            "task": "product_understanding",
+            "prompt_version": "v1",
+            "started_at": "2026-08-16T08:51:53.540446Z",
+            "completed_at": "2026-08-16T08:51:59.476769Z",
+            "status": "succeeded",
+            "model": "gemini-3.5-flash-lite",
+            "input_tokens": null,
+            "output_tokens": null,
+            "cached_tokens": null,
+            "latency_ms": 4995,
+            "retry_count": 0,
+            "request_id": "v1_ChdMSHFCYXU2Zkw4eUFnOFVQOHZiVjhRaxIXTEhxQmF1NmZMOHlBZzhVUDh2YlY4UWs",
+            "total_tokens": null,
+            "tool_calls": 0,
+            "tool_use_tokens": null,
+            "provider_attempt_count": null,
+            "thought_tokens": null,
+            "error": null
+          },
+          {
+            "agent": "classification",
+            "task": "classification",
+            "prompt_version": "v1",
+            "started_at": "2026-08-16T08:51:59.477835Z",
+            "completed_at": "2026-08-16T08:52:04.191703Z",
+            "status": "succeeded",
+            "model": "gemini-3.5-flash-lite",
+            "input_tokens": null,
+            "output_tokens": null,
+            "cached_tokens": null,
+            "latency_ms": 4034,
+            "retry_count": 0,
+            "request_id": "v1_ChdNWHFCYXF6S0dkdlZnOFVQOWVuNDZBZxIXTVhxQmFxektHZHZWZzhVUDllbjQ2QWc",
+            "total_tokens": null,
+            "tool_calls": 0,
+            "tool_use_tokens": null,
+            "provider_attempt_count": null,
+            "thought_tokens": null,
+            "error": null
+          },
+          {
+            "agent": "attribute_extraction",
+            "task": "attribute_extraction",
+            "prompt_version": "v1",
+            "started_at": "2026-08-16T08:52:04.240490Z",
+            "completed_at": "2026-08-16T08:52:11.015371Z",
+            "status": "succeeded",
+            "model": "gemini-3.5-flash-lite",
+            "input_tokens": null,
+            "output_tokens": null,
+            "cached_tokens": null,
+            "latency_ms": 5892,
+            "retry_count": 0,
+            "request_id": "v1_ChdPSHFCYW9Yd0VKakNnOFVQdUtiNjRBNBIXT0hxQmFvWHdFSmpDZzhVUHVLYjY0QTQ",
+            "total_tokens": null,
+            "tool_calls": 0,
+            "tool_use_tokens": null,
+            "provider_attempt_count": null,
+            "thought_tokens": null,
+            "error": null
+          }
+        ],
+        "agent_outputs": {
+          "product_understanding": {
+            "product_type": "Sanding Belt",
+            "product_family": "Diablo",
+            "semantic_features": [
+              "1/2\"x18\"",
+              "6pc"
+            ],
+            "evidence": [
+              {
+                "field_name": "product_type",
+                "quoted_text": "Sanding Belt",
+                "kind": "directly_present"
+              },
+              {
+                "field_name": "product_family",
+                "quoted_text": "Diablo",
+                "kind": "directly_present"
+              },
+              {
+                "field_name": "semantic_features",
+                "quoted_text": "1/2\"x18\"",
+                "kind": "directly_present"
+              },
+              {
+                "field_name": "semantic_features",
+                "quoted_text": "6pc",
+                "kind": "directly_present"
+              }
+            ],
+            "uncertain_items": []
+          },
+          "classification": {
+            "candidates": [],
+            "selected_candidate": null,
+            "unresolved_reason": "No taxonomy context was provided in the input to match against."
+          },
+          "attribute_extraction": {
+            "attributes": [
+              {
+                "attribute": "Manufacturer Part Number",
+                "raw_value": "DCB518ASTS06G",
+                "normalized_candidate": "DCB518ASTS06G",
+                "unit": null,
+                "evidence": {
+                  "field_name": "Mfg_Part_Num",
+                  "quoted_text": "DCB518ASTS06G",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              },
+              {
+                "attribute": "Part Description",
+                "raw_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+                "normalized_candidate": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+                "unit": null,
+                "evidence": {
+                  "field_name": "Part_Desc",
+                  "quoted_text": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              },
+              {
+                "attribute": "Width",
+                "raw_value": "1/2\"",
+                "normalized_candidate": "1/2",
+                "unit": "in",
+                "evidence": {
+                  "field_name": "Part_Desc",
+                  "quoted_text": "1/2\"",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              },
+              {
+                "attribute": "Length",
+                "raw_value": "18\"",
+                "normalized_candidate": "18",
+                "unit": "in",
+                "evidence": {
+                  "field_name": "Part_Desc",
+                  "quoted_text": "18\"",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              },
+              {
+                "attribute": "Product Type",
+                "raw_value": "Sanding Belt",
+                "normalized_candidate": "Sanding Belt",
+                "unit": null,
+                "evidence": {
+                  "field_name": "Part_Desc",
+                  "quoted_text": "Sanding Belt",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              },
+              {
+                "attribute": "Pack Quantity",
+                "raw_value": "6pc",
+                "normalized_candidate": "6",
+                "unit": "pc",
+                "evidence": {
+                  "field_name": "Part_Desc",
+                  "quoted_text": "6pc",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              },
+              {
+                "attribute": "Brand",
+                "raw_value": "Diablo",
+                "normalized_candidate": "Diablo",
+                "unit": null,
+                "evidence": {
+                  "field_name": "Part_Desc",
+                  "quoted_text": "Diablo",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              },
+              {
+                "attribute": "Manufacturer",
+                "raw_value": "Freud Inc (2435)",
+                "normalized_candidate": "Freud Inc",
+                "unit": null,
+                "evidence": {
+                  "field_name": "Part_Manuf",
+                  "quoted_text": "Freud Inc (2435)",
+                  "kind": "directly_present"
+                },
+                "status": "directly_present",
+                "model_confidence": 1.0
+              }
+            ],
+            "missing_attributes": []
+          }
+        }
+      },
+      "phase5": {
+        "discovery": {
+          "candidates": [],
+          "unresolved_reason": "discovery_failed:GeminiProviderError:429",
+          "queries": [],
+          "search_requested": true,
+          "search_tool_calls": 0,
+          "search_result_count": 0,
+          "search_result_urls": [],
+          "search_suggestions": [],
+          "model": null,
+          "input_tokens": null,
+          "output_tokens": null,
+          "cached_tokens": null,
+          "latency_ms": null,
+          "request_id": null,
+          "total_tokens": null,
+          "estimated_cost_usd": null
+        },
+        "manufacturer_job": null,
+        "search_requested": true,
+        "search_tool_calls": 0,
+        "search_result_count": 0,
+        "search_result_urls": [],
+        "search_suggestions": [],
+        "error": "discovery_failed:GeminiProviderError:429",
+        "source_url": null
+      },
+      "phase6": {
+        "product_id": "unihack-row-2",
+        "status": "ENRICHED",
+        "publication_state": "READY",
+        "attribute_plans": [
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-brand",
+            "attribute_name": "Brand",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          },
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-length",
+            "attribute_name": "Length",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          },
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-manufacturer",
+            "attribute_name": "Manufacturer",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          },
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-manufacturer-part-number",
+            "attribute_name": "Manufacturer Part Number",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          },
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-pack-quantity",
+            "attribute_name": "Pack Quantity",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          },
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-part-description",
+            "attribute_name": "Part Description",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          },
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-product-type",
+            "attribute_name": "Product Type",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          },
+          {
+            "product_id": "unihack-row-2",
+            "category": null,
+            "classpath": [],
+            "attribute_id": "attribute-width",
+            "attribute_name": "Width",
+            "applicability": "OPTIONAL",
+            "current_status": "MISSING",
+            "current_value": null,
+            "evidence_available": true,
+            "enrichment_required": "VERIFY_EXISTING",
+            "validation_requirements": [
+              "evidence",
+              "format",
+              "uom"
+            ],
+            "allowed_values": [],
+            "allowed_uom": [],
+            "reference_availability": "REFERENCE_UNAVAILABLE",
+            "priority": 50,
+            "reason": "Existing value has evidence and requires deterministic verification."
+          }
+        ],
+        "candidates": [],
+        "validations": [],
+        "reviews": [],
+        "conflict_ids": [],
+        "reference_availability": "REFERENCE_UNAVAILABLE",
+        "product_truth": {
+          "product_id": "unihack-row-2",
+          "identity": {
+            "manufacturer": {
+              "raw_value": "Freud Inc (2435)",
+              "normalized_value": "Freud Inc (2435)",
+              "status": "normalized",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "medium",
+                "evidence_available": true,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              }
+            },
+            "manufacturer_code": null,
+            "brand": {
+              "raw_value": "-- No Unilog Brand --",
+              "normalized_value": null,
+              "status": "missing",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "medium",
+                "evidence_available": true,
+                "validation_state": "pending",
+                "normalization_applied": true,
+                "source_agreement": "unknown"
+              }
+            },
+            "brand_code": null,
+            "manufacturer_part_number": {
+              "raw_value": "DCB518ASTS06G",
+              "normalized_value": "DCB518ASTS06G",
+              "status": "normalized",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "medium",
+                "evidence_available": true,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              }
+            },
+            "source_part_number": {
+              "raw_value": "DCB518ASTS06G",
+              "normalized_value": "DCB518ASTS06G",
+              "status": "normalized",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "medium",
+                "evidence_available": true,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              }
+            },
+            "sku": null,
+            "trade_name": null,
+            "source_record_id": "unihack-row-2"
+          },
+          "classification": {
+            "department": null,
+            "class_name": null,
+            "fine": null,
+            "classpath": [],
+            "taxonomy_id": null,
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [],
+            "validation_state": "pending"
+          },
+          "attributes": [
+            {
+              "attribute_id": "attribute-manufacturer-part-number",
+              "canonical_name": "Manufacturer Part Number",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "34c46ab2-44d8-40c0-a459-484d8be5db9a"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "70e4c915-70f9-47a3-b22b-2cead9afa9fd",
+                  "raw_value": "DCB518ASTS06G",
+                  "normalized_value": "DCB518ASTS06G",
+                  "uom": null,
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "34c46ab2-44d8-40c0-a459-484d8be5db9a"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            },
+            {
+              "attribute_id": "attribute-part-description",
+              "canonical_name": "Part Description",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "f0482f0f-2d74-4c7d-8824-6aa343c69e4f"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "ee44d2bb-1e75-44f7-8f55-a70e1ed2869b",
+                  "raw_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+                  "normalized_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+                  "uom": null,
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "f0482f0f-2d74-4c7d-8824-6aa343c69e4f"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            },
+            {
+              "attribute_id": "attribute-width",
+              "canonical_name": "Width",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "75066f7d-4d2a-4e40-8595-0ff49fb8955a"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "45b38c98-76e2-43e2-a8f6-4a2846efc60b",
+                  "raw_value": "1/2\"",
+                  "normalized_value": "1/2",
+                  "uom": "in",
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "75066f7d-4d2a-4e40-8595-0ff49fb8955a"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            },
+            {
+              "attribute_id": "attribute-length",
+              "canonical_name": "Length",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "665e50a1-b89b-4b2b-804d-bb6ce643d24f"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "89c2d5aa-02c0-4c6c-81e7-8c7ce1d180f5",
+                  "raw_value": "18\"",
+                  "normalized_value": "18",
+                  "uom": "in",
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "665e50a1-b89b-4b2b-804d-bb6ce643d24f"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            },
+            {
+              "attribute_id": "attribute-product-type",
+              "canonical_name": "Product Type",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "a55696c3-6635-474b-a54e-7e3e387a9222",
+                  "raw_value": "Sanding Belt",
+                  "normalized_value": "Sanding Belt",
+                  "uom": null,
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            },
+            {
+              "attribute_id": "attribute-pack-quantity",
+              "canonical_name": "Pack Quantity",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "85599827-e826-4ea2-aa68-45eef07c441f"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "207a7c2e-a941-408f-98a3-cfe577d487e8",
+                  "raw_value": "6pc",
+                  "normalized_value": "6",
+                  "uom": "pc",
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "85599827-e826-4ea2-aa68-45eef07c441f"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            },
+            {
+              "attribute_id": "attribute-brand",
+              "canonical_name": "Brand",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "f556ba00-e72d-4097-bb1d-ee65c4a18283"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "e1e1b58c-377c-4ba4-95c4-2f9227981392",
+                  "raw_value": "Diablo",
+                  "normalized_value": "Diablo",
+                  "uom": null,
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "f556ba00-e72d-4097-bb1d-ee65c4a18283"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            },
+            {
+              "attribute_id": "attribute-manufacturer",
+              "canonical_name": "Manufacturer",
+              "raw_value": null,
+              "normalized_value": null,
+              "uom": null,
+              "applicability": "unknown",
+              "status": "candidate",
+              "source_ids": [
+                "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              ],
+              "evidence_ids": [
+                "9adf053c-a659-4bbf-91a9-2a6a74447a71"
+              ],
+              "candidates": [
+                {
+                  "candidate_id": "c7346b7b-2d50-4694-a834-39bf862b3afc",
+                  "raw_value": "Freud Inc (2435)",
+                  "normalized_value": "Freud Inc",
+                  "uom": null,
+                  "status": "candidate",
+                  "source_ids": [
+                    "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                  ],
+                  "evidence_ids": [
+                    "9adf053c-a659-4bbf-91a9-2a6a74447a71"
+                  ],
+                  "assessment": {
+                    "model_confidence": 1.0,
+                    "source_authority": "high",
+                    "evidence_available": true,
+                    "validation_state": "pending",
+                    "normalization_applied": false,
+                    "source_agreement": "unknown"
+                  },
+                  "created_at": null
+                }
+              ],
+              "assessment": {
+                "model_confidence": null,
+                "source_authority": "unknown",
+                "evidence_available": false,
+                "validation_state": "pending",
+                "normalization_applied": false,
+                "source_agreement": "unknown"
+              },
+              "validation_state": "pending"
+            }
+          ],
+          "descriptions": {
+            "invoice": null,
+            "mobile": null,
+            "short": null,
+            "long": null,
+            "retail": null,
+            "marketing": null,
+            "features": [],
+            "source_ids": [],
+            "evidence_ids": []
+          },
+          "digital_assets": [],
+          "raw_inputs": [
+            {
+              "field_name": "Mfg_Part_Num",
+              "raw_value": "DCB518ASTS06G",
+              "normalized_value": "DCB518ASTS06G",
+              "normalization_reason": null,
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            },
+            {
+              "field_name": "Part_Desc",
+              "raw_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+              "normalized_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+              "normalization_reason": null,
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            },
+            {
+              "field_name": "E1_Brand",
+              "raw_value": "-- Unbranded --",
+              "normalized_value": null,
+              "normalization_reason": "placeholder",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            },
+            {
+              "field_name": "Unilog_Brand",
+              "raw_value": "-- No Unilog Brand --",
+              "normalized_value": null,
+              "normalization_reason": "placeholder",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            },
+            {
+              "field_name": "DIB_Brand",
+              "raw_value": "-- No DIB Brand --",
+              "normalized_value": null,
+              "normalization_reason": "placeholder",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            },
+            {
+              "field_name": "Part_Manuf",
+              "raw_value": "Freud Inc (2435)",
+              "normalized_value": "Freud Inc (2435)",
+              "normalization_reason": null,
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            }
+          ],
+          "sources": [
+            {
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "source_type": "supplied_input",
+              "authority": "medium",
+              "uri": "D:\\Users\\pares\\Documents\\ChatGPT\\UNILOG\\data\\external\\Unihack_ Sample Dataset - Input.csv",
+              "manufacturer_id": null,
+              "retrieved_at": null,
+              "content_hash": null,
+              "status": "available",
+              "metadata": {}
+            }
+          ],
+          "evidence": [
+            {
+              "evidence_id": "34c46ab2-44d8-40c0-a459-484d8be5db9a",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-manufacturer-part-number",
+              "candidate_id": "70e4c915-70f9-47a3-b22b-2cead9afa9fd",
+              "quoted_text": "DCB518ASTS06G",
+              "document_page": null,
+              "location": {
+                "field": "Mfg_Part_Num"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            },
+            {
+              "evidence_id": "f0482f0f-2d74-4c7d-8824-6aa343c69e4f",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-part-description",
+              "candidate_id": "ee44d2bb-1e75-44f7-8f55-a70e1ed2869b",
+              "quoted_text": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+              "document_page": null,
+              "location": {
+                "field": "Part_Desc"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            },
+            {
+              "evidence_id": "75066f7d-4d2a-4e40-8595-0ff49fb8955a",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-width",
+              "candidate_id": "45b38c98-76e2-43e2-a8f6-4a2846efc60b",
+              "quoted_text": "1/2\"",
+              "document_page": null,
+              "location": {
+                "field": "Part_Desc"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            },
+            {
+              "evidence_id": "665e50a1-b89b-4b2b-804d-bb6ce643d24f",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-length",
+              "candidate_id": "89c2d5aa-02c0-4c6c-81e7-8c7ce1d180f5",
+              "quoted_text": "18\"",
+              "document_page": null,
+              "location": {
+                "field": "Part_Desc"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            },
+            {
+              "evidence_id": "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-product-type",
+              "candidate_id": "a55696c3-6635-474b-a54e-7e3e387a9222",
+              "quoted_text": "Sanding Belt",
+              "document_page": null,
+              "location": {
+                "field": "Part_Desc"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            },
+            {
+              "evidence_id": "85599827-e826-4ea2-aa68-45eef07c441f",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-pack-quantity",
+              "candidate_id": "207a7c2e-a941-408f-98a3-cfe577d487e8",
+              "quoted_text": "6pc",
+              "document_page": null,
+              "location": {
+                "field": "Part_Desc"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            },
+            {
+              "evidence_id": "f556ba00-e72d-4097-bb1d-ee65c4a18283",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-brand",
+              "candidate_id": "e1e1b58c-377c-4ba4-95c4-2f9227981392",
+              "quoted_text": "Diablo",
+              "document_page": null,
+              "location": {
+                "field": "Part_Desc"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            },
+            {
+              "evidence_id": "9adf053c-a659-4bbf-91a9-2a6a74447a71",
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+              "product_id": "unihack-row-2",
+              "attribute_id": "attribute-manufacturer",
+              "candidate_id": "c7346b7b-2d50-4694-a834-39bf862b3afc",
+              "quoted_text": "Freud Inc (2435)",
+              "document_page": null,
+              "location": {
+                "field": "Part_Manuf"
+              },
+              "extracted_at": null,
+              "evidence_type": "direct_text"
+            }
+          ],
+          "conflicts": [],
+          "validation_events": [],
+          "audit_events": [
+            {
+              "event_id": "e7577343-0f79-46a4-bc5a-b8b9339d11f9",
+              "product_id": "unihack-row-2",
+              "event_type": "product_created_from_raw_input",
+              "actor": "system",
+              "details": {
+                "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+              },
+              "created_at": "2026-08-16T08:51:53.338818Z"
+            },
+            {
+              "event_id": "1a582a5f-8848-4402-a102-17df1956d9c8",
+              "product_id": "unihack-row-2",
+              "event_type": "lifecycle_transition",
+              "actor": "system",
+              "details": {
+                "from": "raw",
+                "to": "understood",
+                "reason": "classification_input_received"
+              },
+              "created_at": "2026-08-16T08:52:04.238337Z"
+            },
+            {
+              "event_id": "d13f7b5a-f75c-4d6c-a60c-eb3b1f9ebc72",
+              "product_id": "unihack-row-2",
+              "event_type": "lifecycle_transition",
+              "actor": "system",
+              "details": {
+                "from": "understood",
+                "to": "classified",
+                "reason": "classification_added"
+              },
+              "created_at": "2026-08-16T08:52:04.238440Z"
+            },
+            {
+              "event_id": "37da6f03-fb7d-4fdb-bd28-364371bd3848",
+              "product_id": "unihack-row-2",
+              "event_type": "classification_added",
+              "actor": "system",
+              "details": {},
+              "created_at": "2026-08-16T08:52:04.238516Z"
+            },
+            {
+              "event_id": "5e90b967-84da-4e44-9bc2-b6e39bc6cd22",
+              "product_id": "unihack-row-2",
+              "event_type": "lifecycle_transition",
+              "actor": "system",
+              "details": {
+                "from": "classified",
+                "to": "enriched",
+                "reason": "attribute_candidate_added"
+              },
+              "created_at": "2026-08-16T08:52:11.016404Z"
+            },
+            {
+              "event_id": "197d81e5-4fb4-424f-84ed-2002f77618ab",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-manufacturer-part-number",
+                "candidate_id": "70e4c915-70f9-47a3-b22b-2cead9afa9fd"
+              },
+              "created_at": "2026-08-16T08:52:11.016444Z"
+            },
+            {
+              "event_id": "0617ddf1-ef27-431e-be3d-c68fd6c37758",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "34c46ab2-44d8-40c0-a459-484d8be5db9a"
+              },
+              "created_at": "2026-08-16T08:52:11.019463Z"
+            },
+            {
+              "event_id": "b9965a58-d965-411b-a1d0-e710465fce68",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-part-description",
+                "candidate_id": "ee44d2bb-1e75-44f7-8f55-a70e1ed2869b"
+              },
+              "created_at": "2026-08-16T08:52:11.020864Z"
+            },
+            {
+              "event_id": "b053a43c-9b80-4524-b150-ddc6db8d146e",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "f0482f0f-2d74-4c7d-8824-6aa343c69e4f"
+              },
+              "created_at": "2026-08-16T08:52:11.021971Z"
+            },
+            {
+              "event_id": "f6c35532-ffbe-4f66-b301-3bdd19b55c8d",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-width",
+                "candidate_id": "45b38c98-76e2-43e2-a8f6-4a2846efc60b"
+              },
+              "created_at": "2026-08-16T08:52:11.023119Z"
+            },
+            {
+              "event_id": "8c1d8cea-54f3-45cc-926c-e426eeb638ef",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "75066f7d-4d2a-4e40-8595-0ff49fb8955a"
+              },
+              "created_at": "2026-08-16T08:52:11.024236Z"
+            },
+            {
+              "event_id": "ef3fb300-c7d8-44e8-9230-17ed3ebd6e2f",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-length",
+                "candidate_id": "89c2d5aa-02c0-4c6c-81e7-8c7ce1d180f5"
+              },
+              "created_at": "2026-08-16T08:52:11.025441Z"
+            },
+            {
+              "event_id": "2d10f21e-c5ea-493b-9a05-6bea83380550",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "665e50a1-b89b-4b2b-804d-bb6ce643d24f"
+              },
+              "created_at": "2026-08-16T08:52:11.026724Z"
+            },
+            {
+              "event_id": "4e9cb5cc-cf15-4fed-96f8-7f4a5e8392ac",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-product-type",
+                "candidate_id": "a55696c3-6635-474b-a54e-7e3e387a9222"
+              },
+              "created_at": "2026-08-16T08:52:11.028088Z"
+            },
+            {
+              "event_id": "6caca687-d8ae-4b22-9c1f-7d3763f408cb",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30"
+              },
+              "created_at": "2026-08-16T08:52:11.029525Z"
+            },
+            {
+              "event_id": "900ffd9c-e7cb-4fb4-9c53-446c17956425",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-pack-quantity",
+                "candidate_id": "207a7c2e-a941-408f-98a3-cfe577d487e8"
+              },
+              "created_at": "2026-08-16T08:52:11.031053Z"
+            },
+            {
+              "event_id": "6a7951b8-2c05-4ba8-8114-d3621414baeb",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "85599827-e826-4ea2-aa68-45eef07c441f"
+              },
+              "created_at": "2026-08-16T08:52:11.033056Z"
+            },
+            {
+              "event_id": "1184bb2f-d766-4935-9be9-98fb684c9ea1",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-brand",
+                "candidate_id": "e1e1b58c-377c-4ba4-95c4-2f9227981392"
+              },
+              "created_at": "2026-08-16T08:52:11.036084Z"
+            },
+            {
+              "event_id": "7974af66-6a79-4785-933f-5c849f3b492c",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "f556ba00-e72d-4097-bb1d-ee65c4a18283"
+              },
+              "created_at": "2026-08-16T08:52:11.037929Z"
+            },
+            {
+              "event_id": "b61e240d-f8c1-48ee-8fe1-414771ef6be9",
+              "product_id": "unihack-row-2",
+              "event_type": "attribute_candidate_added",
+              "actor": "system",
+              "details": {
+                "attribute_id": "attribute-manufacturer",
+                "candidate_id": "c7346b7b-2d50-4694-a834-39bf862b3afc"
+              },
+              "created_at": "2026-08-16T08:52:11.039832Z"
+            },
+            {
+              "event_id": "6f0d2d4c-dda9-4d8b-b7bd-69968fcd28fd",
+              "product_id": "unihack-row-2",
+              "event_type": "evidence_attached",
+              "actor": "system",
+              "details": {
+                "evidence_id": "9adf053c-a659-4bbf-91a9-2a6a74447a71"
+              },
+              "created_at": "2026-08-16T08:52:11.041774Z"
+            },
+            {
+              "event_id": "c2fa7f7b-7781-4213-967c-ca5ef4b24bf6",
+              "product_id": "unihack-row-2",
+              "event_type": "product_understood",
+              "actor": "orchestrator",
+              "details": {
+                "product_type": "Sanding Belt"
+              },
+              "created_at": "2026-08-16T08:52:11.041869Z"
+            }
+          ],
+          "lifecycle_state": "enriched",
+          "quality": {
+            "known_field_count": 6,
+            "populated_field_count": 3,
+            "unresolved_issue_count": 0,
+            "validation_state": "pending",
+            "readiness_state": "enriched",
+            "conflict_count": 0,
+            "unresolved_issue_codes": []
+          }
+        },
+        "error": null,
+        "metrics": {
+          "products": 1,
+          "planned_attributes": 8,
+          "enriched_attributes": 0,
+          "accepted_candidates": 0,
+          "rejected_candidates": 0,
+          "review_attributes": 0,
+          "missing_attributes": 0,
+          "conflicts": 0,
+          "ready": 1,
+          "review_required": 0,
+          "blocked": 0,
+          "agent_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cached_tokens": 0,
+          "cache_hits": 0,
+          "cache_misses": 0,
+          "retries": 0,
+          "estimated_cost_usd": 0.0
+        }
+      },
+      "lineage": {
+        "attributes_before_phase5": 0,
+        "attributes_after_phase6": 8,
+        "manufacturer_backed_attributes": [],
+        "authoritative_evidence_count": 0,
+        "final_source_count": 1,
+        "final_evidence_count": 8
+      },
+      "final_product_truth": {
+        "product_id": "unihack-row-2",
+        "identity": {
+          "manufacturer": {
+            "raw_value": "Freud Inc (2435)",
+            "normalized_value": "Freud Inc (2435)",
+            "status": "normalized",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "medium",
+              "evidence_available": true,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            }
+          },
+          "manufacturer_code": null,
+          "brand": {
+            "raw_value": "-- No Unilog Brand --",
+            "normalized_value": null,
+            "status": "missing",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "medium",
+              "evidence_available": true,
+              "validation_state": "pending",
+              "normalization_applied": true,
+              "source_agreement": "unknown"
+            }
+          },
+          "brand_code": null,
+          "manufacturer_part_number": {
+            "raw_value": "DCB518ASTS06G",
+            "normalized_value": "DCB518ASTS06G",
+            "status": "normalized",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "medium",
+              "evidence_available": true,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            }
+          },
+          "source_part_number": {
+            "raw_value": "DCB518ASTS06G",
+            "normalized_value": "DCB518ASTS06G",
+            "status": "normalized",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "medium",
+              "evidence_available": true,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            }
+          },
+          "sku": null,
+          "trade_name": null,
+          "source_record_id": "unihack-row-2"
+        },
+        "classification": {
+          "department": null,
+          "class_name": null,
+          "fine": null,
+          "classpath": [],
+          "taxonomy_id": null,
+          "source_ids": [
+            "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+          ],
+          "evidence_ids": [],
+          "validation_state": "pending"
+        },
+        "attributes": [
+          {
+            "attribute_id": "attribute-manufacturer-part-number",
+            "canonical_name": "Manufacturer Part Number",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "34c46ab2-44d8-40c0-a459-484d8be5db9a"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "70e4c915-70f9-47a3-b22b-2cead9afa9fd",
+                "raw_value": "DCB518ASTS06G",
+                "normalized_value": "DCB518ASTS06G",
+                "uom": null,
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "34c46ab2-44d8-40c0-a459-484d8be5db9a"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          },
+          {
+            "attribute_id": "attribute-part-description",
+            "canonical_name": "Part Description",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "f0482f0f-2d74-4c7d-8824-6aa343c69e4f"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "ee44d2bb-1e75-44f7-8f55-a70e1ed2869b",
+                "raw_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+                "normalized_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+                "uom": null,
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "f0482f0f-2d74-4c7d-8824-6aa343c69e4f"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          },
+          {
+            "attribute_id": "attribute-width",
+            "canonical_name": "Width",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "75066f7d-4d2a-4e40-8595-0ff49fb8955a"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "45b38c98-76e2-43e2-a8f6-4a2846efc60b",
+                "raw_value": "1/2\"",
+                "normalized_value": "1/2",
+                "uom": "in",
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "75066f7d-4d2a-4e40-8595-0ff49fb8955a"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          },
+          {
+            "attribute_id": "attribute-length",
+            "canonical_name": "Length",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "665e50a1-b89b-4b2b-804d-bb6ce643d24f"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "89c2d5aa-02c0-4c6c-81e7-8c7ce1d180f5",
+                "raw_value": "18\"",
+                "normalized_value": "18",
+                "uom": "in",
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "665e50a1-b89b-4b2b-804d-bb6ce643d24f"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          },
+          {
+            "attribute_id": "attribute-product-type",
+            "canonical_name": "Product Type",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "a55696c3-6635-474b-a54e-7e3e387a9222",
+                "raw_value": "Sanding Belt",
+                "normalized_value": "Sanding Belt",
+                "uom": null,
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          },
+          {
+            "attribute_id": "attribute-pack-quantity",
+            "canonical_name": "Pack Quantity",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "85599827-e826-4ea2-aa68-45eef07c441f"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "207a7c2e-a941-408f-98a3-cfe577d487e8",
+                "raw_value": "6pc",
+                "normalized_value": "6",
+                "uom": "pc",
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "85599827-e826-4ea2-aa68-45eef07c441f"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          },
+          {
+            "attribute_id": "attribute-brand",
+            "canonical_name": "Brand",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "f556ba00-e72d-4097-bb1d-ee65c4a18283"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "e1e1b58c-377c-4ba4-95c4-2f9227981392",
+                "raw_value": "Diablo",
+                "normalized_value": "Diablo",
+                "uom": null,
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "f556ba00-e72d-4097-bb1d-ee65c4a18283"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          },
+          {
+            "attribute_id": "attribute-manufacturer",
+            "canonical_name": "Manufacturer",
+            "raw_value": null,
+            "normalized_value": null,
+            "uom": null,
+            "applicability": "unknown",
+            "status": "candidate",
+            "source_ids": [
+              "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            ],
+            "evidence_ids": [
+              "9adf053c-a659-4bbf-91a9-2a6a74447a71"
+            ],
+            "candidates": [
+              {
+                "candidate_id": "c7346b7b-2d50-4694-a834-39bf862b3afc",
+                "raw_value": "Freud Inc (2435)",
+                "normalized_value": "Freud Inc",
+                "uom": null,
+                "status": "candidate",
+                "source_ids": [
+                  "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+                ],
+                "evidence_ids": [
+                  "9adf053c-a659-4bbf-91a9-2a6a74447a71"
+                ],
+                "assessment": {
+                  "model_confidence": 1.0,
+                  "source_authority": "high",
+                  "evidence_available": true,
+                  "validation_state": "pending",
+                  "normalization_applied": false,
+                  "source_agreement": "unknown"
+                },
+                "created_at": null
+              }
+            ],
+            "assessment": {
+              "model_confidence": null,
+              "source_authority": "unknown",
+              "evidence_available": false,
+              "validation_state": "pending",
+              "normalization_applied": false,
+              "source_agreement": "unknown"
+            },
+            "validation_state": "pending"
+          }
+        ],
+        "descriptions": {
+          "invoice": null,
+          "mobile": null,
+          "short": null,
+          "long": null,
+          "retail": null,
+          "marketing": null,
+          "features": [],
+          "source_ids": [],
+          "evidence_ids": []
+        },
+        "digital_assets": [],
+        "raw_inputs": [
+          {
+            "field_name": "Mfg_Part_Num",
+            "raw_value": "DCB518ASTS06G",
+            "normalized_value": "DCB518ASTS06G",
+            "normalization_reason": null,
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+          },
+          {
+            "field_name": "Part_Desc",
+            "raw_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+            "normalized_value": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+            "normalization_reason": null,
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+          },
+          {
+            "field_name": "E1_Brand",
+            "raw_value": "-- Unbranded --",
+            "normalized_value": null,
+            "normalization_reason": "placeholder",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+          },
+          {
+            "field_name": "Unilog_Brand",
+            "raw_value": "-- No Unilog Brand --",
+            "normalized_value": null,
+            "normalization_reason": "placeholder",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+          },
+          {
+            "field_name": "DIB_Brand",
+            "raw_value": "-- No DIB Brand --",
+            "normalized_value": null,
+            "normalization_reason": "placeholder",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+          },
+          {
+            "field_name": "Part_Manuf",
+            "raw_value": "Freud Inc (2435)",
+            "normalized_value": "Freud Inc (2435)",
+            "normalization_reason": null,
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "source_type": "supplied_input",
+            "authority": "medium",
+            "uri": "D:\\Users\\pares\\Documents\\ChatGPT\\UNILOG\\data\\external\\Unihack_ Sample Dataset - Input.csv",
+            "manufacturer_id": null,
+            "retrieved_at": null,
+            "content_hash": null,
+            "status": "available",
+            "metadata": {}
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "34c46ab2-44d8-40c0-a459-484d8be5db9a",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-manufacturer-part-number",
+            "candidate_id": "70e4c915-70f9-47a3-b22b-2cead9afa9fd",
+            "quoted_text": "DCB518ASTS06G",
+            "document_page": null,
+            "location": {
+              "field": "Mfg_Part_Num"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          },
+          {
+            "evidence_id": "f0482f0f-2d74-4c7d-8824-6aa343c69e4f",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-part-description",
+            "candidate_id": "ee44d2bb-1e75-44f7-8f55-a70e1ed2869b",
+            "quoted_text": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+            "document_page": null,
+            "location": {
+              "field": "Part_Desc"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          },
+          {
+            "evidence_id": "75066f7d-4d2a-4e40-8595-0ff49fb8955a",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-width",
+            "candidate_id": "45b38c98-76e2-43e2-a8f6-4a2846efc60b",
+            "quoted_text": "1/2\"",
+            "document_page": null,
+            "location": {
+              "field": "Part_Desc"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          },
+          {
+            "evidence_id": "665e50a1-b89b-4b2b-804d-bb6ce643d24f",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-length",
+            "candidate_id": "89c2d5aa-02c0-4c6c-81e7-8c7ce1d180f5",
+            "quoted_text": "18\"",
+            "document_page": null,
+            "location": {
+              "field": "Part_Desc"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          },
+          {
+            "evidence_id": "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-product-type",
+            "candidate_id": "a55696c3-6635-474b-a54e-7e3e387a9222",
+            "quoted_text": "Sanding Belt",
+            "document_page": null,
+            "location": {
+              "field": "Part_Desc"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          },
+          {
+            "evidence_id": "85599827-e826-4ea2-aa68-45eef07c441f",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-pack-quantity",
+            "candidate_id": "207a7c2e-a941-408f-98a3-cfe577d487e8",
+            "quoted_text": "6pc",
+            "document_page": null,
+            "location": {
+              "field": "Part_Desc"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          },
+          {
+            "evidence_id": "f556ba00-e72d-4097-bb1d-ee65c4a18283",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-brand",
+            "candidate_id": "e1e1b58c-377c-4ba4-95c4-2f9227981392",
+            "quoted_text": "Diablo",
+            "document_page": null,
+            "location": {
+              "field": "Part_Desc"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          },
+          {
+            "evidence_id": "9adf053c-a659-4bbf-91a9-2a6a74447a71",
+            "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862",
+            "product_id": "unihack-row-2",
+            "attribute_id": "attribute-manufacturer",
+            "candidate_id": "c7346b7b-2d50-4694-a834-39bf862b3afc",
+            "quoted_text": "Freud Inc (2435)",
+            "document_page": null,
+            "location": {
+              "field": "Part_Manuf"
+            },
+            "extracted_at": null,
+            "evidence_type": "direct_text"
+          }
+        ],
+        "conflicts": [],
+        "validation_events": [],
+        "audit_events": [
+          {
+            "event_id": "e7577343-0f79-46a4-bc5a-b8b9339d11f9",
+            "product_id": "unihack-row-2",
+            "event_type": "product_created_from_raw_input",
+            "actor": "system",
+            "details": {
+              "source_id": "input-ed41b50e26c83d0859d563028107fa81a799b5b4b9e3d5743eb846dbd3c7b862"
+            },
+            "created_at": "2026-08-16T08:51:53.338818Z"
+          },
+          {
+            "event_id": "1a582a5f-8848-4402-a102-17df1956d9c8",
+            "product_id": "unihack-row-2",
+            "event_type": "lifecycle_transition",
+            "actor": "system",
+            "details": {
+              "from": "raw",
+              "to": "understood",
+              "reason": "classification_input_received"
+            },
+            "created_at": "2026-08-16T08:52:04.238337Z"
+          },
+          {
+            "event_id": "d13f7b5a-f75c-4d6c-a60c-eb3b1f9ebc72",
+            "product_id": "unihack-row-2",
+            "event_type": "lifecycle_transition",
+            "actor": "system",
+            "details": {
+              "from": "understood",
+              "to": "classified",
+              "reason": "classification_added"
+            },
+            "created_at": "2026-08-16T08:52:04.238440Z"
+          },
+          {
+            "event_id": "37da6f03-fb7d-4fdb-bd28-364371bd3848",
+            "product_id": "unihack-row-2",
+            "event_type": "classification_added",
+            "actor": "system",
+            "details": {},
+            "created_at": "2026-08-16T08:52:04.238516Z"
+          },
+          {
+            "event_id": "5e90b967-84da-4e44-9bc2-b6e39bc6cd22",
+            "product_id": "unihack-row-2",
+            "event_type": "lifecycle_transition",
+            "actor": "system",
+            "details": {
+              "from": "classified",
+              "to": "enriched",
+              "reason": "attribute_candidate_added"
+            },
+            "created_at": "2026-08-16T08:52:11.016404Z"
+          },
+          {
+            "event_id": "197d81e5-4fb4-424f-84ed-2002f77618ab",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-manufacturer-part-number",
+              "candidate_id": "70e4c915-70f9-47a3-b22b-2cead9afa9fd"
+            },
+            "created_at": "2026-08-16T08:52:11.016444Z"
+          },
+          {
+            "event_id": "0617ddf1-ef27-431e-be3d-c68fd6c37758",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "34c46ab2-44d8-40c0-a459-484d8be5db9a"
+            },
+            "created_at": "2026-08-16T08:52:11.019463Z"
+          },
+          {
+            "event_id": "b9965a58-d965-411b-a1d0-e710465fce68",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-part-description",
+              "candidate_id": "ee44d2bb-1e75-44f7-8f55-a70e1ed2869b"
+            },
+            "created_at": "2026-08-16T08:52:11.020864Z"
+          },
+          {
+            "event_id": "b053a43c-9b80-4524-b150-ddc6db8d146e",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "f0482f0f-2d74-4c7d-8824-6aa343c69e4f"
+            },
+            "created_at": "2026-08-16T08:52:11.021971Z"
+          },
+          {
+            "event_id": "f6c35532-ffbe-4f66-b301-3bdd19b55c8d",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-width",
+              "candidate_id": "45b38c98-76e2-43e2-a8f6-4a2846efc60b"
+            },
+            "created_at": "2026-08-16T08:52:11.023119Z"
+          },
+          {
+            "event_id": "8c1d8cea-54f3-45cc-926c-e426eeb638ef",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "75066f7d-4d2a-4e40-8595-0ff49fb8955a"
+            },
+            "created_at": "2026-08-16T08:52:11.024236Z"
+          },
+          {
+            "event_id": "ef3fb300-c7d8-44e8-9230-17ed3ebd6e2f",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-length",
+              "candidate_id": "89c2d5aa-02c0-4c6c-81e7-8c7ce1d180f5"
+            },
+            "created_at": "2026-08-16T08:52:11.025441Z"
+          },
+          {
+            "event_id": "2d10f21e-c5ea-493b-9a05-6bea83380550",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "665e50a1-b89b-4b2b-804d-bb6ce643d24f"
+            },
+            "created_at": "2026-08-16T08:52:11.026724Z"
+          },
+          {
+            "event_id": "4e9cb5cc-cf15-4fed-96f8-7f4a5e8392ac",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-product-type",
+              "candidate_id": "a55696c3-6635-474b-a54e-7e3e387a9222"
+            },
+            "created_at": "2026-08-16T08:52:11.028088Z"
+          },
+          {
+            "event_id": "6caca687-d8ae-4b22-9c1f-7d3763f408cb",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "6e1bd3b6-1358-41e0-a5e4-9056d7a97b30"
+            },
+            "created_at": "2026-08-16T08:52:11.029525Z"
+          },
+          {
+            "event_id": "900ffd9c-e7cb-4fb4-9c53-446c17956425",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-pack-quantity",
+              "candidate_id": "207a7c2e-a941-408f-98a3-cfe577d487e8"
+            },
+            "created_at": "2026-08-16T08:52:11.031053Z"
+          },
+          {
+            "event_id": "6a7951b8-2c05-4ba8-8114-d3621414baeb",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "85599827-e826-4ea2-aa68-45eef07c441f"
+            },
+            "created_at": "2026-08-16T08:52:11.033056Z"
+          },
+          {
+            "event_id": "1184bb2f-d766-4935-9be9-98fb684c9ea1",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-brand",
+              "candidate_id": "e1e1b58c-377c-4ba4-95c4-2f9227981392"
+            },
+            "created_at": "2026-08-16T08:52:11.036084Z"
+          },
+          {
+            "event_id": "7974af66-6a79-4785-933f-5c849f3b492c",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "f556ba00-e72d-4097-bb1d-ee65c4a18283"
+            },
+            "created_at": "2026-08-16T08:52:11.037929Z"
+          },
+          {
+            "event_id": "b61e240d-f8c1-48ee-8fe1-414771ef6be9",
+            "product_id": "unihack-row-2",
+            "event_type": "attribute_candidate_added",
+            "actor": "system",
+            "details": {
+              "attribute_id": "attribute-manufacturer",
+              "candidate_id": "c7346b7b-2d50-4694-a834-39bf862b3afc"
+            },
+            "created_at": "2026-08-16T08:52:11.039832Z"
+          },
+          {
+            "event_id": "6f0d2d4c-dda9-4d8b-b7bd-69968fcd28fd",
+            "product_id": "unihack-row-2",
+            "event_type": "evidence_attached",
+            "actor": "system",
+            "details": {
+              "evidence_id": "9adf053c-a659-4bbf-91a9-2a6a74447a71"
+            },
+            "created_at": "2026-08-16T08:52:11.041774Z"
+          },
+          {
+            "event_id": "c2fa7f7b-7781-4213-967c-ca5ef4b24bf6",
+            "product_id": "unihack-row-2",
+            "event_type": "product_understood",
+            "actor": "orchestrator",
+            "details": {
+              "product_type": "Sanding Belt"
+            },
+            "created_at": "2026-08-16T08:52:11.041869Z"
+          }
+        ],
+        "lifecycle_state": "enriched",
+        "quality": {
+          "known_field_count": 6,
+          "populated_field_count": 3,
+          "unresolved_issue_count": 0,
+          "validation_state": "pending",
+          "readiness_state": "enriched",
+          "conflict_count": 0,
+          "unresolved_issue_codes": []
+        }
+      }
+    }
+  ],
+  "summary": {
+    "products": 1,
+    "enriched": 0,
+    "review_required": 1,
+    "blocked": 0,
+    "search_requests": 1,
+    "search_tool_calls": 0,
+    "manufacturer_evidence": 0
+  }
+}

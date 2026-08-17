@@ -1,0 +1,5424 @@
+[
+  {
+    "row_number": 1,
+    "product_id": "eval-prod-1",
+    "mpn": "DCB518ASTS06G",
+    "brand": "",
+    "manufacturer_input": "Freud Inc (2435)",
+    "description": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "L. Standard direct URL candidate",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 111,
+    "phase4": {
+      "status": "failed",
+      "manufacturer_candidate": null,
+      "brand_candidate": null,
+      "classification": null,
+      "attributes_extracted": 0,
+      "error": "Pipeline crashed"
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "blocked",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": "Pipeline crashed"
+    },
+    "final_status": "BLOCKED",
+    "publication_state": "BLOCKED",
+    "blocker": "PIPELINE_ERROR",
+    "failures": [
+      {
+        "category": "ENVIRONMENT_FAILURE",
+        "severity": "HIGH",
+        "phase": "pipeline_execution",
+        "error": "'ProductSourceCandidate' object has no attribute 'identity_classification'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 2,
+    "product_id": "eval-prod-2",
+    "mpn": "3MABR-7100075678",
+    "brand": "",
+    "manufacturer_input": "Jam Industrial Supply LLC (JAMIN)",
+    "description": "3M 775L Stikit Film P150 - Cubitron II 50 Disc/Box",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "G. Missing brand",
+      "Q. Similar MPNs / family",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 27,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Jam Industrial Supply LLC (JAMIN)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Jam Industrial Supply LLC (JAMIN)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 3,
+    "product_id": "eval-prod-3",
+    "mpn": "3MABR-7100045865",
+    "brand": "",
+    "manufacturer_input": "Jam Industrial Supply LLC (JAMIN)",
+    "description": "3M 775L Stikit Film P120 - Cubitron II 50 Disc/Box",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "G. Missing brand",
+      "Q. Similar MPNs / family",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 24,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Jam Industrial Supply LLC (JAMIN)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Jam Industrial Supply LLC (JAMIN)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 8,
+    "product_id": "eval-prod-8",
+    "mpn": "5B-332-080",
+    "brand": "",
+    "manufacturer_input": "Mirka Abrasives Inc (MIRUS)",
+    "description": "5B-332-080 HIOLIT 5\" P80",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "J. Very short description",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family",
+      "R. Potential MPN substring collisions"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 23,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Mirka Abrasives Inc (MIRUS)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Mirka Abrasives Inc (MIRUS)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 9,
+    "product_id": "eval-prod-9",
+    "mpn": "5B-332-120",
+    "brand": "",
+    "manufacturer_input": "Mirka Abrasives Inc (MIRUS)",
+    "description": "5B-332-120 HIOLIT 5\" P120",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family",
+      "R. Potential MPN substring collisions"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 24,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Mirka Abrasives Inc (MIRUS)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Mirka Abrasives Inc (MIRUS)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 10,
+    "product_id": "eval-prod-10",
+    "mpn": "9A-570-240",
+    "brand": "",
+    "manufacturer_input": "Mirka Abrasives Inc (MIRUS)",
+    "description": "9A-570-240 Abranet 2.75x30",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 22,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Mirka Abrasives Inc (MIRUS)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Mirka Abrasives Inc (MIRUS)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 12,
+    "product_id": "eval-prod-12",
+    "mpn": "DBD090094101F",
+    "brand": "",
+    "manufacturer_input": "Freud Inc (2435)",
+    "description": "DBD090094101F Diablo 9\" - Metal Cut-Off Disc",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "L. Standard direct URL candidate",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 27,
+    "phase4": {
+      "status": "failed",
+      "manufacturer_candidate": null,
+      "brand_candidate": null,
+      "classification": null,
+      "attributes_extracted": 0,
+      "error": "Pipeline crashed"
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "blocked",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": "Pipeline crashed"
+    },
+    "final_status": "BLOCKED",
+    "publication_state": "BLOCKED",
+    "blocker": "PIPELINE_ERROR",
+    "failures": [
+      {
+        "category": "ENVIRONMENT_FAILURE",
+        "severity": "HIGH",
+        "phase": "pipeline_execution",
+        "error": "'ProductSourceCandidate' object has no attribute 'identity_classification'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 17,
+    "product_id": "eval-prod-17",
+    "mpn": "49-94-0013",
+    "brand": "",
+    "manufacturer_input": "Milwaukee Accessory (4031)",
+    "description": "49-94-0013 Milw 5\"x.045\"x7/8\" Metal Cut Off Disc",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "M. Site-search candidate",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family",
+      "R. Potential MPN substring collisions"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 25,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Milwaukee Accessory (4031)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Milwaukee Accessory (4031)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 20,
+    "product_id": "eval-prod-20",
+    "mpn": "49-94-0001",
+    "brand": "",
+    "manufacturer_input": "Milwaukee Accessory (4031)",
+    "description": "49-94-0001 Milw 4\"x.040\"x5/8\" Metal Cut Off Disc",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "M. Site-search candidate",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family",
+      "R. Potential MPN substring collisions"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 23,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Milwaukee Accessory (4031)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Milwaukee Accessory (4031)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 59,
+    "product_id": "eval-prod-59",
+    "mpn": "1700-1PK-BB40",
+    "brand": "3M",
+    "manufacturer_input": "3 M Co (5293)",
+    "description": "3/4x60' Vinyl Elect Tape",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "J. Very short description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 42,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "3 M Co (5293)",
+      "brand_candidate": "3M",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer '3 M Co (5293)' and brand '3M'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 71,
+    "product_id": "eval-prod-71",
+    "mpn": "D519127",
+    "brand": "",
+    "manufacturer_input": "V & V Appliance Parts Inc (VVAPP)",
+    "description": "D519127 Heater Kit",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand",
+      "J. Very short description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 74,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "V & V Appliance Parts Inc (VVAPP)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'V & V Appliance Parts Inc (VVAPP)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 95,
+    "product_id": "eval-prod-95",
+    "mpn": "LNL65301",
+    "brand": "",
+    "manufacturer_input": "-",
+    "description": "LNL65301 Digital Tire Pressure - Inflator Gauge",
+    "sample_categories": [
+      "F. Missing manufacturer",
+      "G. Missing brand",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 58,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "-",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer '-' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 100,
+    "product_id": "eval-prod-100",
+    "mpn": "543302126",
+    "brand": "TREX",
+    "manufacturer_input": "U S Lumber (3073)",
+    "description": "6' Wh Select T-Rail Kit Horiz - w/Sq Composite Balusters",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "I. Strange/abbreviated description",
+      "K. Relatively long description",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 58,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "U S Lumber (3073)",
+      "brand_candidate": "TREX",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'U S Lumber (3073)' and brand 'TREX'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 101,
+    "product_id": "eval-prod-101",
+    "mpn": "543302146",
+    "brand": "TREX",
+    "manufacturer_input": "U S Lumber (3073)",
+    "description": "8' Wh Select T-Rail Kit Horiz - w/Sq Composite Balusters",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "I. Strange/abbreviated description",
+      "K. Relatively long description",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 65,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "U S Lumber (3073)",
+      "brand_candidate": "TREX",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'U S Lumber (3073)' and brand 'TREX'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 108,
+    "product_id": "eval-prod-108",
+    "mpn": "543300256",
+    "brand": "TREX",
+    "manufacturer_input": "Boise Cascade Building Materials (BOICA)",
+    "description": "6' Black Select Classic Horiz - Rail w/Rnd Black Alum Baluster",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "K. Relatively long description",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Boise Cascade Building Materials (BOICA)",
+      "brand_candidate": "TREX",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Boise Cascade Building Materials (BOICA)' and brand 'TREX'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 155,
+    "product_id": "eval-prod-155",
+    "mpn": "AGB15512BS",
+    "brand": "TIMBERTECH",
+    "manufacturer_input": "Parksite (6151)",
+    "description": "1x6-12' Brownstone Grooved - Harvest Azek PVC Decking",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "K. Relatively long description",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 62,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Parksite (6151)",
+      "brand_candidate": "TIMBERTECH",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Parksite (6151)' and brand 'TIMBERTECH'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 250,
+    "product_id": "eval-prod-250",
+    "mpn": "543142912",
+    "brand": "TREX",
+    "manufacturer_input": "U S Lumber (3073)",
+    "description": "1x12-12' Carmel - Trex Lineage",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 75,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "U S Lumber (3073)",
+      "brand_candidate": "TREX",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'U S Lumber (3073)' and brand 'TREX'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 347,
+    "product_id": "eval-prod-347",
+    "mpn": "BHA1-UPC",
+    "brand": "Southwire",
+    "manufacturer_input": "Southwire/g Turner (6603)",
+    "description": "16-24 Adjust Hanger",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "B. Known manufacturer + known brand",
+      "J. Very short description",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 64,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Southwire/g Turner (6603)",
+      "brand_candidate": "Southwire",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Southwire/g Turner (6603)' and brand 'Southwire'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 450,
+    "product_id": "eval-prod-450",
+    "mpn": "65-1210",
+    "brand": "",
+    "manufacturer_input": "Satco Prod Inc (5573)",
+    "description": "65-1210 2' LED Wrap Lt",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "J. Very short description",
+      "N. Products discoverable via sitemap"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 68,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Satco Prod Inc (5573)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Satco Prod Inc (5573)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 520,
+    "product_id": "eval-prod-520",
+    "mpn": "573378",
+    "brand": "Philips",
+    "manufacturer_input": "Phillips Lighting (5831)",
+    "description": "573378 60W Led Med 27k 3pk",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "B. Known manufacturer + known brand",
+      "M. Site-search candidate",
+      "N. Products discoverable via sitemap"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 72,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Phillips Lighting (5831)",
+      "brand_candidate": "Philips",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": true,
+      "resolved_manufacturer": "Phillips Lighting (5831)",
+      "domain_resolved": true,
+      "domain": "signify.com",
+      "strategies_attempted": [
+        "domain_resolver",
+        "audited_domain_catalog",
+        "deterministic_product_url_patterns",
+        "manufacturer_site_search_patterns"
+      ],
+      "urls_generated": [
+        "https://signify.com/products/573378",
+        "https://signify.com/product/573378",
+        "https://signify.com/p/573378",
+        "https://signify.com/catalog/573378",
+        "https://signify.com/items/573378",
+        "https://signify.com/item/573378",
+        "https://signify.com/tools/573378",
+        "https://signify.com/573378",
+        "https://signify.com/search?q=573378",
+        "https://signify.com/search?query=573378",
+        "https://signify.com/search?term=573378",
+        "https://signify.com/search?keywords=573378",
+        "https://signify.com/search/573378",
+        "https://signify.com/catalogsearch/result?q=573378",
+        "https://signify.com/?s=573378",
+        "https://signify.com/sitemap.xml",
+        "https://signify.com/sitemap_index.xml",
+        "https://signify.com/product-sitemap.xml",
+        "https://signify.com/products-sitemap.xml",
+        "https://signify.com/sitemap/products.xml",
+        "https://usa.lighting.philips.com/products/573378",
+        "https://usa.lighting.philips.com/product/573378",
+        "https://usa.lighting.philips.com/p/573378",
+        "https://usa.lighting.philips.com/catalog/573378",
+        "https://usa.lighting.philips.com/items/573378",
+        "https://usa.lighting.philips.com/item/573378",
+        "https://usa.lighting.philips.com/tools/573378",
+        "https://usa.lighting.philips.com/573378",
+        "https://usa.lighting.philips.com/search?q=573378",
+        "https://usa.lighting.philips.com/search?query=573378",
+        "https://usa.lighting.philips.com/search?term=573378",
+        "https://usa.lighting.philips.com/search?keywords=573378",
+        "https://usa.lighting.philips.com/search/573378",
+        "https://usa.lighting.philips.com/catalogsearch/result?q=573378",
+        "https://usa.lighting.philips.com/?s=573378",
+        "https://usa.lighting.philips.com/sitemap.xml",
+        "https://usa.lighting.philips.com/sitemap_index.xml",
+        "https://usa.lighting.philips.com/product-sitemap.xml",
+        "https://usa.lighting.philips.com/products-sitemap.xml",
+        "https://usa.lighting.philips.com/sitemap/products.xml"
+      ],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "SOURCE_NOT_FOUND",
+    "failures": [
+      {
+        "category": "SOURCE_NOT_FOUND",
+        "severity": "HIGH",
+        "phase": "phase5_retrieval",
+        "reason": "No authoritative product page discovered on signify.com for MPN 573378"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 600,
+    "product_id": "eval-prod-600",
+    "mpn": "55418901",
+    "brand": "",
+    "manufacturer_input": "Southwire/g Turner (6603)",
+    "description": "6/6/6 UD Triplex Aluminum Wire",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 64,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Southwire/g Turner (6603)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Southwire/g Turner (6603)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 650,
+    "product_id": "eval-prod-650",
+    "mpn": "CVM517P3RD1",
+    "brand": "",
+    "manufacturer_input": "Appliance Dealers Cooperative (APPDE)",
+    "description": "CVM517P3RD1 Cafe Microwave Bk - Display",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "G. Missing brand",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 50,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Appliance Dealers Cooperative (APPDE)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Appliance Dealers Cooperative (APPDE)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 750,
+    "product_id": "eval-prod-750",
+    "mpn": "GCL165-42GL",
+    "brand": "",
+    "manufacturer_input": "Robt Bosch Tool Corp (6564)",
+    "description": "GCL165--42GL Cross Line Laser",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 55,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Robt Bosch Tool Corp (6564)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Robt Bosch Tool Corp (6564)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 850,
+    "product_id": "eval-prod-850",
+    "mpn": "DT1535B",
+    "brand": "Diablo",
+    "manufacturer_input": "Freud Inc (2435)",
+    "description": "DT1535B 3-1/2\" #15 Torx Drive - Bit",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "B. Known manufacturer + known brand",
+      "L. Standard direct URL candidate",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 66,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Freud Inc (2435)",
+      "brand_candidate": "Diablo",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": true,
+      "resolved_manufacturer": "Freud Inc (2435)",
+      "domain_resolved": true,
+      "domain": "diablotools.com",
+      "strategies_attempted": [
+        "domain_resolver",
+        "audited_domain_catalog",
+        "deterministic_product_url_patterns",
+        "manufacturer_site_search_patterns"
+      ],
+      "urls_generated": [
+        "https://diablotools.com/products/DT1535B",
+        "https://diablotools.com/product/DT1535B",
+        "https://diablotools.com/p/DT1535B",
+        "https://diablotools.com/catalog/DT1535B",
+        "https://diablotools.com/items/DT1535B",
+        "https://diablotools.com/item/DT1535B",
+        "https://diablotools.com/tools/DT1535B",
+        "https://diablotools.com/DT1535B",
+        "https://diablotools.com/search?q=DT1535B",
+        "https://diablotools.com/search?query=DT1535B",
+        "https://diablotools.com/search?term=DT1535B",
+        "https://diablotools.com/search?keywords=DT1535B",
+        "https://diablotools.com/search/DT1535B",
+        "https://diablotools.com/catalogsearch/result?q=DT1535B",
+        "https://diablotools.com/?s=DT1535B",
+        "https://diablotools.com/sitemap.xml",
+        "https://diablotools.com/sitemap_index.xml",
+        "https://diablotools.com/product-sitemap.xml",
+        "https://diablotools.com/products-sitemap.xml",
+        "https://diablotools.com/sitemap/products.xml",
+        "https://freudtools.com/products/DT1535B",
+        "https://freudtools.com/product/DT1535B",
+        "https://freudtools.com/p/DT1535B",
+        "https://freudtools.com/catalog/DT1535B",
+        "https://freudtools.com/items/DT1535B",
+        "https://freudtools.com/item/DT1535B",
+        "https://freudtools.com/tools/DT1535B",
+        "https://freudtools.com/DT1535B",
+        "https://freudtools.com/search?q=DT1535B",
+        "https://freudtools.com/search?query=DT1535B",
+        "https://freudtools.com/search?term=DT1535B",
+        "https://freudtools.com/search?keywords=DT1535B",
+        "https://freudtools.com/search/DT1535B",
+        "https://freudtools.com/catalogsearch/result?q=DT1535B",
+        "https://freudtools.com/?s=DT1535B",
+        "https://freudtools.com/sitemap.xml",
+        "https://freudtools.com/sitemap_index.xml",
+        "https://freudtools.com/product-sitemap.xml",
+        "https://freudtools.com/products-sitemap.xml",
+        "https://freudtools.com/sitemap/products.xml",
+        "https://info.freudtools.com/products/DT1535B",
+        "https://info.freudtools.com/product/DT1535B",
+        "https://info.freudtools.com/p/DT1535B",
+        "https://info.freudtools.com/catalog/DT1535B",
+        "https://info.freudtools.com/items/DT1535B",
+        "https://info.freudtools.com/item/DT1535B",
+        "https://info.freudtools.com/tools/DT1535B",
+        "https://info.freudtools.com/DT1535B",
+        "https://info.freudtools.com/search?q=DT1535B",
+        "https://info.freudtools.com/search?query=DT1535B",
+        "https://info.freudtools.com/search?term=DT1535B",
+        "https://info.freudtools.com/search?keywords=DT1535B",
+        "https://info.freudtools.com/search/DT1535B",
+        "https://info.freudtools.com/catalogsearch/result?q=DT1535B",
+        "https://info.freudtools.com/?s=DT1535B",
+        "https://info.freudtools.com/sitemap.xml",
+        "https://info.freudtools.com/sitemap_index.xml",
+        "https://info.freudtools.com/product-sitemap.xml",
+        "https://info.freudtools.com/products-sitemap.xml",
+        "https://info.freudtools.com/sitemap/products.xml"
+      ],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "SOURCE_NOT_FOUND",
+    "failures": [
+      {
+        "category": "SOURCE_NOT_FOUND",
+        "severity": "HIGH",
+        "phase": "phase5_retrieval",
+        "reason": "No authoritative product page discovered on diablotools.com for MPN DT1535B"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 950,
+    "product_id": "eval-prod-950",
+    "mpn": "XT524",
+    "brand": "",
+    "manufacturer_input": "Bow Products (BOWPR)",
+    "description": "XT524 24\" XT XTENDER Fence",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Bow Products (BOWPR)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Bow Products (BOWPR)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 4,
+    "product_id": "eval-prod-4",
+    "mpn": "3MABR-7100048736",
+    "brand": "",
+    "manufacturer_input": "Jam Industrial Supply LLC (JAMIN)",
+    "description": "3M 775L Stikit Film P80 - Cubitron II 50 Disc/Box",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "G. Missing brand",
+      "Q. Similar MPNs / family",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 64,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Jam Industrial Supply LLC (JAMIN)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Jam Industrial Supply LLC (JAMIN)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 11,
+    "product_id": "eval-prod-11",
+    "mpn": "9A-570-320",
+    "brand": "",
+    "manufacturer_input": "Mirka Abrasives Inc (MIRUS)",
+    "description": "9A-570-320 Abranet 2.75x30",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 67,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Mirka Abrasives Inc (MIRUS)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Mirka Abrasives Inc (MIRUS)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 13,
+    "product_id": "eval-prod-13",
+    "mpn": "DBDS12125A01F",
+    "brand": "",
+    "manufacturer_input": "Freud Inc (2435)",
+    "description": "DBDS12125A01F Diablo 12\" - Steel Demon Metal Cut-Off Disc",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "K. Relatively long description",
+      "L. Standard direct URL candidate",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 70,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Freud Inc (2435)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": true,
+      "resolved_manufacturer": "Freud Inc (2435)",
+      "domain_resolved": true,
+      "domain": "diablotools.com",
+      "strategies_attempted": [
+        "domain_resolver",
+        "audited_domain_catalog",
+        "deterministic_product_url_patterns",
+        "manufacturer_site_search_patterns"
+      ],
+      "urls_generated": [
+        "https://diablotools.com/products/DBDS12125A01F",
+        "https://diablotools.com/product/DBDS12125A01F",
+        "https://diablotools.com/p/DBDS12125A01F",
+        "https://diablotools.com/catalog/DBDS12125A01F",
+        "https://diablotools.com/items/DBDS12125A01F",
+        "https://diablotools.com/item/DBDS12125A01F",
+        "https://diablotools.com/tools/DBDS12125A01F",
+        "https://diablotools.com/DBDS12125A01F",
+        "https://diablotools.com/search?q=DBDS12125A01F",
+        "https://diablotools.com/search?query=DBDS12125A01F",
+        "https://diablotools.com/search?term=DBDS12125A01F",
+        "https://diablotools.com/search?keywords=DBDS12125A01F",
+        "https://diablotools.com/search/DBDS12125A01F",
+        "https://diablotools.com/catalogsearch/result?q=DBDS12125A01F",
+        "https://diablotools.com/?s=DBDS12125A01F",
+        "https://diablotools.com/sitemap.xml",
+        "https://diablotools.com/sitemap_index.xml",
+        "https://diablotools.com/product-sitemap.xml",
+        "https://diablotools.com/products-sitemap.xml",
+        "https://diablotools.com/sitemap/products.xml",
+        "https://freudtools.com/products/DBDS12125A01F",
+        "https://freudtools.com/product/DBDS12125A01F",
+        "https://freudtools.com/p/DBDS12125A01F",
+        "https://freudtools.com/catalog/DBDS12125A01F",
+        "https://freudtools.com/items/DBDS12125A01F",
+        "https://freudtools.com/item/DBDS12125A01F",
+        "https://freudtools.com/tools/DBDS12125A01F",
+        "https://freudtools.com/DBDS12125A01F",
+        "https://freudtools.com/search?q=DBDS12125A01F",
+        "https://freudtools.com/search?query=DBDS12125A01F",
+        "https://freudtools.com/search?term=DBDS12125A01F",
+        "https://freudtools.com/search?keywords=DBDS12125A01F",
+        "https://freudtools.com/search/DBDS12125A01F",
+        "https://freudtools.com/catalogsearch/result?q=DBDS12125A01F",
+        "https://freudtools.com/?s=DBDS12125A01F",
+        "https://freudtools.com/sitemap.xml",
+        "https://freudtools.com/sitemap_index.xml",
+        "https://freudtools.com/product-sitemap.xml",
+        "https://freudtools.com/products-sitemap.xml",
+        "https://freudtools.com/sitemap/products.xml",
+        "https://info.freudtools.com/products/DBDS12125A01F",
+        "https://info.freudtools.com/product/DBDS12125A01F",
+        "https://info.freudtools.com/p/DBDS12125A01F",
+        "https://info.freudtools.com/catalog/DBDS12125A01F",
+        "https://info.freudtools.com/items/DBDS12125A01F",
+        "https://info.freudtools.com/item/DBDS12125A01F",
+        "https://info.freudtools.com/tools/DBDS12125A01F",
+        "https://info.freudtools.com/DBDS12125A01F",
+        "https://info.freudtools.com/search?q=DBDS12125A01F",
+        "https://info.freudtools.com/search?query=DBDS12125A01F",
+        "https://info.freudtools.com/search?term=DBDS12125A01F",
+        "https://info.freudtools.com/search?keywords=DBDS12125A01F",
+        "https://info.freudtools.com/search/DBDS12125A01F",
+        "https://info.freudtools.com/catalogsearch/result?q=DBDS12125A01F",
+        "https://info.freudtools.com/?s=DBDS12125A01F",
+        "https://info.freudtools.com/sitemap.xml",
+        "https://info.freudtools.com/sitemap_index.xml",
+        "https://info.freudtools.com/product-sitemap.xml",
+        "https://info.freudtools.com/products-sitemap.xml",
+        "https://info.freudtools.com/sitemap/products.xml"
+      ],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "SOURCE_NOT_FOUND",
+    "failures": [
+      {
+        "category": "SOURCE_NOT_FOUND",
+        "severity": "HIGH",
+        "phase": "phase5_retrieval",
+        "reason": "No authoritative product page discovered on diablotools.com for MPN DBDS12125A01F"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 18,
+    "product_id": "eval-prod-18",
+    "mpn": "49-94-0029",
+    "brand": "",
+    "manufacturer_input": "Milwaukee Accessory (4031)",
+    "description": "49-94-0029 Milw 6-1/2\"x1/8\"x5/8\" DKO Metal Cut Off Disc",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "I. Strange/abbreviated description",
+      "K. Relatively long description",
+      "M. Site-search candidate",
+      "N. Products discoverable via sitemap",
+      "Q. Similar MPNs / family"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 71,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Milwaukee Accessory (4031)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Milwaukee Accessory (4031)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 60,
+    "product_id": "eval-prod-60",
+    "mpn": "ASH-40-40-04",
+    "brand": "",
+    "manufacturer_input": "Emseal Joint Systems Ltd (EMSJO)",
+    "description": "1.5x1.5x13' Legacy Emseal Tape",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 66,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Emseal Joint Systems Ltd (EMSJO)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Emseal Joint Systems Ltd (EMSJO)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 61,
+    "product_id": "eval-prod-61",
+    "mpn": "KDFM404KPS",
+    "brand": "",
+    "manufacturer_input": "Appliance Dealers Cooperative (APPDE)",
+    "description": "KDFM404KPS Dishwasher SS",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "G. Missing brand",
+      "I. Strange/abbreviated description",
+      "J. Very short description",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 64,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Appliance Dealers Cooperative (APPDE)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Appliance Dealers Cooperative (APPDE)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 94,
+    "product_id": "eval-prod-94",
+    "mpn": "05134545001",
+    "brand": "",
+    "manufacturer_input": "Wera Tools NA Inc (WERTO)",
+    "description": "9516 Kneeling Pad& Bttl Opener",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Wera Tools NA Inc (WERTO)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Wera Tools NA Inc (WERTO)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 96,
+    "product_id": "eval-prod-96",
+    "mpn": "25-A",
+    "brand": "",
+    "manufacturer_input": "Rees Cast Stone Company (REECA)",
+    "description": "Charcoal Black 25-A Mortar - Type N",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Rees Cast Stone Company (REECA)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Rees Cast Stone Company (REECA)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 102,
+    "product_id": "eval-prod-102",
+    "mpn": "73019603",
+    "brand": "",
+    "manufacturer_input": "-",
+    "description": "Finyline Wh 6' Fl Rail Kit Sq",
+    "sample_categories": [
+      "F. Missing manufacturer",
+      "G. Missing brand",
+      "I. Strange/abbreviated description",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 52,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "-",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer '-' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 109,
+    "product_id": "eval-prod-109",
+    "mpn": "543300276",
+    "brand": "TREX",
+    "manufacturer_input": "Boise Cascade Building Materials (BOICA)",
+    "description": "8' Black Select Classic Horiz - Rail w/Rnd Black Alum Baluster",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "K. Relatively long description",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 63,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Boise Cascade Building Materials (BOICA)",
+      "brand_candidate": "TREX",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Boise Cascade Building Materials (BOICA)' and brand 'TREX'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 116,
+    "product_id": "eval-prod-116",
+    "mpn": "ADB15516CS",
+    "brand": "TIMBERTECH",
+    "manufacturer_input": "Parksite (6151)",
+    "description": "1x6-16' Coastline Sq Edge - Vintage Azek PVC Decking",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "K. Relatively long description",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 63,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Parksite (6151)",
+      "brand_candidate": "TIMBERTECH",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Parksite (6151)' and brand 'TIMBERTECH'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 161,
+    "product_id": "eval-prod-161",
+    "mpn": "543140016",
+    "brand": "TREX",
+    "manufacturer_input": "U S Lumber (3073)",
+    "description": "1nx6-16' Biscayne Sq Edge - Trex Transcend Lineage Decking",
+    "sample_categories": [
+      "C. Distributor/dealer in Part_Manuf",
+      "D. Brand more informative than Part_Manuf",
+      "K. Relatively long description",
+      "X. Distributor != Manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "U S Lumber (3073)",
+      "brand_candidate": "TREX",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'U S Lumber (3073)' and brand 'TREX'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 288,
+    "product_id": "eval-prod-288",
+    "mpn": "73272TBK",
+    "brand": "DSI Westbury",
+    "manufacturer_input": "Palmer Donavin Mfg Company (PALDO)",
+    "description": "6x6-10' Black Alum Deco - Support Post",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 67,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Palmer Donavin Mfg Company (PALDO)",
+      "brand_candidate": "DSI Westbury",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Palmer Donavin Mfg Company (PALDO)' and brand 'DSI Westbury'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 299,
+    "product_id": "eval-prod-299",
+    "mpn": "27233",
+    "brand": "AJM",
+    "manufacturer_input": "A J Manufacturing Inc (AJMAN)",
+    "description": "24x48 WH Attic Access Door",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "I. Strange/abbreviated description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 66,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "A J Manufacturing Inc (AJMAN)",
+      "brand_candidate": "AJM",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'A J Manufacturing Inc (AJMAN)' and brand 'AJM'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 300,
+    "product_id": "eval-prod-300",
+    "mpn": "1517602",
+    "brand": "United Window & Door",
+    "manufacturer_input": "United Window & Door Manufacturing (UNIWI)",
+    "description": "6068R Gliding Patio Dr 4500 United Blk Ext/WH Int LowE Arg w/J",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "I. Strange/abbreviated description",
+      "K. Relatively long description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 67,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "United Window & Door Manufacturing (UNIWI)",
+      "brand_candidate": "United Window & Door",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'United Window & Door Manufacturing (UNIWI)' and brand 'United Window & Door'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 304,
+    "product_id": "eval-prod-304",
+    "mpn": "FS C01 2004S",
+    "brand": "",
+    "manufacturer_input": "Velux America Inc (VELAM)",
+    "description": "FS C01 Velux Fxd Skylt Gry/Wh - w/Solar Shade RO 21\"x26-7/8\"",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand",
+      "I. Strange/abbreviated description",
+      "K. Relatively long description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 63,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Velux America Inc (VELAM)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Velux America Inc (VELAM)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 307,
+    "product_id": "eval-prod-307",
+    "mpn": "1501831",
+    "brand": "PROVIA",
+    "manufacturer_input": "ProVia (PRODO)",
+    "description": "31.5x14.75 Bsmt ecoLitePlus WH - Hopper DLA w/Screen",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "I. Strange/abbreviated description",
+      "K. Relatively long description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 57,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "ProVia (PRODO)",
+      "brand_candidate": "PROVIA",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'ProVia (PRODO)' and brand 'PROVIA'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 310,
+    "product_id": "eval-prod-310",
+    "mpn": "640383",
+    "brand": "",
+    "manufacturer_input": "Certainteed Gypsum (2765)",
+    "description": "1/2\" 54\"x10 Drywall Easi-Lite",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 66,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Certainteed Gypsum (2765)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Certainteed Gypsum (2765)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 312,
+    "product_id": "eval-prod-312",
+    "mpn": "413S-DBA-36",
+    "brand": "HAGER",
+    "manufacturer_input": "Hager Hinge Co (4189)",
+    "description": "413S 36\" Alum Threshold DBZ",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Hager Hinge Co (4189)",
+      "brand_candidate": "HAGER",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Hager Hinge Co (4189)' and brand 'HAGER'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 314,
+    "product_id": "eval-prod-314",
+    "mpn": "1511506",
+    "brand": "",
+    "manufacturer_input": "Huber Eng Wood LLC (3158)",
+    "description": "4'x65' Zip Rainscreen",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand",
+      "J. Very short description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 62,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Huber Eng Wood LLC (3158)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Huber Eng Wood LLC (3158)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 315,
+    "product_id": "eval-prod-315",
+    "mpn": "1513577",
+    "brand": "COMMODITY - UNBRANDED",
+    "manufacturer_input": "Westwood Lumber Sales (WESLU)",
+    "description": "1x8-12' Doug Fir STK Smooth 1S2E",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 68,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Westwood Lumber Sales (WESLU)",
+      "brand_candidate": "COMMODITY - UNBRANDED",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Westwood Lumber Sales (WESLU)' and brand 'COMMODITY - UNBRANDED'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 320,
+    "product_id": "eval-prod-320",
+    "mpn": "PP-8BL",
+    "brand": "",
+    "manufacturer_input": "Premier Metals (PREME)",
+    "description": "8' Premier Rib XL Black",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand",
+      "J. Very short description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 64,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Premier Metals (PREME)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Premier Metals (PREME)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 344,
+    "product_id": "eval-prod-344",
+    "mpn": "402-R",
+    "brand": "",
+    "manufacturer_input": "MillerTech Energy Solutions (MILTE)",
+    "description": "402R 12V12AH 8D Battery",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand",
+      "J. Very short description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "MillerTech Energy Solutions (MILTE)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'MillerTech Energy Solutions (MILTE)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 346,
+    "product_id": "eval-prod-346",
+    "mpn": "BM-DW20-YLW-6",
+    "brand": "StealthMounts",
+    "manufacturer_input": "Metalmark Industrial Inc (METIN)",
+    "description": "BM-DW20-YLW-6 Dewalt - Battery Mounts 6pk",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 62,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Metalmark Industrial Inc (METIN)",
+      "brand_candidate": "StealthMounts",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Metalmark Industrial Inc (METIN)' and brand 'StealthMounts'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 348,
+    "product_id": "eval-prod-348",
+    "mpn": "G1941-UPC",
+    "brand": "Southwire",
+    "manufacturer_input": "Southwire/g Turner (6603)",
+    "description": "G1941UPC 4\" Sq Cover Sw/Outlet",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "B. Known manufacturer + known brand",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 70,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Southwire/g Turner (6603)",
+      "brand_candidate": "Southwire",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Southwire/g Turner (6603)' and brand 'Southwire'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 350,
+    "product_id": "eval-prod-350",
+    "mpn": "A410RCAR",
+    "brand": "Carlon",
+    "manufacturer_input": "Thomas & Betts (7405)",
+    "description": "4x4 1G PVC Box Cover",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "J. Very short description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 63,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Thomas & Betts (7405)",
+      "brand_candidate": "Carlon",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Thomas & Betts (7405)' and brand 'Carlon'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 361,
+    "product_id": "eval-prod-361",
+    "mpn": "5522-5EV",
+    "brand": "",
+    "manufacturer_input": "Cooper Wiring Devices (3560)",
+    "description": "5522-5EV 2 Port Decor Plate",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 58,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Cooper Wiring Devices (3560)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Cooper Wiring Devices (3560)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 362,
+    "product_id": "eval-prod-362",
+    "mpn": "AYCL-153PH-LA",
+    "brand": "",
+    "manufacturer_input": "Fenton Bros Electric Inc (FENBR)",
+    "description": "AYCL-153PH-LA Lutron Dimmer LA",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 64,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Fenton Bros Electric Inc (FENBR)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Fenton Bros Electric Inc (FENBR)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 364,
+    "product_id": "eval-prod-364",
+    "mpn": "D23LP-R02-1RW",
+    "brand": "Leviton",
+    "manufacturer_input": "Leviton Mfg Co (4927)",
+    "description": "D23LPR021RW Plug In Dimmer Wh",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "B. Known manufacturer + known brand",
+      "I. Strange/abbreviated description",
+      "N. Products discoverable via sitemap"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 75,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Leviton Mfg Co (4927)",
+      "brand_candidate": "Leviton",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Leviton Mfg Co (4927)' and brand 'Leviton'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 365,
+    "product_id": "eval-prod-365",
+    "mpn": "TNOCD002",
+    "brand": "Prime",
+    "manufacturer_input": "Prime Wire & Cable (3562)",
+    "description": "TNOCD002 125V Outdooor Timer",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 60,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Prime Wire & Cable (3562)",
+      "brand_candidate": "Prime",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Prime Wire & Cable (3562)' and brand 'Prime'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 369,
+    "product_id": "eval-prod-369",
+    "mpn": "65-1222",
+    "brand": "",
+    "manufacturer_input": "Satco Prod Inc (5573)",
+    "description": "65-1222 1' Led Lt Multi CCT",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 65,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Satco Prod Inc (5573)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Satco Prod Inc (5573)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 371,
+    "product_id": "eval-prod-371",
+    "mpn": "45297BK",
+    "brand": "",
+    "manufacturer_input": "Kichler Lighting (KICLI)",
+    "description": "45297BK Kichler Wall Lt",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "J. Very short description",
+      "N. Products discoverable via sitemap"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Kichler Lighting (KICLI)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": true,
+      "resolved_manufacturer": "Kichler Lighting (KICLI)",
+      "domain_resolved": true,
+      "domain": "kichler.com",
+      "strategies_attempted": [
+        "domain_resolver",
+        "audited_domain_catalog",
+        "deterministic_product_url_patterns",
+        "manufacturer_site_search_patterns"
+      ],
+      "urls_generated": [
+        "https://kichler.com/products/45297BK",
+        "https://kichler.com/product/45297BK",
+        "https://kichler.com/p/45297BK",
+        "https://kichler.com/catalog/45297BK",
+        "https://kichler.com/items/45297BK",
+        "https://kichler.com/item/45297BK",
+        "https://kichler.com/tools/45297BK",
+        "https://kichler.com/45297BK",
+        "https://kichler.com/search?q=45297BK",
+        "https://kichler.com/search?query=45297BK",
+        "https://kichler.com/search?term=45297BK",
+        "https://kichler.com/search?keywords=45297BK",
+        "https://kichler.com/search/45297BK",
+        "https://kichler.com/catalogsearch/result?q=45297BK",
+        "https://kichler.com/?s=45297BK",
+        "https://kichler.com/sitemap.xml",
+        "https://kichler.com/sitemap_index.xml",
+        "https://kichler.com/product-sitemap.xml",
+        "https://kichler.com/products-sitemap.xml",
+        "https://kichler.com/sitemap/products.xml"
+      ],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "SOURCE_NOT_FOUND",
+    "failures": [
+      {
+        "category": "SOURCE_NOT_FOUND",
+        "severity": "HIGH",
+        "phase": "phase5_retrieval",
+        "reason": "No authoritative product page discovered on kichler.com for MPN 45297BK"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 412,
+    "product_id": "eval-prod-412",
+    "mpn": "HLSMS9129FS1E",
+    "brand": "",
+    "manufacturer_input": "Cooper Lighting (7638)",
+    "description": "HLSMS9129FS1E 9\" Motion Lt",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 187,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Cooper Lighting (7638)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Cooper Lighting (7638)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 414,
+    "product_id": "eval-prod-414",
+    "mpn": "603571",
+    "brand": "Wiz",
+    "manufacturer_input": "Phillips Lighting (5831)",
+    "description": "603571 3' Strip Light Ext",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "B. Known manufacturer + known brand",
+      "M. Site-search candidate",
+      "N. Products discoverable via sitemap"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 76,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Phillips Lighting (5831)",
+      "brand_candidate": "Wiz",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": true,
+      "resolved_manufacturer": "Phillips Lighting (5831)",
+      "domain_resolved": true,
+      "domain": "signify.com",
+      "strategies_attempted": [
+        "domain_resolver",
+        "audited_domain_catalog",
+        "deterministic_product_url_patterns",
+        "manufacturer_site_search_patterns"
+      ],
+      "urls_generated": [
+        "https://signify.com/products/603571",
+        "https://signify.com/product/603571",
+        "https://signify.com/p/603571",
+        "https://signify.com/catalog/603571",
+        "https://signify.com/items/603571",
+        "https://signify.com/item/603571",
+        "https://signify.com/tools/603571",
+        "https://signify.com/603571",
+        "https://signify.com/search?q=603571",
+        "https://signify.com/search?query=603571",
+        "https://signify.com/search?term=603571",
+        "https://signify.com/search?keywords=603571",
+        "https://signify.com/search/603571",
+        "https://signify.com/catalogsearch/result?q=603571",
+        "https://signify.com/?s=603571",
+        "https://signify.com/sitemap.xml",
+        "https://signify.com/sitemap_index.xml",
+        "https://signify.com/product-sitemap.xml",
+        "https://signify.com/products-sitemap.xml",
+        "https://signify.com/sitemap/products.xml",
+        "https://usa.lighting.philips.com/products/603571",
+        "https://usa.lighting.philips.com/product/603571",
+        "https://usa.lighting.philips.com/p/603571",
+        "https://usa.lighting.philips.com/catalog/603571",
+        "https://usa.lighting.philips.com/items/603571",
+        "https://usa.lighting.philips.com/item/603571",
+        "https://usa.lighting.philips.com/tools/603571",
+        "https://usa.lighting.philips.com/603571",
+        "https://usa.lighting.philips.com/search?q=603571",
+        "https://usa.lighting.philips.com/search?query=603571",
+        "https://usa.lighting.philips.com/search?term=603571",
+        "https://usa.lighting.philips.com/search?keywords=603571",
+        "https://usa.lighting.philips.com/search/603571",
+        "https://usa.lighting.philips.com/catalogsearch/result?q=603571",
+        "https://usa.lighting.philips.com/?s=603571",
+        "https://usa.lighting.philips.com/sitemap.xml",
+        "https://usa.lighting.philips.com/sitemap_index.xml",
+        "https://usa.lighting.philips.com/product-sitemap.xml",
+        "https://usa.lighting.philips.com/products-sitemap.xml",
+        "https://usa.lighting.philips.com/sitemap/products.xml"
+      ],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "SOURCE_NOT_FOUND",
+    "failures": [
+      {
+        "category": "SOURCE_NOT_FOUND",
+        "severity": "HIGH",
+        "phase": "phase5_retrieval",
+        "reason": "No authoritative product page discovered on signify.com for MPN 603571"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 440,
+    "product_id": "eval-prod-440",
+    "mpn": "WF4REGSWW590CRIMW",
+    "brand": "",
+    "manufacturer_input": "Lithonia Lighting (2776)",
+    "description": "WF4REGSWW590CRIMW 4\" Down Light",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Lithonia Lighting (2776)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Lithonia Lighting (2776)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 447,
+    "product_id": "eval-prod-447",
+    "mpn": "SHOP/4X2/840/V1",
+    "brand": "Feit Electric",
+    "manufacturer_input": "Feit Electric (3468)",
+    "description": "4' Feit Shop Light 4500L 40k",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 65,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Feit Electric (3468)",
+      "brand_candidate": "Feit Electric",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Feit Electric (3468)' and brand 'Feit Electric'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 503,
+    "product_id": "eval-prod-503",
+    "mpn": "GT-CB-100C",
+    "brand": "GT-Lite",
+    "manufacturer_input": "Keystone (5702)",
+    "description": "GTCB100C Led 100W Cob Bulb",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 64,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Keystone (5702)",
+      "brand_candidate": "GT-Lite",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Keystone (5702)' and brand 'GT-Lite'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 579,
+    "product_id": "eval-prod-579",
+    "mpn": "46719",
+    "brand": "",
+    "manufacturer_input": "Maxsa Innovations (MAXIN)",
+    "description": "49719 Wall Light Motion Wh",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand",
+      "I. Strange/abbreviated description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 49,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Maxsa Innovations (MAXIN)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Maxsa Innovations (MAXIN)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 584,
+    "product_id": "eval-prod-584",
+    "mpn": "DCL183",
+    "brand": "DEWALT",
+    "manufacturer_input": "Black & Decker/dewlt (2585)",
+    "description": "Dewalt DCL183 Light - Rechargeable",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "B. Known manufacturer + known brand",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 67,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Black & Decker/dewlt (2585)",
+      "brand_candidate": "DEWALT",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Black & Decker/dewlt (2585)' and brand 'DEWALT'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 585,
+    "product_id": "eval-prod-585",
+    "mpn": "73020",
+    "brand": "",
+    "manufacturer_input": "Streamlight (7277)",
+    "description": "73020 Nano Clip Light Bk",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand",
+      "J. Very short description"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 61,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Streamlight (7277)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Streamlight (7277)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 586,
+    "product_id": "eval-prod-586",
+    "mpn": "NEB-FLT-1021",
+    "brand": "",
+    "manufacturer_input": "ACG Brands (1154)",
+    "description": "NEBFLT1021 Slyde King FlashLt",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 62,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "ACG Brands (1154)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'ACG Brands (1154)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 587,
+    "product_id": "eval-prod-587",
+    "mpn": "NEB-FLT-0053",
+    "brand": "",
+    "manufacturer_input": "ACG Brands (1154)",
+    "description": "NEBFLT0053 2600L Flash Light",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 66,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "ACG Brands (1154)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'ACG Brands (1154)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 588,
+    "product_id": "eval-prod-588",
+    "mpn": "97708",
+    "brand": "Police Security",
+    "manufacturer_input": "Police Security (9470)",
+    "description": "97708 Police 800L Headlight",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 63,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Police Security (9470)",
+      "brand_candidate": "Police Security",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Police Security (9470)' and brand 'Police Security'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 589,
+    "product_id": "eval-prod-589",
+    "mpn": "WORK6000XLTPPLUG",
+    "brand": "Feit Electric",
+    "manufacturer_input": "Feit Electric (3468)",
+    "description": "6000L Twin Head Work Light",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 59,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Feit Electric (3468)",
+      "brand_candidate": "Feit Electric",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Feit Electric (3468)' and brand 'Feit Electric'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 590,
+    "product_id": "eval-prod-590",
+    "mpn": "HOM2040M200PRB",
+    "brand": "",
+    "manufacturer_input": "Square D Con Prod Dv (6825)",
+    "description": "HOM2040M200PRB 200A Load Cntr",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer",
+      "G. Missing brand"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 68,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Square D Con Prod Dv (6825)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Square D Con Prod Dv (6825)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 591,
+    "product_id": "eval-prod-591",
+    "mpn": "HOM3060L225PGC",
+    "brand": "Square D",
+    "manufacturer_input": "Square D Con Prod Dv (6825)",
+    "description": "HOM3060L225PGC 225 Load Center",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 62,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Square D Con Prod Dv (6825)",
+      "brand_candidate": "Square D",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Square D Con Prod Dv (6825)' and brand 'Square D'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 592,
+    "product_id": "eval-prod-592",
+    "mpn": "QO612L100RBCP",
+    "brand": "Square D",
+    "manufacturer_input": "Square D Con Prod Dv (6825)",
+    "description": "QO612L100RBCP 100A Load Center",
+    "sample_categories": [
+      "E. Unknown/uncommon manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 68,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Square D Con Prod Dv (6825)",
+      "brand_candidate": "Square D",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Square D Con Prod Dv (6825)' and brand 'Square D'"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 593,
+    "product_id": "eval-prod-593",
+    "mpn": "13093005",
+    "brand": "",
+    "manufacturer_input": "Southwire/g Turner (6603)",
+    "description": "4/0 Aluminum Entrance Cable (Linear Foot)",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 63,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Southwire/g Turner (6603)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Southwire/g Turner (6603)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 594,
+    "product_id": "eval-prod-594",
+    "mpn": "12-4 SO",
+    "brand": "",
+    "manufacturer_input": "-",
+    "description": "12-4 SO Cord (Linear Foot)",
+    "sample_categories": [
+      "F. Missing manufacturer",
+      "G. Missing brand",
+      "T. Sparse input"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 69,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "-",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer '-' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  },
+  {
+    "row_number": 595,
+    "product_id": "eval-prod-595",
+    "mpn": "96263-46-06",
+    "brand": "",
+    "manufacturer_input": "Woods Wire Southwire (7579)",
+    "description": "96263-46-06 CAT5E Wire (Linear Foot)",
+    "sample_categories": [
+      "A. Known manufacturer + obvious MPN",
+      "G. Missing brand",
+      "N. Products discoverable via sitemap",
+      "W. Multi-brand manufacturer"
+    ],
+    "execution_mode": "OFFLINE",
+    "duration_ms": 47,
+    "phase4": {
+      "status": "candidates_accepted",
+      "manufacturer_candidate": "Woods Wire Southwire (7579)",
+      "brand_candidate": "",
+      "classification": "Industrial Tool / Supply",
+      "attributes_extracted": 0,
+      "error": null
+    },
+    "phase5": {
+      "manufacturer_resolved": false,
+      "resolved_manufacturer": null,
+      "domain_resolved": false,
+      "domain": null,
+      "strategies_attempted": [
+        "domain_resolver",
+        "gemini_search_fallback"
+      ],
+      "urls_generated": [],
+      "urls_fetched": [],
+      "source_verified": false,
+      "identity_score": 0.0,
+      "identity_classification": null,
+      "evidence_count": 0,
+      "recovery_attempts": 0,
+      "recovery_succeeded": false,
+      "failure_reason": null,
+      "gemini": {
+        "calls": 0,
+        "search_calls": 0,
+        "failure": null
+      }
+    },
+    "phase6": {
+      "status": "ENRICHED",
+      "attributes_planned": 0,
+      "candidates_proposed": 0,
+      "validated": 0,
+      "review_required": 0,
+      "conflicts": 0,
+      "invented_attributes": 0,
+      "error": null
+    },
+    "final_status": "REVIEW_REQUIRED",
+    "publication_state": "READY",
+    "blocker": "DOMAIN_UNRESOLVED",
+    "failures": [
+      {
+        "category": "DOMAIN_RESOLUTION_FAILURE",
+        "severity": "HIGH",
+        "phase": "phase5_discovery",
+        "reason": "Domain unresolvable for manufacturer 'Woods Wire Southwire (7579)' and brand ''"
+      }
+    ],
+    "ground_truth_comparison": null
+  }
+]

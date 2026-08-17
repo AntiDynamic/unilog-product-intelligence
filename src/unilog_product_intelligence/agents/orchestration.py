@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from hashlib import sha256
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -107,6 +107,9 @@ class AgentRun(DTO):
     request_id: str | None = None
     total_tokens: int | None = None
     tool_calls: int = 0
+    tool_use_tokens: int | None = None
+    provider_attempt_count: int | None = None
+    thought_tokens: int | None = None
     error: str | None = None
 
 
@@ -115,6 +118,7 @@ class ProductJob(DTO):
     product_id: str
     state: JobState = JobState.RECEIVED
     runs: list[AgentRun] = Field(default_factory=list)
+    agent_outputs: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
 
 class ProductOrchestrator:
@@ -192,6 +196,7 @@ class ProductOrchestrator:
                 self._cache[key] = response
             parsed = dto.model_validate_json(response.output_text)
             run.status, run.model = "succeeded", response.model
+            job.agent_outputs[task] = parsed.model_dump(mode="json")
             run.input_tokens, run.output_tokens, run.cached_tokens = (
                 response.input_tokens,
                 response.output_tokens,
@@ -203,6 +208,8 @@ class ProductOrchestrator:
                 response.retry_count,
                 response.request_id,
             )
+            run.tool_calls = response.tool_calls
+            run.tool_use_tokens = response.tool_use_input_tokens
             return parsed
         except Exception as error:
             run.status, run.error = "failed", str(error)[:200]

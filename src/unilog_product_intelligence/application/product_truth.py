@@ -161,7 +161,11 @@ class ProductTruthService:
         canonical_name: str,
     ) -> ProductTruth:
         result = _copy(product)
-        if result.lifecycle_state not in {LifecycleState.CLASSIFIED, LifecycleState.ENRICHED}:
+        if result.lifecycle_state not in {
+            LifecycleState.CLASSIFIED,
+            LifecycleState.ENRICHED,
+            LifecycleState.CONFLICTED,
+        }:
             raise ValueError("Attribute candidates require a classified product")
         try:
             attribute = result.attribute(attribute_id)

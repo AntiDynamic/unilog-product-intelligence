@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNILOG · Product intelligence</title>
+  <link rel="stylesheet" href="/frontend/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">U</span><span>UNILOG</span></div>
+      <div class="workspace-switcher"><span class="workspace-dot"></span><span>Operations workspace</span><span class="chevron">⌄</span></div>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="nav-item active" href="#overview"><span class="nav-icon">⌂</span>Overview</a>
+        <p class="nav-label">Workspace</p>
+        <a class="nav-item" href="#products"><span class="nav-icon">▤</span>Products <span class="nav-count">1</span></a>
+        <a class="nav-item" href="#runs"><span class="nav-icon">◷</span>Runs</a>
+        <a class="nav-item" href="#review"><span class="nav-icon">✓</span>Review Center</a>
+        <p class="nav-label">Intelligence</p>
+        <a class="nav-item" href="#sources"><span class="nav-icon">↗</span>Sources</a>
+        <a class="nav-item" href="#evidence"><span class="nav-icon">▣</span>Evidence</a>
+        <a class="nav-item" href="#validation"><span class="nav-icon">⌁</span>Validation</a>
+        <p class="nav-label">Output</p>
+        <a class="nav-item" href="#exports"><span class="nav-icon">⇩</span>Exports</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a class="nav-item" href="#settings"><span class="nav-icon">⚙</span>Settings</a>
+        <div class="user-card"><span class="avatar">AG</span><span class="user-text"><strong>Aditya G.</strong><small>Administrator</small></span><span class="more">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Workspace</span><span>/</span><strong>Overview</strong></div>
+        <div class="top-actions"><button class="icon-button" id="global-search" aria-label="Focus product search">⌕</button><button class="icon-button" id="notifications-button" aria-label="Notifications">♧</button><button class="icon-button theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">☾</button><button class="outline-button" id="import-button">Import dataset</button><button class="primary-button" id="run-button">Run intelligence <span>→</span></button><input id="file-input" type="file" accept=".csv,.xlsx" hidden /></div>
+      </header>
+
+      <section class="page" id="overview">
+        <div class="page-heading"><div><p class="eyebrow">Product intelligence</p><h1>Make every product record trustworthy.</h1><p class="subheading">Investigate incomplete catalog data, verify it against authoritative sources, and prepare it for delivery.</p></div><div class="date-note">Last run <strong>Aug 16, 2026</strong><span class="live-dot"></span></div></div>
+
+        <div class="metric-grid">
+          <button class="metric-card"><span class="metric-label">Products in workspace</span><strong class="metric-value">1</strong><span class="metric-foot">1 product loaded</span></button>
+          <button class="metric-card"><span class="metric-label">Attributes found</span><strong class="metric-value">19</strong><span class="metric-foot positive">All source-backed</span></button>
+          <button class="metric-card"><span class="metric-label">Evidence excerpts</span><strong class="metric-value">22</strong><span class="metric-foot">Across 2 sources</span></button>
+          <button class="metric-card"><span class="metric-label">Manufacturer sources</span><strong class="metric-value">1</strong><span class="metric-foot positive">Authoritative</span></button>
+        </div>
+
+        <div class="section-heading"><div><h2>Product workspace</h2><p>Review the records UNILOG has investigated.</p></div><div class="section-actions"><button class="quiet-button" id="filter-button">Filter <span>⌄</span></button><button class="quiet-button" id="columns-button">Columns <span>⌄</span></button></div></div>
+        <div class="table-shell">
+          <div class="table-toolbar"><div class="search-box"><span>⌕</span><input id="product-search" type="search" placeholder="Search by MPN, brand or product" /></div><span class="table-meta" id="table-meta">1 product</span></div>
+          <div class="table-wrap"><table><thead><tr><th class="check-col"><input id="select-all" type="checkbox" aria-label="Select all" /></th><th>Manufacturer part number</th><th>Product</th><th>Brand</th><th>Manufacturer</th><th>Evidence</th><th>Source</th><th></th></tr></thead><tbody id="product-rows"></tbody></table></div>
+        </div>
+
+        <div class="lower-grid">
+          <section class="panel pipeline-panel"><div class="panel-heading"><div><h2>Investigation path</h2><p>What happened during the latest product run.</p></div><span class="run-time">Completed in 4m 12s</span></div><div class="pipeline"><div class="pipeline-step done"><span class="step-number">01</span><span class="step-name">Input</span><span class="step-detail">1 record</span><span class="step-check">✓</span></div><div class="pipeline-line"></div><div class="pipeline-step done"><span class="step-number">02</span><span class="step-name">Understand</span><span class="step-detail">Identity matched</span><span class="step-check">✓</span></div><div class="pipeline-line"></div><div class="pipeline-step done"><span class="step-number">03</span><span class="step-name">Search</span><span class="step-detail">3 queries</span><span class="step-check">✓</span></div><div class="pipeline-line"></div><div class="pipeline-step done"><span class="step-number">04</span><span class="step-name">Verify</span><span class="step-detail">Manufacturer page</span><span class="step-check">✓</span></div><div class="pipeline-line"></div><div class="pipeline-step done"><span class="step-number">05</span><span class="step-name">Deliver</span><span class="step-detail">19 attributes</span><span class="step-check">✓</span></div></div></section>
+          <section class="panel source-panel"><div class="panel-heading"><div><h2>Authoritative sources</h2><p>Sources currently backing the workspace.</p></div><a class="text-link" href="#sources">View all →</a></div><div class="source-item"><span class="source-favicon">D</span><div><strong>Diablo Tools</strong><small>diablotools.com · Manufacturer</small></div><span class="source-status">Verified</span></div><div class="source-item muted-source"><span class="source-favicon neutral">I</span><div><strong>Supplied input</strong><small>Unihack Sample Dataset · Input</small></div><span class="source-status neutral-text">Reference</span></div></section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="detail-drawer" id="detail-drawer" aria-label="Product details"><div class="drawer-top"><div><span class="eyebrow">Product record</span><h2 id="drawer-mpn">DCB518ASTS06G</h2></div><button class="close-button" id="close-drawer" aria-label="Close">×</button></div><div class="drawer-title"><h3 id="drawer-title">1/2&quot; × 18&quot; Detail File Sanding Belt Assorted Pack</h3><div class="record-meta"><span id="drawer-brand">Diablo</span><span>·</span><span id="drawer-manufacturer">Freud Inc (2435)</span><span class="verified-chip">✓ Source-backed</span></div></div><div class="drawer-tabs"><button class="drawer-tab active" data-tab="overview">Overview</button><button class="drawer-tab" data-tab="attributes">Attributes</button><button class="drawer-tab" data-tab="evidence">Evidence</button></div><div class="drawer-body"><div class="detail-section"><div class="section-heading compact"><div><h4>Product attributes</h4><p>Values found on the manufacturer page.</p></div><span class="small-count">19 fields</span></div><div class="attribute-list" id="attribute-list"></div></div><div class="detail-section evidence-callout"><div class="callout-icon">✓</div><div><strong>Why can I trust this?</strong><p>Values are linked to an authoritative manufacturer product page and were accepted after evidence extraction.</p><a id="drawer-source" class="text-link" target="_blank" rel="noreferrer" href="https://diablotools.com/products/DCB518ASTS06G">Open source ↗</a></div></div></div></aside>
+  <div class="toast" id="toast">Run started</div>
+  <script src="/frontend/app.js"></script>
+</body>
+</html>

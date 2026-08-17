@@ -1,0 +1,56 @@
+{
+  "phase": "6.7",
+  "objective": "First real live end-to-end experiment with one representative UniHack product",
+  "environment": {
+    "model": "gemini-3.5-flash-lite",
+    "sdk_version_reported": "1.75.0",
+    "api_mode": "Interactions",
+    "gemini_key_configured": true,
+    "live_external_execution": true,
+    "local_safety_limits": "configured locally; not Google provider quotas"
+  },
+  "input": {
+    "rows": 1000,
+    "columns": 6,
+    "expected_columns_verified": true,
+    "selected_row": {
+      "row_index": 2,
+      "mpn": "DCB518ASTS06G",
+      "manufacturer": "Freud Inc",
+      "selection_profile": "clear identity with MPN and dimensions in description"
+    }
+  },
+  "smoke": {
+    "status": "PASS",
+    "output": "OK",
+    "request_id_present": true,
+    "latency_ms": 5406,
+    "input_tokens": null,
+    "output_tokens": null,
+    "cached_tokens": null
+  },
+  "product_run": {
+    "status": "STOPPED_AT_QUOTA",
+    "first_failing_stage": "SEARCH_QUOTA",
+    "gemini_request_reached_provider": true,
+    "search_tool_invoked": false,
+    "search_queries": [],
+    "url_context_invoked": false,
+    "source_verification": "NOT_REACHED",
+    "evidence": "NOT_REACHED",
+    "enrichment": "NOT_REACHED",
+    "validation": "NOT_REACHED",
+    "provider_status": 429,
+    "provider_code": "too_many_requests",
+    "sanitized_failure": "You exceeded your current quota; check plan and billing details"
+  },
+  "outcomes": {
+    "products_attempted": 1,
+    "products_ready": 0,
+    "products_review_required": 1,
+    "products_blocked": 0,
+    "three_product_run": "NOT_RUN",
+    "five_product_run": "NOT_RUN"
+  },
+  "recommendation": "Resolve or identify the active project quota/billing limit, then rerun this same row before expanding to three or five products. No architecture change is justified by this run."
+}

@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import time
 from collections import deque
+from contextlib import suppress
 from dataclasses import dataclass
 from enum import StrEnum
 from threading import Lock
@@ -76,6 +77,14 @@ class GuardResult:
     reason: str | None = None
 
 
+@dataclass(frozen=True)
+class QuotaReservation:
+    reservation_id: int
+    timestamp: float
+    estimated_input_tokens: int
+    estimated_search_queries: int = 0
+
+
 class QuotaGuard:
     """Local safety guard with rolling RPM/TPM and daily/product budgets."""
 
@@ -89,6 +98,10 @@ class QuotaGuard:
         self._daily_requests = 0
         self._daily_cost = 0.0
         self._product_costs: dict[str, float] = {}
+        self._next_reservation_id = 1
+        self._reservations: dict[int, QuotaReservation] = {}
+        self._reserved_daily_requests = 0
+        self._reserved_search_queries = 0
         self._lock = Lock()
 
     @property
@@ -103,31 +116,106 @@ class QuotaGuard:
         product_id: str | None = None,
     ) -> GuardResult:
         with self._lock:
+            return self._check_locked(
+                estimated_input_tokens, estimated_cost_usd, search_queries, product_id
+            )
+
+    def _check_locked(
+        self,
+        estimated_input_tokens: int,
+        estimated_cost_usd: float,
+        search_queries: int,
+        product_id: str | None,
+    ) -> GuardResult:
+        now = time.monotonic()
+        while self._requests and now - self._requests[0] >= 60:
+            self._requests.popleft()
+        while self._token_events and now - self._token_events[0][0] >= 60:
+            self._token_events.popleft()
+        rolling_tokens = sum(tokens for _, tokens in self._token_events)
+        if (
+            len(self._requests) >= self.budget.max_rpm
+            or rolling_tokens + estimated_input_tokens > self.budget.max_input_tpm
+        ):
+            return GuardResult(GuardDecision.QUOTA_GUARDED, "local_rate_or_token_safety_limit")
+        if (
+            self._daily_requests + self._reserved_daily_requests >= self.budget.max_daily_requests
+            or self._daily_cost + estimated_cost_usd > self.budget.max_daily_cost_usd
+        ):
+            return GuardResult(GuardDecision.BUDGET_DEFERRED, "local_daily_budget")
+        if self._usage.search_queries + search_queries > self.budget.max_search_queries:
+            return GuardResult(GuardDecision.BUDGET_DEFERRED, "local_search_budget")
+        if (
+            product_id is not None
+            and self._product_costs.get(product_id, 0.0) + estimated_cost_usd
+            > self.budget.max_product_cost_usd
+        ):
+            return GuardResult(GuardDecision.BUDGET_DEFERRED, "local_product_budget")
+        return GuardResult(GuardDecision.ALLOW)
+
+    def reserve_before_execution(
+        self, estimated_input_tokens: int = 0, estimated_search_queries: int = 0
+    ) -> tuple[GuardResult, QuotaReservation | None]:
+        with self._lock:
+            guard = self._check_locked(
+                estimated_input_tokens, 0.0, estimated_search_queries, None
+            )
+            if guard.decision is not GuardDecision.ALLOW:
+                return guard, None
             now = time.monotonic()
-            while self._requests and now - self._requests[0] >= 60:
-                self._requests.popleft()
-            while self._token_events and now - self._token_events[0][0] >= 60:
-                self._token_events.popleft()
-            rolling_tokens = sum(tokens for _, tokens in self._token_events)
-            if (
-                len(self._requests) >= self.budget.max_rpm
-                or rolling_tokens + estimated_input_tokens > self.budget.max_input_tpm
-            ):
-                return GuardResult(GuardDecision.QUOTA_GUARDED, "local_rate_or_token_safety_limit")
-            if (
-                self._daily_requests >= self.budget.max_daily_requests
-                or self._daily_cost + estimated_cost_usd > self.budget.max_daily_cost_usd
-            ):
-                return GuardResult(GuardDecision.BUDGET_DEFERRED, "local_daily_budget")
-            if self._usage.search_queries + search_queries > self.budget.max_search_queries:
-                return GuardResult(GuardDecision.BUDGET_DEFERRED, "local_search_budget")
-            if (
-                product_id is not None
-                and self._product_costs.get(product_id, 0.0) + estimated_cost_usd
-                > self.budget.max_product_cost_usd
-            ):
-                return GuardResult(GuardDecision.BUDGET_DEFERRED, "local_product_budget")
-            return GuardResult(GuardDecision.ALLOW)
+            self._requests.append(now)
+            self._token_events.append((now, max(0, estimated_input_tokens)))
+            reservation = QuotaReservation(
+                reservation_id=self._next_reservation_id,
+                timestamp=now,
+                estimated_input_tokens=max(0, estimated_input_tokens),
+                estimated_search_queries=max(0, estimated_search_queries),
+            )
+            self._next_reservation_id += 1
+            self._reservations[reservation.reservation_id] = reservation
+            self._reserved_daily_requests += 1
+            self._reserved_search_queries += reservation.estimated_search_queries
+            return guard, reservation
+
+    def commit(self, reservation: QuotaReservation, usage: Usage) -> None:
+        with self._lock:
+            stored = self._reservations.pop(reservation.reservation_id, None)
+            if stored is None:
+                return
+            actual_input_tokens = usage.input_tokens or stored.estimated_input_tokens
+            for index, (timestamp, _) in enumerate(self._token_events):
+                if timestamp == stored.timestamp:
+                    self._token_events[index] = (timestamp, actual_input_tokens)
+                    break
+            self._reserved_daily_requests = max(0, self._reserved_daily_requests - 1)
+            self._reserved_search_queries = max(
+                0, self._reserved_search_queries - stored.estimated_search_queries
+            )
+            self._daily_requests += 1
+            self._daily_cost += usage.cost_usd
+            self._usage = Usage(
+                self._usage.input_tokens + actual_input_tokens,
+                self._usage.output_tokens + usage.output_tokens,
+                self._usage.cached_tokens + usage.cached_tokens,
+                self._usage.search_queries + usage.search_queries,
+                self._usage.cost_usd + usage.cost_usd,
+            )
+
+    def rollback(self, reservation: QuotaReservation) -> None:
+        with self._lock:
+            stored = self._reservations.pop(reservation.reservation_id, None)
+            if stored is None:
+                return
+            with suppress(ValueError):
+                self._requests.remove(stored.timestamp)
+            for index, (timestamp, _) in enumerate(self._token_events):
+                if timestamp == stored.timestamp:
+                    del self._token_events[index]
+                    break
+            self._reserved_daily_requests = max(0, self._reserved_daily_requests - 1)
+            self._reserved_search_queries = max(
+                0, self._reserved_search_queries - stored.estimated_search_queries
+            )
 
     def reserve(self, usage: Usage, product_id: str | None = None) -> None:
         with self._lock:
@@ -147,6 +235,7 @@ class QuotaGuard:
                 self._usage.search_queries + usage.search_queries,
                 self._usage.cost_usd + usage.cost_usd,
             )
+
 
 
 class SearchBudget:
@@ -201,18 +290,29 @@ def task_fingerprint(
 
 
 def classify_429(error: BaseException) -> FailureCategory:
+    provider_code = str(getattr(error, "provider_code", "") or "").casefold()
+    if provider_code in {"rate_limit_exceeded", "too_many_requests", "resource_exhausted"}:
+        return FailureCategory.RATE_LIMIT
+    if provider_code in {"quota_exceeded", "project_quota_exceeded"}:
+        return FailureCategory.PROJECT_QUOTA
+    if provider_code in {"billing_required", "spend_limit", "budget_exceeded"}:
+        return FailureCategory.SPEND_LIMIT
+    if provider_code in {"capacity_exceeded", "service_unavailable"}:
+        return FailureCategory.CAPACITY
+
     text = str(error).casefold()
-    if any(x in text for x in ("search", "grounding")):
-        return FailureCategory.SEARCH_LIMIT
     if any(x in text for x in ("spend", "billing", "budget")):
         return FailureCategory.SPEND_LIMIT
     if any(x in text for x in ("capacity", "overloaded")):
         return FailureCategory.CAPACITY
     if any(x in text for x in ("quota", "project")):
         return FailureCategory.PROJECT_QUOTA
+    if any(x in text for x in ("search limit", "grounding limit")):
+        return FailureCategory.SEARCH_LIMIT
     if "too_many" in text or "rate" in text:
         return FailureCategory.RATE_LIMIT
     return FailureCategory.UNKNOWN_429
+
 
 
 @dataclass(frozen=True)
@@ -367,25 +467,40 @@ class QuotaCircuitBreaker:
         self.cooldown_seconds = cooldown_seconds
         self.failures = 0
         self.opened_at: float | None = None
+        self.cooldown_until: float | None = None
         self.state = CircuitState.CLOSED
+        self._lock = Lock()
 
     def allow(self, now: float | None = None) -> bool:
-        current = now or time.monotonic()
-        if (
-            self.state is CircuitState.OPEN
-            and self.opened_at is not None
-            and current - self.opened_at >= self.cooldown_seconds
-        ):
-            self.state = CircuitState.HALF_OPEN
-        return self.state is not CircuitState.OPEN
+        current = time.monotonic() if now is None else now
+        with self._lock:
+            if (
+                self.state is CircuitState.OPEN
+                and self.cooldown_until is not None
+                and current >= self.cooldown_until
+            ):
+                self.state = CircuitState.HALF_OPEN
+            return self.state is not CircuitState.OPEN
 
     def record_success(self) -> None:
-        self.failures = 0
-        self.opened_at = None
-        self.state = CircuitState.CLOSED
+        with self._lock:
+            self.failures = 0
+            self.opened_at = None
+            self.cooldown_until = None
+            self.state = CircuitState.CLOSED
 
-    def record_429(self, now: float | None = None) -> None:
-        self.failures += 1
-        if self.failures >= self.failure_threshold:
-            self.state = CircuitState.OPEN
-            self.opened_at = now or time.monotonic()
+    def record_429(
+        self, now: float | None = None, retry_after_seconds: float | None = None
+    ) -> None:
+        current = time.monotonic() if now is None else now
+        with self._lock:
+            self.failures += 1
+            if self.failures >= self.failure_threshold:
+                self.state = CircuitState.OPEN
+                self.opened_at = current
+                cooldown = (
+                    retry_after_seconds
+                    if retry_after_seconds is not None and retry_after_seconds > 0
+                    else self.cooldown_seconds
+                )
+                self.cooldown_until = current + cooldown

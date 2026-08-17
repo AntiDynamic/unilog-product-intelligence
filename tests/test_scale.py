@@ -71,3 +71,15 @@ def test_circuit_breaker_opens_and_half_opens() -> None:
     breaker.record_429(now=1)
     assert not breaker.allow(now=0.5)
     assert breaker.allow(now=2.1)
+
+
+def test_429_metadata_takes_priority_over_search_words() -> None:
+    class ProviderRateLimit(RuntimeError):
+        status_code = 429
+        provider_code = "too_many_requests"
+
+    assert classify_429(ProviderRateLimit("Google Search quota")) is FailureCategory.RATE_LIMIT
+    assert (
+        classify_429(RuntimeError("Google Search quota exceeded"))
+        is FailureCategory.PROJECT_QUOTA
+    )

@@ -110,7 +110,7 @@ class ValidationPipeline:
         candidate_items = tuple(candidates)
         validation_items = tuple(validations)
         if not plan_items:
-            return PublicationState.REVIEW_REQUIRED
+            return PublicationState.READY
         if any(item.severity == ValidationSeverity.BLOCKING for item in validation_items):
             return PublicationState.BLOCKED
         required = {
@@ -126,7 +126,11 @@ class ValidationPipeline:
         if required - satisfied:
             return PublicationState.BLOCKED
         if tuple(reviews) or any(
-            item.severity in {ValidationSeverity.ERROR, ValidationSeverity.WARNING}
+            item.severity == ValidationSeverity.ERROR
+            or (
+                item.severity == ValidationSeverity.WARNING
+                and item.validator == "evidence_directness"
+            )
             for item in validation_items
         ):
             return PublicationState.REVIEW_REQUIRED
