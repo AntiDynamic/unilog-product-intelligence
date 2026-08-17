@@ -26,6 +26,7 @@ from .models import (
     FinalAttributeStatus,
     ValidationResult,
 )
+from .reference import separate_value_and_uom
 
 
 class EnrichmentAgentError(RuntimeError):
@@ -119,16 +120,24 @@ class EvidenceGroundedEnrichmentAgent:
                     if item.status.casefold() in {"inferred", "calculated"}
                     else FinalAttributeStatus.ENRICHED
                 )
+                raw_val = item.raw_value if item.raw_value is not None else item.value
+                cand_val = item.value
+                val_clean, parsed_uom = separate_value_and_uom(
+                    cand_val, allowed_uoms=plan.allowed_uom
+                )
+                final_uom = item.uom or parsed_uom
+                final_val = val_clean if val_clean is not None else cand_val
+
                 candidates.append(
                     EnrichmentCandidate(
                         candidate_id="enrichment-" + str(uuid4()),
                         product_id=product.product_id,
                         attribute_id=plan.attribute_id,
                         attribute=plan.attribute_name,
-                        value=item.value,
-                        raw_value=item.raw_value if item.raw_value is not None else item.value,
+                        value=final_val,
+                        raw_value=raw_val,
                         normalized_value=item.normalized_value,
-                        uom=item.uom,
+                        uom=final_uom,
                         source_id=reference.source_id,
                         evidence_ids=(reference.evidence_id,),
                         evidence_text=item.evidence_text or reference.evidence_text,
@@ -262,10 +271,12 @@ def _prompt(
     identity = product.identity.manufacturer_part_number
     mpn = identity.normalized_value if identity else ""
     return (
-        "SYSTEM: Evidence-grounded enrichment v1. Only use supplied evidence. "
-        "Never use unsupported world knowledge. Return no candidate when evidence does not "
-        "support a value. Preserve evidence IDs and do not modify quoted evidence. Do not invent "
-        "LOV values. Distinguish direct facts from inference/calculation. Output JSON only.\n\n"
+        "SYSTEM: Evidence-grounded enrichment v1. Extract ONLY attributes in the supplied plan. "
+        "Use ONLY supplied evidence. Never use unsupported world knowledge. "
+        "Return no candidate when evidence does not support a value. "
+        "Preserve evidence IDs and do not modify quoted evidence. Do not invent "
+        "LOV values. Separate numeric values and units where applicable. "
+        "Distinguish direct facts from inference/calculation. Output JSON only.\n\n"
         f"PRODUCT: id={product.product_id} manufacturer_part_number={mpn}\n"
         f"PLANNED ATTRIBUTES:\n{plan_text}\n"
         f"VERIFIED EVIDENCE:\n{evidence_text}"

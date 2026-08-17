@@ -262,13 +262,10 @@ class Phase65ResultDeliveryAdapter:
                 values[f"{dim_col}_UOM"] = None
 
         # ── 12. Digital asset columns ─────────────────────────────────────────
-        images = [a for a in product.digital_assets if a.asset_type == AssetType.IMAGE]
+        image_types = {AssetType.IMAGE, AssetType.PRIMARY_IMAGE, AssetType.ALTERNATE_IMAGE}
+        images = [a for a in product.digital_assets if a.asset_type in image_types]
         sds_assets = [a for a in product.digital_assets if a.asset_type == AssetType.SDS]
-        doc_assets = [
-            a
-            for a in product.digital_assets
-            if a.asset_type in (AssetType.DOCUMENT, AssetType.MANUAL, AssetType.OTHER)
-        ]
+        doc_assets = [a for a in product.digital_assets if a.asset_type not in image_types]
 
         values["Product Image"] = images[0].uri if images else None
         for i in range(1, self.MAX_ALT_IMAGES + 1):
@@ -478,7 +475,12 @@ def _assign_doc(
     for asset in doc_assets:
         title_lower = (asset.title or "").casefold()
         uri_lower = (asset.uri or "").casefold()
-        search_text = f"{title_lower} {uri_lower}"
+        type_lower = (
+            asset.asset_type.value.casefold()
+            if hasattr(asset.asset_type, "value")
+            else str(asset.asset_type).casefold()
+        )
+        search_text = f"{title_lower} {uri_lower} {type_lower}"
         if any(kw in search_text for kw in keywords):
             values[col] = asset.uri
             return

@@ -19,6 +19,18 @@ from .core import (
     SourceVerifier,
     canonicalize_url,
 )
+from .digital_assets import (
+    DISALLOWED_THIRD_PARTY_DOMAINS,
+    DOC_EXTENSIONS,
+    IMAGE_EXCLUSION_KEYWORDS,
+    KNOWN_MANUFACTURER_ASSET_HOSTS,
+    AssetAssociationScope,
+    AssetAuthorityVerifier,
+    AssetBudgetConfig,
+    AssetContentStatus,
+    DigitalAssetDiscoveryService,
+    DocumentClassifier,
+)
 from .mpn_normalizer import MpnHypothesis, MpnHypothesisType, MpnNormalizer
 from .service import ManufacturerIntelligenceService
 from .source_discovery import (
@@ -31,13 +43,25 @@ from .source_discovery import (
 )
 
 __all__ = [
+    "AssetAssociationScope",
+    "AssetAuthorityVerifier",
+    "AssetBudgetConfig",
+    "AssetContentStatus",
+    "DISALLOWED_THIRD_PARTY_DOMAINS",
+    "DOC_EXTENSIONS",
     "DeterministicUrlStrategy",
-    "DomainResolver",
+    "DigitalAssetDiscoveryService",
+    "DiscoveryResult",
+    "DocumentClassifier",
     "DocumentLink",
-    "EvidenceSelector",
+    "DomainResolver",
     "EvidenceCandidate",
     "EvidenceExtractor",
+    "EvidenceSelector",
     "HtmlParser",
+    "IMAGE_EXCLUSION_KEYWORDS",
+    "KNOWN_MANUFACTURER_ASSET_HOSTS",
+    "ManufacturerDiscoveryAgent",
     "ManufacturerIntelligenceService",
     "ManufacturerProfile",
     "MpnHypothesis",
@@ -46,6 +70,10 @@ __all__ = [
     "MpnNormalizer",
     "ParsedDocument",
     "Phase5FailureReason",
+    "ProductIdentityMatch",
+    "ProductIdentityMatcher",
+    "ProductSourceCandidate",
+    "ProductSourceDiscoveryService",
     "SafeNetworkTargetResolver",
     "SourceCache",
     "SourceFetcher",
@@ -53,10 +81,4 @@ __all__ = [
     "SourceRecord",
     "SourceVerifier",
     "canonicalize_url",
-    "DiscoveryResult",
-    "ManufacturerDiscoveryAgent",
-    "ProductIdentityMatch",
-    "ProductIdentityMatcher",
-    "ProductSourceCandidate",
-    "ProductSourceDiscoveryService",
 ]

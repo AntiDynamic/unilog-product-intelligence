@@ -1,6 +1,18 @@
 """Evidence-grounded product enrichment (Phase 6)."""
 
 from .agent import EvidenceGroundedEnrichmentAgent
+from .descriptions import (
+    FORBIDDEN_SUPERLATIVES,
+    DescriptionAgent,
+    DescriptionCandidateEnvelope,
+    DescriptionContext,
+    DescriptionLimits,
+    DescriptionService,
+    DescriptionValidationResult,
+    DescriptionValidator,
+    DeterministicDescriptionBuilder,
+    GuidelineAssessmentStatus,
+)
 from .models import (
     AttributePlan,
     AttributeSchema,
@@ -14,7 +26,22 @@ from .models import (
     ValidationResult,
 )
 from .persistence import EnrichmentPersistence, PostgresEnrichmentRepository
-from .planner import AttributePlanner, ReferencePack
+from .planner import AttributePlanner
+from .reference import (
+    EXPECTED_REFERENCE_FILES,
+    OFFICIAL_REFERENCE_MANIFEST,
+    CategoryLovPack,
+    FractionDecimalMap,
+    GlobalLovIndex,
+    LovAttributeRule,
+    ManufacturerBrandIndex,
+    ManufacturerBrandRecord,
+    ReferencePack,
+    ReferenceType,
+    UomRecord,
+    UomStandardMap,
+    separate_value_and_uom,
+)
 from .service import EnrichmentService
 from .validation import ValidationPipeline
 
@@ -22,18 +49,40 @@ __all__ = [
     "AttributePlan",
     "AttributePlanner",
     "AttributeSchema",
+    "CategoryLovPack",
+    "DescriptionAgent",
+    "DescriptionCandidateEnvelope",
+    "DescriptionContext",
+    "DescriptionLimits",
+    "DescriptionService",
+    "DescriptionValidationResult",
+    "DescriptionValidator",
+    "DeterministicDescriptionBuilder",
     "EnrichmentCandidate",
     "EvidenceGroundedEnrichmentAgent",
     "EnrichmentResult",
     "EnrichmentPersistence",
     "EnrichmentService",
     "EnrichmentStatus",
+    "EXPECTED_REFERENCE_FILES",
     "FinalAttributeStatus",
+    "FORBIDDEN_SUPERLATIVES",
+    "FractionDecimalMap",
+    "GlobalLovIndex",
+    "GuidelineAssessmentStatus",
+    "LovAttributeRule",
+    "ManufacturerBrandIndex",
+    "ManufacturerBrandRecord",
+    "OFFICIAL_REFERENCE_MANIFEST",
     "PostgresEnrichmentRepository",
     "PublicationState",
     "ReferenceAvailability",
     "ReferencePack",
+    "ReferenceType",
     "ReviewPayload",
+    "separate_value_and_uom",
+    "UomRecord",
+    "UomStandardMap",
     "ValidationPipeline",
     "ValidationResult",
 ]

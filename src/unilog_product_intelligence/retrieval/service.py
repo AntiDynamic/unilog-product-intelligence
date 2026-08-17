@@ -39,6 +39,7 @@ from .core import (
     SourceRecord,
     SourceVerifier,
 )
+from .digital_assets import DigitalAssetDiscoveryService
 from .source_discovery import ProductIdentityMatcher, ProductSourceDiscoveryService
 
 
@@ -84,6 +85,11 @@ class ManufacturerJob(BaseModel):
     transformed_mpn_match: bool | None = None
     identity_rejection_reason: str | None = None
 
+    verified_domains_available: tuple[str, ...] = ()
+    domains_attempted: tuple[str, ...] = ()
+    selected_domain: str | None = None
+    domain_attempt_failure_reasons: dict[str, str] = Field(default_factory=dict)
+
 
 class ManufacturerIntelligenceService:
     """One bounded source workflow. It never performs broad crawling or final enrichment."""
@@ -94,11 +100,13 @@ class ManufacturerIntelligenceService:
         verifier: SourceVerifier | None = None,
         parser: HtmlParser | None = None,
         extractor: EvidenceExtractor | None = None,
+        asset_discovery: DigitalAssetDiscoveryService | None = None,
     ) -> None:
         self.fetcher = fetcher
         self.verifier = verifier or SourceVerifier(SourcePolicy())
         self.parser = parser or HtmlParser()
         self.extractor = extractor
+        self.asset_discovery = asset_discovery or DigitalAssetDiscoveryService()
         self._service = ProductTruthService()
 
     def process(
@@ -108,7 +116,13 @@ class ManufacturerIntelligenceService:
         profile: ManufacturerProfile,
         refresh: bool = False,
     ) -> tuple[ProductTruth, ManufacturerJob]:
-        job = ManufacturerJob(product_id=product.product_id, source_id=source.source_id)
+        job = ManufacturerJob(
+            product_id=product.product_id,
+            source_id=source.source_id,
+            verified_domains_available=profile.verified_domains,
+            domains_attempted=(_host_of(source.canonical_url),),
+            selected_domain=_host_of(source.canonical_url),
+        )
         try:
             terms = _product_terms(product)
             verified = self.verifier.verify_source(source, profile, terms)
@@ -172,6 +186,21 @@ class ManufacturerIntelligenceService:
                 job.failure_reason = Phase5FailureReason.NO_AUTHORITATIVE_EVIDENCE
             product = _attach_source(product, fetched.source)
             product = self._attach_candidates(product, extracted.candidates)
+            try:
+                html_text = fetched.body.decode("utf-8", errors="replace")
+                discovered_assets = self.asset_discovery.discover_from_html(
+                    product=product,
+                    html_text=html_text,
+                    base_url=fetched.source.canonical_url,
+                    source_id=fetched.source.source_id,
+                    verified_domains=(
+                        profile.verified_domains or (fetched.source.manufacturer_domain,)
+                    ),
+                    manufacturer_key=profile.canonical_name,
+                )
+                product = self.asset_discovery.attach_to_product(product, discovered_assets)
+            except Exception:
+                pass
             job.state = ManufacturerJobState.COMPLETED
             return product, job
         except (RuntimeError, ValueError) as error:
@@ -219,6 +248,10 @@ class ManufacturerIntelligenceService:
                     "state": ManufacturerJobState.REVIEW_REQUIRED,
                     "error": "recovery_no_candidates_passed",
                     "failure_reason": Phase5FailureReason.PRODUCT_SOURCE_NOT_FOUND,
+                    "verified_domains_available": discovery.verified_domains_available,
+                    "domains_attempted": discovery.domains_attempted,
+                    "selected_domain": discovery.selected_domain,
+                    "domain_attempt_failure_reasons": discovery.domain_attempt_failure_reasons,
                 }
             )
             return product, recovery_job
@@ -230,6 +263,7 @@ class ManufacturerIntelligenceService:
             decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
             manufacturer_id=profile.manufacturer_id,
             manufacturer_domain=_host_of(best.url),
+            verified_domains=profile.verified_domains,
             product_id=product.product_id,
         )
         verified_source = self.verifier.verify_source(
@@ -241,10 +275,19 @@ class ManufacturerIntelligenceService:
                     "state": ManufacturerJobState.REVIEW_REQUIRED,
                     "error": verified_source.decision.value,
                     "failure_reason": Phase5FailureReason.DOMAIN_UNVERIFIED,
+                    "verified_domains_available": discovery.verified_domains_available,
+                    "domains_attempted": discovery.domains_attempted,
+                    "selected_domain": discovery.selected_domain,
+                    "domain_attempt_failure_reasons": discovery.domain_attempt_failure_reasons,
                 }
             )
             return product, recovery_job
-        return self.process(product, verified_source, profile)
+        res_prod, res_job = self.process(product, verified_source, profile)
+        res_job.verified_domains_available = discovery.verified_domains_available
+        res_job.domains_attempted = discovery.domains_attempted
+        res_job.selected_domain = discovery.selected_domain or _host_of(best.url)
+        res_job.domain_attempt_failure_reasons = discovery.domain_attempt_failure_reasons
+        return res_prod, res_job
 
     def _attach_candidates(
         self, product: ProductTruth, candidates: list[EvidenceCandidate]

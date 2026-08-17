@@ -117,6 +117,7 @@ class SourceRecord(RetrievalDTO):
     decision: SourceDecision
     manufacturer_id: str
     manufacturer_domain: str
+    verified_domains: tuple[str, ...] = ()
     product_id: str | None = None
     retrieval_method: str = "http"
     retrieval_status: RetrievalStatus | None = None
@@ -259,7 +260,10 @@ class SourcePolicy:
             )
         if self.allowed_domain(source.canonical_url, profile):
             return source.model_copy(
-                update={"decision": SourceDecision.VERIFIED_MANUFACTURER_SOURCE}
+                update={
+                    "decision": SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+                    "verified_domains": tuple(profile.verified_domains),
+                }
             )
         return source.model_copy(update={"decision": SourceDecision.REJECTED})
 
@@ -630,6 +634,9 @@ class SourceFetcher:
     def _open_source(self, request: Request, source: SourceRecord, timeout: float) -> Any:
         current_url = request.full_url
         original_scheme = urlsplit(current_url).scheme.casefold()
+        allowed_domains = tuple(_host(d) for d in source.verified_domains) or (
+            _host(source.manufacturer_domain),
+        )
         for _ in range(self.max_redirects + 1):
             self.target_resolver.validate(current_url)
             current_request = Request(
@@ -648,7 +655,8 @@ class SourceFetcher:
             next_parts = urlsplit(next_url)
             if original_scheme == "https" and next_parts.scheme != "https":
                 raise ValueError("redirect_https_downgrade")
-            if not _same_or_subdomain(_host(next_url), source.manufacturer_domain):
+            next_host = _host(next_url)
+            if not any(_same_or_subdomain(next_host, d) for d in allowed_domains):
                 raise ValueError("redirect_external_domain")
             current_url = next_url
         raise ValueError("redirect_limit_exceeded")
@@ -744,8 +752,20 @@ class SourceFetcher:
                             cache_status=CacheStatus.INVALID,
                             error="unsupported_content_type",
                         )
+                    final_url = source.canonical_url
+                    if hasattr(response, "geturl") and callable(response.geturl):
+                        with suppress(Exception):
+                            res_url = response.geturl()
+                            if res_url:
+                                final_url = canonicalize_url(res_url)
+                    elif hasattr(response, "url") and response.url:
+                        with suppress(Exception):
+                            final_url = canonicalize_url(str(response.url))
+
                     updated = source.model_copy(
                         update={
+                            "canonical_url": final_url,
+                            "manufacturer_domain": _host(final_url),
                             "retrieval_status": RetrievalStatus.SUCCESS,
                             "http_status": status,
                             "content_type": content_type,
@@ -938,7 +958,13 @@ class HtmlParser:
             for href in _embedded_catalog_links(html_text)
             if _safe_joined_url(base_url, href) is not None
         )
-        links = list({link.url: link for link in links}.values())
+        deduped_links: dict[str, DocumentLink] = {}
+        for link in links:
+            has_anchor = bool(link.anchor_text)
+            existing = deduped_links.get(link.url)
+            if existing is None or (has_anchor and not existing.anchor_text):
+                deduped_links[link.url] = link
+        links = list(deduped_links.values())
         embedded_product = _embedded_product_metadata(html_text)
         structured_metadata: dict[str, Any] = {
             "meta": parser.metadata,
@@ -1293,13 +1319,13 @@ def _embedded_catalog_links(html_text: str) -> tuple[str, ...]:
     """Recover product/category URLs stored in JavaScript-driven catalog state."""
 
     raw_links = re.findall(
-        r"(?:(?:https?:)?\\/\\/[^\"'<>\\s]+|\\/(?:explore|product|products)\\/[^\"'<>\\s]+)",
+        r"(?:(?:https?:)?(?://|\\/\\/)[^\"'<>\s]+|/(?:3M/[A-Za-z0-9_-]+/(?:p/d|p/c|company-[a-z0-9_-]+/all-3m-products)|explore|product|products|p/d|p/c|item|items|catalog|mws/media)[^\"'<>\s]*)",
         html_text,
         flags=re.IGNORECASE,
     )
     values: list[str] = []
     for raw in raw_links:
-        value = raw.replace("\\/", "/").rstrip(".,;:)")
+        value = raw.replace(r"\/", "/").rstrip(".,;:)\"'")
         if value.startswith("//"):
             value = "https:" + value
         if value not in values:

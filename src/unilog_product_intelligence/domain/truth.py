@@ -120,9 +120,21 @@ class AssetType(StrEnum):
     """Digital asset categories supported by the canonical model."""
 
     IMAGE = "image"
+    PRIMARY_IMAGE = "primary_image"
+    ALTERNATE_IMAGE = "alternate_image"
     DOCUMENT = "document"
+    SPECIFICATION_SHEET = "specification_sheet"
+    TECHNICAL_DATA_SHEET = "technical_data_sheet"
+    INSTALLATION_MANUAL = "installation_manual"
+    USER_MANUAL = "user_manual"
     MANUAL = "manual"
+    WARRANTY = "warranty"
     SDS = "sds"
+    CATALOG = "catalog"
+    BROCHURE = "brochure"
+    CAD_DRAWING = "cad_drawing"
+    TECHNICAL_DRAWING = "technical_drawing"
+    OTHER_DOCUMENT = "other_document"
     OTHER = "other"
 
 
@@ -275,8 +287,17 @@ class DigitalAsset(DomainModel):
     uri: str
     source_id: str
     title: str | None = None
+    filename: str | None = None
+    mime_type: str | None = None
+    manufacturer_domain: str | None = None
+    product_id: str | None = None
+    association_scope: str = "PRODUCT_SPECIFIC"
+    content_status: str = "NOT_PARSED"
+    confidence: float = 1.0
     evidence_ids: list[str] = Field(default_factory=list)
     status: SourceStatus = SourceStatus.AVAILABLE
+    discovered_from: str | None = None
+    description: str | None = None
 
 
 class Conflict(DomainModel):

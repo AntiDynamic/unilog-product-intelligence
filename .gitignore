@@ -30,6 +30,7 @@ log/
 Thumbs.db
 
 .pytest-tmp/
+.pytest_temp/
 
 # Local/private challenge and reference data
 # Keep the runtime-data contract files visible while ignoring all payloads.
@@ -59,4 +60,5 @@ Fittings_LOV.xlsx
 Reference_Documents_Summary.xlsx
 delivery_*.csv
 delivery_*.json
+scratch/
 

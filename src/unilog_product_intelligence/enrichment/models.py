@@ -87,11 +87,14 @@ class AttributeSchema(EnrichmentDTO):
     attribute_id: str
     canonical_name: str
     required: bool = False
+    filtering: bool | None = None
     value_type: str = "text"
     allowed_values: tuple[str, ...] = ()
     allowed_uom: tuple[str, ...] = ()
     reference_availability: ReferenceAvailability = ReferenceAvailability.REFERENCE_UNAVAILABLE
     classpaths: tuple[str, ...] = ()
+    leaf_node: str | None = None
+    schema_source: str = "deterministic category schema"
     reason: str = "deterministic category schema"
 
 
@@ -99,9 +102,12 @@ class AttributePlan(EnrichmentDTO):
     product_id: str
     category: str | None = None
     classpath: tuple[str, ...] = ()
+    leaf_node: str | None = None
     attribute_id: str
     attribute_name: str
     applicability: Applicability
+    required: bool = False
+    filtering: bool | None = None
     current_status: FinalAttributeStatus
     current_value: Any = None
     evidence_available: bool = False
@@ -110,6 +116,10 @@ class AttributePlan(EnrichmentDTO):
     allowed_values: tuple[str, ...] = ()
     allowed_uom: tuple[str, ...] = ()
     reference_availability: ReferenceAvailability = ReferenceAvailability.REFERENCE_UNAVAILABLE
+    schema_source: str = "FALLBACK_EXISTING_ATTRIBUTES"
+    reference_type: str | None = None
+    guidelines: str | None = None
+    remarks: str | None = None
     priority: int = Field(default=50, ge=0, le=100)
     reason: str
 

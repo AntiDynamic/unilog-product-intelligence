@@ -23,6 +23,7 @@ from unilog_product_intelligence.domain.truth import (
 )
 
 from .agent import EvidenceGroundedEnrichmentAgent, evidence_references
+from .descriptions import DescriptionAgent, DescriptionService
 from .models import (
     AttributePlan,
     EnrichmentCandidate,
@@ -48,12 +49,16 @@ class EnrichmentService:
         validator: ValidationPipeline | None = None,
         truth_service: ProductTruthService | None = None,
         persistence: EnrichmentPersistence | None = None,
+        description_service: DescriptionService | None = None,
     ) -> None:
         self.planner = planner or AttributePlanner()
         self.agent = agent or EvidenceGroundedEnrichmentAgent()
         self.validator = validator or ValidationPipeline()
         self.truth_service = truth_service or ProductTruthService()
         self.persistence = persistence
+        self.description_service = description_service or DescriptionService(
+            agent=DescriptionAgent(provider=getattr(self.agent, "provider", None))
+        )
 
     def enrich(self, product: ProductTruth) -> EnrichmentResult:
         status = EnrichmentStatus.PLANNING_ATTRIBUTES
@@ -144,6 +149,9 @@ class EnrichmentService:
         metrics.conflicts = conflict_count
         publication = self.validator.publication_state(plans, candidates, validations, reviews)
         product = self._apply(product, candidates, validations, conflict_count)
+        product, desc_validations = self.description_service.generate_descriptions(
+            product, reference_pack=self.planner.reference_pack
+        )
         if publication == PublicationState.BLOCKED:
             status = EnrichmentStatus.BLOCKED
         elif publication == PublicationState.REVIEW_REQUIRED:

@@ -2,11 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
-from pathlib import Path
-
-from openpyxl import load_workbook
-
 from unilog_product_intelligence.domain.truth import AttributeRecord, ProductTruth
 
 from .models import (
@@ -17,112 +12,16 @@ from .models import (
     FinalAttributeStatus,
     ReferenceAvailability,
 )
-
-EXPECTED_REFERENCE_FILES = (
-    "UNILOG_INTERNAL_CONTENT_GUIDELINES.docx",
-    "Unilog_Master_UOM_Standards_Abbreviations_and_Terms.xlsx",
-    "Decimal_Fraction.xlsx",
-    "UniCat_Manufacturer_and_Brand_List.xlsx",
-    "Unicat_Lov_v1_0_Updated_With_Remarks.xlsx",
-    "FAUCETS_LOV.xlsx",
-    "Fittings_LOV.xlsx",
-    "Reference_Documents_Summary.xlsx",
-    "Unilog-Sample_200_Items-Input-vs-Output.xlsx",
-    "Sample-1000_Items.xlsx",
+from .reference import (
+    EXPECTED_REFERENCE_FILES,
+    OFFICIAL_REFERENCE_MANIFEST,
+    ReferencePack,
+    ReferenceType,
 )
 
 
-class ReferencePack:
-    """Runtime reference inventory; unavailable data is never replaced with invented values."""
-
-    def __init__(
-        self,
-        availability: ReferenceAvailability,
-        files: dict[str, Path],
-        allowed_values: dict[str, tuple[str, ...]] | None = None,
-        allowed_uom: dict[str, tuple[str, ...]] | None = None,
-    ) -> None:
-        self.availability = availability
-        self.files = files
-        self.allowed_values = allowed_values or {}
-        self.allowed_uom = allowed_uom or {}
-
-    @classmethod
-    def discover(cls, roots: Iterable[str | Path]) -> ReferencePack:
-        found: dict[str, Path] = {}
-        for root_value in roots:
-            root = Path(root_value)
-            if not root.exists():
-                continue
-            for path in root.rglob("*"):
-                if path.is_file() and path.name in EXPECTED_REFERENCE_FILES:
-                    found.setdefault(path.name, path)
-        allowed_values: dict[str, tuple[str, ...]] = {}
-        allowed_uom: dict[str, tuple[str, ...]] = {}
-        for filename, path in found.items():
-            if path.suffix.casefold() != ".xlsx" or "lov" not in filename.casefold():
-                continue
-            _load_lov_sheet(path, allowed_values, allowed_uom)
-        return cls(
-            ReferenceAvailability.REFERENCE_AVAILABLE
-            if found
-            else ReferenceAvailability.REFERENCE_UNAVAILABLE,
-            found,
-            allowed_values,
-            allowed_uom,
-        )
-
-    @property
-    def available(self) -> bool:
-        return self.availability == ReferenceAvailability.REFERENCE_AVAILABLE
-
-
-def _load_lov_sheet(
-    path: Path, allowed_values: dict[str, tuple[str, ...]], allowed_uom: dict[str, tuple[str, ...]]
-) -> None:
-    """Best-effort parser for official LOV workbooks without assuming a fixed sheet layout."""
-
-    try:
-        workbook = load_workbook(path, read_only=True, data_only=True)
-    except Exception:
-        return
-    for sheet in workbook.worksheets:
-        rows = list(sheet.iter_rows(values_only=True))
-        if not rows:
-            continue
-        headers = [str(v).strip().casefold() if v is not None else "" for v in rows[0]]
-        attr_index = next(
-            (i for i, h in enumerate(headers) if h in {"attribute", "attribute label", "label"}),
-            None,
-        )
-        value_index = next(
-            (i for i, h in enumerate(headers) if h in {"value", "allowed value", "lov value"}),
-            None,
-        )
-        uom_index = next((i for i, h in enumerate(headers) if "uom" in h or "unit" in h), None)
-        if attr_index is None or value_index is None:
-            continue
-        values: dict[str, set[str]] = {}
-        uoms: dict[str, set[str]] = {}
-        for row in rows[1:]:
-            if attr_index >= len(row) or value_index >= len(row):
-                continue
-            attribute = str(row[attr_index]).strip()
-            value = str(row[value_index]).strip()
-            if not attribute or not value or value.casefold() == "none":
-                continue
-            values.setdefault(attribute.casefold(), set()).add(value)
-            if uom_index is not None and uom_index < len(row) and row[uom_index] not in (None, ""):
-                uoms.setdefault(attribute.casefold(), set()).add(str(row[uom_index]).strip())
-        for attribute, items in values.items():
-            allowed_values[attribute] = tuple(sorted(items))
-        for attribute, items in uoms.items():
-            allowed_uom[attribute] = tuple(sorted(items))
-    workbook.close()
-
-
 class CategorySchemaRegistry:
-    """Small deterministic schema registry; official LOVs can override its constraints."""
+    """Deterministic static category schema registry kept for backward compatibility."""
 
     _fitting = (
         AttributeSchema(attribute_id="fitting_type", canonical_name="Fitting Type", required=True),
@@ -160,48 +59,162 @@ class CategorySchemaRegistry:
 
 
 class AttributePlanner:
-    """Plans only category-supported, applicable work before any model call."""
+    """Plans category-supported, reference-grounded attribute work before any model call."""
 
     def __init__(
         self,
         reference_pack: ReferencePack | None = None,
         registry: CategorySchemaRegistry | None = None,
+        max_planned_attributes: int = 50,
     ) -> None:
         self.reference_pack = reference_pack or ReferencePack(
             ReferenceAvailability.REFERENCE_UNAVAILABLE, {}
         )
         self.registry = registry or CategorySchemaRegistry()
+        self.max_planned_attributes = max_planned_attributes
 
-    def plan(self, product: ProductTruth) -> tuple[AttributePlan, ...]:
-        schemas = self.registry.schemas_for(product)
-        existing = {item.attribute_id: item for item in product.attributes}
-        if not schemas:
-            schemas = tuple(
+    def resolve_attribute_schema(
+        self, product: ProductTruth
+    ) -> tuple[tuple[AttributeSchema, ...], str, ReferenceAvailability]:
+        """Resolve attribute schema following the strict 5-tier resolution hierarchy."""
+        classpath = product.classification.classpath
+        category = product.classification.class_name or product.classification.fine
+
+        # Static schemas for fallback / core required attribute hints
+        static_schema_map = {
+            s.attribute_id: s for s in self.registry.schemas_for(product)
+        }
+
+        # 1. Try official reference pack (Category LOV or Global LOV)
+        rules, source = self.reference_pack.resolve_category_rules(classpath, category)
+        if rules:
+            schemas: list[AttributeSchema] = []
+            for rule in rules:
+                canonical = rule.normalized_label or rule.attribute_label
+                attr_id = (
+                    canonical.strip()
+                    .casefold()
+                    .replace(" ", "_")
+                    .replace("/", "_")
+                    .replace("-", "_")
+                )
+                rem_low = (rule.remarks or "").casefold()
+                guide_low = (rule.guidelines or "").casefold()
+                static_match = static_schema_map.get(attr_id)
+                is_req = (
+                    "required" in rem_low
+                    or "required" in guide_low
+                    or (static_match.required if static_match else False)
+                )
+                schemas.append(
+                    AttributeSchema(
+                        attribute_id=attr_id,
+                        canonical_name=canonical,
+                        required=is_req,
+                        filtering=rule.filtering,
+                        allowed_values=rule.attribute_values,
+                        allowed_uom=rule.allowed_uom,
+                        reference_availability=ReferenceAvailability.REFERENCE_AVAILABLE,
+                        classpaths=rule.classpath or (),
+                        leaf_node=rule.leaf_node,
+                        schema_source=source,
+                        reason=f"official reference rule from {source}",
+                    )
+                )
+            return tuple(schemas), source, ReferenceAvailability.REFERENCE_AVAILABLE
+
+        # 2. Check static schema registry (backward compatibility for Faucets/Fittings)
+        registry_schemas = self.registry.schemas_for(product)
+        if registry_schemas:
+            return (
+                registry_schemas,
+                "CATEGORY_SCHEMA_REGISTRY",
+                self.reference_pack.availability,
+            )
+
+        # 3. Fallback to existing ProductTruth attributes
+        if product.attributes:
+            fallback_schemas = tuple(
                 AttributeSchema(
                     attribute_id=item.attribute_id,
                     canonical_name=item.canonical_name,
                     required=False,
+                    reference_availability=ReferenceAvailability.REFERENCE_UNAVAILABLE,
+                    schema_source="FALLBACK_EXISTING_ATTRIBUTES",
                     reason="existing ProductTruth attribute; category schema unavailable",
                 )
                 for item in product.attributes
             )
+            return (
+                fallback_schemas,
+                "FALLBACK_EXISTING_ATTRIBUTES",
+                ReferenceAvailability.REFERENCE_UNAVAILABLE,
+            )
+
+        return (), "FALLBACK_EXISTING_ATTRIBUTES", ReferenceAvailability.REFERENCE_UNAVAILABLE
+
+    def plan(self, product: ProductTruth) -> tuple[AttributePlan, ...]:
+        schemas, schema_source, ref_avail = self.resolve_attribute_schema(product)
+        if not schemas:
+            return ()
+
+        existing = {item.attribute_id: item for item in product.attributes}
         plans: list[AttributePlan] = []
+
         for schema in schemas:
             current = existing.get(schema.attribute_id)
             current_status = _status(current)
             current_value = current.normalized_value if current else None
-            evidence_available = bool(current and current.evidence_ids)
-            values = self.reference_pack.allowed_values.get(
-                schema.canonical_name.casefold(), schema.allowed_values
+            evidence_available = bool(
+                current
+                and (
+                    current.evidence_ids
+                    or any(c.evidence_ids for c in current.candidates)
+                )
             )
-            uoms = self.reference_pack.allowed_uom.get(
-                schema.canonical_name.casefold(), schema.allowed_uom
+
+            ref_values = self.reference_pack.get_allowed_values(
+                schema.canonical_name,
+                classpath=product.classification.classpath,
+                category=product.classification.class_name,
             )
-            if current and current_status in {
-                FinalAttributeStatus.VERIFIED,
-                FinalAttributeStatus.NORMALIZED,
-                FinalAttributeStatus.ENRICHED,
-            }:
+            values = ref_values if ref_values else schema.allowed_values
+
+            ref_uoms = self.reference_pack.get_allowed_uom(
+                schema.canonical_name,
+                classpath=product.classification.classpath,
+                category=product.classification.class_name,
+            )
+            uoms = ref_uoms if ref_uoms else schema.allowed_uom
+
+            has_ref = bool(
+                values
+                or uoms
+                or ref_avail == ReferenceAvailability.REFERENCE_AVAILABLE
+            )
+            plan_ref_avail = (
+                ReferenceAvailability.REFERENCE_AVAILABLE
+                if has_ref
+                else ReferenceAvailability.REFERENCE_UNAVAILABLE
+            )
+
+            # Priority calculation: REQUIRED > FILTERING > OPTIONAL
+            if schema.required:
+                priority = 90
+            elif schema.filtering is True:
+                priority = 70
+            else:
+                priority = 50
+
+            if (
+                current
+                and current_status in {
+                    FinalAttributeStatus.VERIFIED,
+                    FinalAttributeStatus.NORMALIZED,
+                    FinalAttributeStatus.ENRICHED,
+                }
+                and evidence_available
+            ):
                 decision = EnrichmentDecision.NO_ACTION
                 reason = "Existing publishable value is not re-enriched."
             elif evidence_available:
@@ -213,16 +226,20 @@ class AttributePlanner:
             else:
                 decision = EnrichmentDecision.ENRICH
                 reason = "Optional category attribute may be enriched only when evidence exists."
+
             plans.append(
                 AttributePlan(
                     product_id=product.product_id,
                     category=product.classification.class_name,
                     classpath=product.classification.classpath,
+                    leaf_node=schema.leaf_node or product.classification.class_name,
                     attribute_id=schema.attribute_id,
                     attribute_name=schema.canonical_name,
                     applicability=Applicability.REQUIRED
                     if schema.required
                     else Applicability.OPTIONAL,
+                    required=schema.required,
+                    filtering=schema.filtering,
                     current_status=current_status,
                     current_value=current_value,
                     evidence_available=evidence_available,
@@ -231,12 +248,32 @@ class AttributePlanner:
                     + (("lov",) if values else ()),
                     allowed_values=values,
                     allowed_uom=uoms,
-                    reference_availability=self.reference_pack.availability,
-                    priority=90 if schema.required else 50,
+                    reference_availability=plan_ref_avail,
+                    schema_source=schema.schema_source or schema_source,
+                    priority=priority,
                     reason=reason,
                 )
             )
-        return tuple(sorted(plans, key=lambda item: (-item.priority, item.attribute_id)))
+
+        # Deterministic sorting: priority descending, then attribute_id
+        sorted_plans = sorted(plans, key=lambda item: (-item.priority, item.attribute_id))
+
+        # Bound plan size while strictly preserving all required attributes
+        if len(sorted_plans) > self.max_planned_attributes:
+            required_plans = [
+                p for p in sorted_plans if p.applicability == Applicability.REQUIRED
+            ]
+            other_plans = [
+                p for p in sorted_plans if p.applicability != Applicability.REQUIRED
+            ]
+            remaining_slots = max(0, self.max_planned_attributes - len(required_plans))
+            keep_others = other_plans[:remaining_slots]
+            sorted_plans = sorted(
+                required_plans + keep_others,
+                key=lambda item: (-item.priority, item.attribute_id),
+            )
+
+        return tuple(sorted_plans)
 
 
 def _status(attribute: AttributeRecord | None) -> FinalAttributeStatus:
@@ -251,3 +288,13 @@ def _status(attribute: AttributeRecord | None) -> FinalAttributeStatus:
         "rejected": FinalAttributeStatus.REJECTED,
     }
     return mapping.get(attribute.status.value, FinalAttributeStatus.REVIEW_REQUIRED)
+
+
+__all__ = [
+    "AttributePlanner",
+    "CategorySchemaRegistry",
+    "EXPECTED_REFERENCE_FILES",
+    "OFFICIAL_REFERENCE_MANIFEST",
+    "ReferencePack",
+    "ReferenceType",
+]
