@@ -10,6 +10,7 @@ from uuid import uuid4
 
 from pydantic import ValidationError
 
+from unilog_product_intelligence.domain.source_context import VerifiedProductSourceContext
 from unilog_product_intelligence.domain.truth import (
     ProductTruth,
     SourceAuthority,
@@ -63,6 +64,7 @@ class EvidenceGroundedEnrichmentAgent:
         product: ProductTruth,
         plans: Iterable[AttributePlan],
         evidence: Iterable[EvidenceReference],
+        source_context: VerifiedProductSourceContext | None = None,
         *,
         model_version: str = "gemini-3.5-flash-lite",
         schema_version: str = "phase6-v1",
@@ -89,7 +91,7 @@ class EvidenceGroundedEnrichmentAgent:
             self.last_run = EnrichmentAgentRun(error="provider_unavailable")
             self.last_run.completed_at = datetime.now(UTC)
             return ()
-        prompt = _prompt(product, selected, evidence_items)
+        prompt = _prompt(product, selected, evidence_items, source_context)
         run = EnrichmentAgentRun()
         self.last_run = run
         try:
@@ -256,7 +258,10 @@ class EvidenceGroundedEnrichmentAgent:
 
 
 def _prompt(
-    product: ProductTruth, plans: tuple[AttributePlan, ...], evidence: tuple[EvidenceReference, ...]
+    product: ProductTruth,
+    plans: tuple[AttributePlan, ...],
+    evidence: tuple[EvidenceReference, ...],
+    source_context: VerifiedProductSourceContext | None = None,
 ) -> str:
     plan_text = "\n".join(
         f"- {plan.attribute_id} ({plan.attribute_name}) applicability={plan.applicability} "
@@ -270,21 +275,37 @@ def _prompt(
     )
     identity = product.identity.manufacturer_part_number
     mpn = identity.normalized_value if identity else ""
-    return (
-        "SYSTEM: Evidence-grounded enrichment v1. Extract ONLY attributes in the supplied plan. "
-        "Use ONLY supplied evidence. Never use unsupported world knowledge. "
-        "Return no candidate when evidence does not support a value. "
-        "Preserve evidence IDs and do not modify quoted evidence. Do not invent "
-        "LOV values. Separate numeric values and units where applicable. "
-        "Distinguish direct facts from inference/calculation. Output JSON only.\n\n"
-        f"PRODUCT: id={product.product_id} manufacturer_part_number={mpn}\n"
-        f"PLANNED ATTRIBUTES:\n{plan_text}\n"
-        f"VERIFIED EVIDENCE:\n{evidence_text}"
+    mfg_id = product.identity.manufacturer
+    mfg = (mfg_id.normalized_value if mfg_id else None) or ""
+    b_id = product.identity.brand
+    brand = (b_id.normalized_value if b_id else None) or ""
+
+    source_ctx_text = (
+        source_context.build_prompt_context() if source_context is not None else ""
     )
+
+    prompt_parts = [
+        "SYSTEM: Evidence-grounded enrichment v1. Extract ONLY attributes in the supplied plan.",
+        "Use ONLY supplied evidence and verified manufacturer source context.",
+        "Never use unsupported world knowledge. Return no candidate if unsupported.",
+        "Every candidate MUST cite one supplied evidence_id.",
+        "Do not alter MPN or manufacturer identity.",
+        "Do not invent evidence IDs or LOV values. Separate numeric values and units.",
+        "Distinguish direct facts from inference/calculation. Output JSON only.\n",
+        f"PRODUCT IDENTITY: id={product.product_id} manufacturer={mfg} brand={brand} mpn={mpn}",
+    ]
+
+    if source_ctx_text:
+        prompt_parts.append(f"VERIFIED MANUFACTURER SOURCE CONTEXT:\n{source_ctx_text}")
+
+    prompt_parts.append(f"PLANNED ATTRIBUTES:\n{plan_text}")
+    prompt_parts.append(f"VERIFIED EVIDENCE:\n{evidence_text}")
+
+    return "\n\n".join(prompt_parts)
 
 
 def evidence_references(product: ProductTruth) -> tuple[EvidenceReference, ...]:
-    """Expose only evidence attached to available authoritative manufacturer sources."""
+    """Expose only evidence attached to available authoritative manufacturer/distributor sources."""
 
     sources = {item.source_id: item for item in product.sources}
     result: list[EvidenceReference] = []
@@ -296,9 +317,14 @@ def evidence_references(product: ProductTruth) -> tuple[EvidenceReference, ...]:
             SourceType.MANUFACTURER_PAGE,
             SourceType.MANUFACTURER_DOCUMENT,
             SourceType.MANUFACTURER_CATALOG,
+            SourceType.AUTHORIZED_DISTRIBUTOR,
         }:
             continue
-        if source.authority not in {SourceAuthority.AUTHORITATIVE, SourceAuthority.HIGH}:
+        if source.authority not in {
+            SourceAuthority.AUTHORITATIVE,
+            SourceAuthority.HIGH,
+            SourceAuthority.SECONDARY,
+        }:
             continue
         if not item.quoted_text:
             continue

@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from unilog_product_intelligence.application.product_truth import ProductTruthService
+from unilog_product_intelligence.domain.source_context import VerifiedProductSourceContext
 from unilog_product_intelligence.domain.truth import (
     AssessmentMetadata,
     CandidateValue,
@@ -61,7 +62,11 @@ class EnrichmentService:
             agent=DescriptionAgent(provider=getattr(self.agent, "provider", None))
         )
 
-    def enrich(self, product: ProductTruth) -> EnrichmentResult:
+    def enrich(
+        self,
+        product: ProductTruth,
+        source_context: VerifiedProductSourceContext | None = None,
+    ) -> EnrichmentResult:
         status = EnrichmentStatus.PLANNING_ATTRIBUTES
         plans = self.planner.plan(product)
         metrics = EnrichmentMetrics(products=1, planned_attributes=len(plans))
@@ -69,7 +74,9 @@ class EnrichmentService:
         references = evidence_references(product)
         status = EnrichmentStatus.ENRICHING
         try:
-            candidates = self.agent.enrich(product, plans, references)
+            candidates = self.agent.enrich(
+                product, plans, references, source_context=source_context
+            )
         except Exception as error:
             return EnrichmentResult(
                 product_id=product.product_id,

@@ -224,6 +224,7 @@ class ProductOrchestrator:
             and result.selected_candidate < len(result.candidates)
             else ClassificationCandidate()
         )
+        source_id = product.sources[0].source_id if product.sources else "raw_input"
         return self._service.add_classification(
             product,
             ProductClassification(
@@ -231,12 +232,12 @@ class ProductOrchestrator:
                 class_name=selected.class_name,
                 fine=selected.fine,
                 classpath=tuple(selected.classpath),
-                source_ids=[product.sources[0].source_id],
+                source_ids=[source_id],
             ),
         )
 
     def _attributes(self, product: ProductTruth, result: AttributeExtractionResult) -> ProductTruth:
-        source_id = product.sources[0].source_id
+        source_id = product.sources[0].source_id if product.sources else "raw_input"
         for item in result.attributes:
             if item.status == EvidenceKind.UNKNOWN or not item.evidence.quoted_text:
                 continue

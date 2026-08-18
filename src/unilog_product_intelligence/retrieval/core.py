@@ -269,6 +269,26 @@ class SourcePolicy:
             )
         return source.model_copy(update={"decision": SourceDecision.REJECTED})
 
+    def verify_secondary_source(
+        self,
+        source: SourceRecord,
+        profile: ManufacturerProfile,
+        product_terms: tuple[str, ...] = (),
+    ) -> SourceRecord:
+        if self.is_non_authoritative(source.manufacturer_domain):
+            return source.model_copy(
+                update={
+                    "decision": SourceDecision.NON_AUTHORITATIVE,
+                    "source_kind": SourceKind.NON_AUTHORITATIVE_SOURCE,
+                }
+            )
+        return source.model_copy(
+            update={
+                "decision": SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE,
+                "source_kind": SourceKind.DISTRIBUTOR_PRODUCT_PAGE,
+            }
+        )
+
 
 class SourceVerifier:
     def __init__(self, policy: SourcePolicy | None = None) -> None:
@@ -286,6 +306,14 @@ class SourceVerifier:
         product_terms: tuple[str, ...] = (),
     ) -> SourceRecord:
         return self.policy.verify_source(source, profile, product_terms)
+
+    def verify_secondary_source(
+        self,
+        source: SourceRecord,
+        profile: ManufacturerProfile,
+        product_terms: tuple[str, ...] = (),
+    ) -> SourceRecord:
+        return self.policy.verify_secondary_source(source, profile, product_terms)
 
 
 class DomainResolver:
@@ -664,7 +692,10 @@ class SourceFetcher:
         raise ValueError("redirect_limit_exceeded")
 
     def fetch(self, source: SourceRecord, refresh: bool = False) -> FetchResult:
-        if source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
+        if source.decision not in {
+            SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+            SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE,
+        }:
             return FetchResult(
                 source=source.model_copy(update={"retrieval_status": RetrievalStatus.BLOCKED}),
                 cache_status=CacheStatus.INVALID,

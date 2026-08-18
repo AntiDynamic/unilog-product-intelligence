@@ -146,10 +146,16 @@ class Phase65Pipeline:
                             )
                         if manufacturer_job.state != ManufacturerJobState.COMPLETED:
                             blocker = _manufacturer_blocker(manufacturer_job)
-                        elif not evidence_references(product):
-                            blocker = "EVIDENCE_NOT_FOUND"
-
-        enrichment_result = self.enrichment.enrich(product)
+        source_ctx = (
+            manufacturer_job.verified_source_context if manufacturer_job is not None else None
+        )
+        if source_ctx is not None:
+            try:
+                enrichment_result = self.enrichment.enrich(product, source_context=source_ctx)
+            except TypeError:
+                enrichment_result = self.enrichment.enrich(product)
+        else:
+            enrichment_result = self.enrichment.enrich(product)
         status = (
             Phase65Status.ENRICHED
             if enrichment_result.status.value == "ENRICHED"

@@ -231,7 +231,9 @@ def _build_pipeline(
             product_id=product.product_id,
         )
         if is_secondary:
-            verified_source = candidate_source
+            verified_source = SourceVerifier(SourcePolicy()).verify_secondary_source(candidate_source, profile)
+            if verified_source.decision != SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE:
+                return None
         else:
             verified_source = SourceVerifier(SourcePolicy()).verify_source(candidate_source, profile)
             if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:

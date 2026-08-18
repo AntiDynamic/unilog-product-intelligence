@@ -130,11 +130,22 @@ class Phase5Trace(BaseModel):
     resolved_manufacturer: str | None = None
     domain_resolved: bool = False
     domain: str | None = None
+    manufacturer_domain_verified: bool = False
+    product_source_found: bool = False
+    product_source_verified: bool = False
+    product_identity_verified: bool = False
+    evidence_present: bool = False
+    secondary_source_used: bool = False
+    source_authority: str = "UNKNOWN"
     strategies_attempted: list[str] = Field(default_factory=list)
     urls_generated: list[str] = Field(default_factory=list)
     urls_fetched: list[str] = Field(default_factory=list)
     source_verified: bool = False
     identity_score: float = 0.0
+    mpn_match_type: str | None = None
+    raw_mpn_match: bool | None = None
+    transformed_mpn_match: bool | None = None
+    identity_rejection_reason: str | None = None
     identity_classification: str | None = None
     evidence_count: int = 0
     recovery_attempts: int = 0
@@ -837,18 +848,35 @@ class ProductValidationHarness:
             failure=disc.unresolved_reason if disc else None,
         )
 
+        is_product_verified = bool(mfg_job and mfg_job.source_is_product_verified)
+        ev_references = len(evidence_references(result.product_truth))
         p5_trace = Phase5Trace(
             manufacturer_resolved=bool(resolved_mfg),
             resolved_manufacturer=resolved_mfg,
             domain_resolved=bool(resolved_domain),
             domain=resolved_domain,
+            manufacturer_domain_verified=bool(resolved_domain),
+            product_source_found=bool(urls_fetched),
+            product_source_verified=is_product_verified,
+            product_identity_verified=is_product_verified,
+            evidence_present=ev_references > 0,
+            secondary_source_used=bool(mfg_job and mfg_job.secondary_source_used),
+            source_authority=mfg_job.source_authority.value if mfg_job else "UNKNOWN",
             strategies_attempted=list(disc.retrieval_strategies_attempted) if disc else [],
             urls_generated=urls_generated,
             urls_fetched=urls_fetched,
-            source_verified=source_verified,
-            identity_score=identity_match_score,
+            source_verified=is_product_verified,
+            identity_score=(
+                mfg_job.identity_score
+                if (mfg_job and mfg_job.identity_score is not None)
+                else identity_match_score
+            ),
+            mpn_match_type=mfg_job.mpn_match_type if mfg_job else None,
+            raw_mpn_match=mfg_job.raw_mpn_match if mfg_job else None,
+            transformed_mpn_match=mfg_job.transformed_mpn_match if mfg_job else None,
+            identity_rejection_reason=mfg_job.identity_rejection_reason if mfg_job else None,
             identity_classification=identity_match_classification,
-            evidence_count=len(evidence_references(result.product_truth)),
+            evidence_count=ev_references,
             recovery_attempts=0,
             recovery_succeeded=bool(mfg_job and mfg_job.state == ManufacturerJobState.COMPLETED),
             failure_reason=disc.failure_reason.value if (disc and disc.failure_reason) else None,
