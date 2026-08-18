@@ -116,6 +116,62 @@ _RETRIEVAL_PROFILES: tuple[ManufacturerRetrievalProfile, ...] = (
         ),
         product_link_patterns=("/products/", "/product/"),
     ),
+    ManufacturerRetrievalProfile(
+        name="frigidaire",
+        domains=(
+            "frigidaire.com",
+            "www.frigidaire.com",
+            "electroluxappliances.com",
+            "electrolux.com",
+        ),
+        search_url_templates=(
+            "https://www.frigidaire.com/search?q={mpn}",
+            "https://www.frigidaire.com/Owner-Center/Product-Support/{mpn}/",
+        ),
+        direct_path_templates=(
+            "https://www.frigidaire.com/en/p/owner-center/product-support/{mpn}",
+            "https://www.frigidaire.com/Owner-Center/Product-Support/{mpn}/",
+            "https://www.frigidaire.com/products/{mpn}",
+            "https://www.frigidaire.com/product/{mpn}",
+            "https://www.frigidaire.com/p/{mpn}",
+        ),
+        product_link_patterns=(
+            "/owner-center/product-support/",
+            "/product-support/",
+            "/products/",
+            "/product/",
+            "/p/",
+            ".pdf",
+        ),
+    ),
+    ManufacturerRetrievalProfile(
+        name="whirlpool",
+        domains=(
+            "whirlpool.com",
+            "www.whirlpool.com",
+            "learnwhirlpool.com",
+            "producthelp.whirlpool.com",
+        ),
+        search_url_templates=(
+            "https://learnwhirlpool.com/smartsearchresults?searchtext={mpn}",
+            "https://learnwhirlpool.com/?searchtext={mpn}",
+            "https://www.whirlpool.com/search?query={mpn}",
+        ),
+        direct_path_templates=(
+            "https://learnwhirlpool.com/learningitem/{mpn}-product-brief",
+            "https://www.whirlpool.com/products/{mpn}",
+            "https://www.whirlpool.com/product/{mpn}",
+            "https://www.whirlpool.com/pdp/{mpn}",
+        ),
+        product_link_patterns=(
+            "/learningitem/",
+            "/pdp.",
+            "/products/",
+            "/product/",
+            ".pdf",
+            "/documents/",
+        ),
+    ),
 )
 
 
@@ -967,12 +1023,27 @@ class ProductSourceDiscoveryService:
                     continue
 
         self.domains_attempted = tuple(attempted_domains)
-        self.selected_domain = _host(candidates[0].url) if candidates else None
         self.domain_attempt_failure_reasons = domain_failures
-        return sorted(
-            candidates,
-            key=lambda item: (-item.identity_score, -item.relevance_score, item.url),
-        )
+        sorted_candidates = sorted(candidates, key=_candidate_rank)
+        self.selected_domain = _host(sorted_candidates[0].url) if sorted_candidates else None
+        return sorted_candidates
+
+
+def _candidate_rank(item: ProductSourceCandidate) -> tuple[int, float, float, float, str]:
+    """Strict authority ranking: Verified Mfg > Candidate Mfg > Mfg Doc/PDF > Distributor."""
+    if item.source_kind == SourceKind.DISTRIBUTOR_PRODUCT_PAGE or item.domain_score <= 0.75:
+        tier = 1
+    elif item.source_kind in {
+        SourceKind.MANUFACTURER_TECHNICAL_DOCUMENT,
+        SourceKind.MANUFACTURER_MANUAL,
+        SourceKind.MANUFACTURER_CATALOG,
+    }:
+        tier = 2
+    elif item.domain_score >= 0.95:
+        tier = 4
+    else:
+        tier = 3
+    return (-tier, -item.domain_score, -item.identity_score, -item.relevance_score, item.url)
 
 
 class ProductIdentityMatch(BaseModel):
@@ -1188,7 +1259,25 @@ class ProductIdentityMatcher:
 class DeterministicUrlStrategy:
     """Generate candidate product URLs from known patterns without any HTTP calls."""
 
-    _product_prefixes = ("products", "product", "p", "catalog", "items", "item", "tools")
+    _product_prefixes = (
+        "products",
+        "product",
+        "p",
+        "catalog",
+        "items",
+        "item",
+        "tools",
+        "en/p/owner-center/product-support",
+        "owner-center/product-support",
+        "Owner-Center/Product-Support",
+        "support",
+        "product-support",
+        "owners",
+        "docs",
+        "documents",
+        "manuals",
+        "specs",
+    )
     _site_search_patterns = (
         "/search?q={mpn}",
         "/?s={mpn}",
@@ -1196,6 +1285,9 @@ class DeterministicUrlStrategy:
         "/search?query={mpn}",
         "/catalogsearch/result/?q={mpn}",
         "/search/{mpn}",
+        "/smartsearchresults?searchtext={mpn}",
+        "/search?searchTerm={mpn}",
+        "/search?keywords={mpn}",
     )
     _sitemap_paths = (
         "/sitemap.xml",
@@ -1360,8 +1452,18 @@ def _is_search_result_product_link(
         "/tools/",
         "/detail",
         "/pd/",
+        "/pdp",
         "/part-number/",
         "/product-id/",
+        "/learningitem/",
+        "/owner-center/",
+        "/product-support/",
+        "/support/",
+        "/owners/",
+        "/docs/",
+        "/documents/",
+        "/specs/",
+        ".pdf",
     )
     if any(marker in path for marker in product_markers):
         return True

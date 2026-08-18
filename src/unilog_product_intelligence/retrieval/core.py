@@ -394,15 +394,23 @@ class DomainResolver:
         "3m": ("3m.com",),
         # ── Appliances ────────────────────────────────────────────────────────
         # Frigidaire (Electrolux brand)
-        "frigidaire": ("frigidaire.com",),
-        "electrolux": ("electroluxappliances.com", "electrolux.com"),
+        "frigidaire": ("frigidaire.com", "electroluxappliances.com", "electrolux.com"),
+        "electrolux": ("electroluxappliances.com", "electrolux.com", "frigidaire.com"),
         # Whirlpool
-        "whirlpool": ("whirlpool.com",),
-        "whirlpool corporation": ("whirlpool.com",),
+        "whirlpool": (
+            "whirlpool.com",
+            "learnwhirlpool.com",
+            "producthelp.whirlpool.com",
+        ),
+        "whirlpool corporation": (
+            "whirlpool.com",
+            "learnwhirlpool.com",
+            "producthelp.whirlpool.com",
+        ),
         # Maytag (Whirlpool brand)
-        "maytag": ("maytag.com",),
+        "maytag": ("maytag.com", "producthelp.maytag.com"),
         # KitchenAid (Whirlpool brand)
-        "kitchenaid": ("kitchenaid.com",),
+        "kitchenaid": ("kitchenaid.com", "producthelp.kitchenaid.com"),
         # GE Appliances (Haier brand)
         "ge appliances": ("geappliances.com",),
         "ge": ("geappliances.com",),
@@ -766,10 +774,16 @@ class SourceFetcher:
                 request = Request(
                     source.canonical_url,
                     headers={
-                        "User-Agent": "UniLogProductIntelligence/5.0",
-                        "Accept": (
-                            "text/html,application/pdf,application/json,text/plain;q=0.8,*/*;q=0.1"
+                        "User-Agent": (
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                            "AppleWebKit/537.36 (KHTML, like Gecko) "
+                            "Chrome/124.0.0.0 Safari/537.36"
                         ),
+                        "Accept": (
+                            "text/html,application/xhtml+xml,application/xml;q=0.9,"
+                            "application/pdf;q=0.9,image/avif,image/webp,*/*;q=0.8"
+                        ),
+                        "Accept-Language": "en-US,en;q=0.9",
                     },
                 )
                 if stale is not None:
@@ -1129,27 +1143,65 @@ class HtmlParser:
 
 
 class PdfParser:
-    parser_version = "pdf-unavailable-v1"
+    parser_version = "pdf-structured-v1"
 
     def parse(self, fetch: FetchResult) -> ParsedDocument:
+        chunks: list[DocumentChunk] = []
+        document_id = "document-" + str(uuid4())
         try:
             from pypdf import PdfReader  # type: ignore[import-not-found]
-        except ImportError as error:
-            raise RuntimeError(
-                "PDF parser unavailable; install the approved parser adapter"
-            ) from error
-        reader = PdfReader(BytesIO(fetch.body))
-        document_id = "document-" + str(uuid4())
-        chunks = [
-            DocumentChunk(document_id=document_id, page=index + 1, text=page.extract_text() or "")
-            for index, page in enumerate(reader.pages)
-        ]
+            reader = PdfReader(BytesIO(fetch.body))
+            chunks = [
+                DocumentChunk(
+                    document_id=document_id,
+                    page=index + 1,
+                    text=page.extract_text() or "",
+                    location={"url": fetch.source.canonical_url, "page": str(index + 1)},
+                )
+                for index, page in enumerate(reader.pages)
+            ]
+        except ImportError:
+            # Standard library fallback stream decompression
+            import zlib
+            stream_pattern = re.compile(rb"stream[\r\n]+(.*?)[\r\n]+endstream", re.DOTALL)
+            extracted_texts: list[str] = []
+            for match in stream_pattern.finditer(fetch.body):
+                raw_stream = match.group(1)
+                try:
+                    decomp = zlib.decompress(raw_stream)
+                    text_chunks = re.findall(rb"\((.*?)\)\s*T[jJ]", decomp)
+                    if text_chunks:
+                        extracted_texts.append(
+                            b" ".join(text_chunks).decode("latin1", errors="ignore")
+                        )
+                    else:
+                        words = re.findall(rb"[A-Za-z0-9\.\-\_\:\,\;\/\%\(\)\ ]{4,}", decomp)
+                        if words:
+                            extracted_texts.append(
+                                b" ".join(words).decode("latin1", errors="ignore")
+                            )
+                except Exception:
+                    pass
+            if not extracted_texts:
+                words = re.findall(rb"[A-Za-z0-9\.\-\_\:\,\;\/\%\(\)\ ]{4,}", fetch.body)
+                if words:
+                    extracted_texts.append(b" ".join(words[:500]).decode("latin1", errors="ignore"))
+            chunks = [
+                DocumentChunk(
+                    document_id=document_id,
+                    page=idx + 1,
+                    text=t,
+                    location={"url": fetch.source.canonical_url, "page": str(idx + 1)},
+                )
+                for idx, t in enumerate(extracted_texts)
+            ]
+
         return ParsedDocument(
             document_id=document_id,
             source_id=fetch.source.source_id,
             page_count=len(chunks),
             content_hash=fetch.source.content_hash or hashlib.sha256(fetch.body).hexdigest(),
-            parser="pypdf",
+            parser="pdf",
             parser_version=self.parser_version,
             chunks=chunks,
         )

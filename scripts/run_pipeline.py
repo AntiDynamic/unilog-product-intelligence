@@ -527,6 +527,41 @@ def main() -> None:
                                 for c in (result.discovery.candidates if result.discovery else ())
                                 if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
                             ],
+                            "manufacturer_domain_verified": bool(
+                                [
+                                    c.domain
+                                    for c in (result.discovery.candidates if result.discovery else ())
+                                    if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+                                ]
+                            ),
+                            "product_source_found": bool(
+                                [s.uri for s in result.product_truth.sources if s.uri]
+                            ),
+                            "product_source_verified": bool(
+                                result.manufacturer_job
+                                and result.manufacturer_job.source_is_product_verified
+                                and not result.manufacturer_job.secondary_source_used
+                            ),
+                            "secondary_source_used": bool(
+                                result.manufacturer_job and result.manufacturer_job.secondary_source_used
+                            ),
+                            "source_authority": (
+                                "SECONDARY"
+                                if (result.manufacturer_job and result.manufacturer_job.secondary_source_used)
+                                else "MANUFACTURER"
+                                if (result.manufacturer_job and result.manufacturer_job.source_is_product_verified)
+                                else "UNKNOWN"
+                            ),
+                            "selected_source_url": (
+                                result.manufacturer_job.verified_source_context.canonical_product_url
+                                if (result.manufacturer_job and result.manufacturer_job.verified_source_context)
+                                else ([s.uri for s in result.product_truth.sources if s.uri][0] if [s.uri for s in result.product_truth.sources if s.uri] else None)
+                            ),
+                            "documents": list(
+                                result.manufacturer_job.verified_source_context.document_urls
+                                if (result.manufacturer_job and result.manufacturer_job.verified_source_context)
+                                else ()
+                            ),
                             "retrieval_strategies_attempted": list(
                                 result.discovery.retrieval_strategies_attempted
                                 if result.discovery
