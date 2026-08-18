@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     gemini_model: str = GEMINI_MODEL
     live_external_execution: bool = False
     database_url: str = "postgresql+psycopg://localhost/unilog"
+    reference_root: str | None = None
 
 
 @lru_cache(maxsize=1)

@@ -34,6 +34,7 @@ sys.path.insert(0, str(_ROOT / "src"))
 from unilog_product_intelligence.agents.orchestration import ProductOrchestrator  # noqa: E402
 from unilog_product_intelligence.application.phase65 import Phase65Pipeline  # noqa: E402
 from unilog_product_intelligence.application.product_truth import ProductTruthService  # noqa: E402
+from unilog_product_intelligence.config import get_settings  # noqa: E402
 from unilog_product_intelligence.data.readers import read_tabular_file  # noqa: E402
 from unilog_product_intelligence.delivery.adapter import (  # noqa: E402
     DeliverySchemaContract,
@@ -47,7 +48,14 @@ from unilog_product_intelligence.domain.truth import (  # noqa: E402
 from unilog_product_intelligence.enrichment.agent import (
     EvidenceGroundedEnrichmentAgent,  # noqa: E402
 )
+from unilog_product_intelligence.enrichment.models import (  # noqa: E402
+    ReferenceAvailability,
+)
 from unilog_product_intelligence.enrichment.planner import AttributePlanner  # noqa: E402
+from unilog_product_intelligence.enrichment.reference import (  # noqa: E402
+    ReferencePack,
+    ReferenceType,
+)
 from unilog_product_intelligence.enrichment.service import EnrichmentService  # noqa: E402
 from unilog_product_intelligence.enrichment.validation import ValidationPipeline  # noqa: E402
 from unilog_product_intelligence.providers.factory import (  # noqa: E402
@@ -128,6 +136,11 @@ def _parse_args() -> argparse.Namespace:
         help="HTTP timeout per request in seconds (default: 3.5)",
     )
     parser.add_argument(
+        "--reference-root",
+        default=None,
+        help="Directory containing official UniHack reference files (default: search project root and data/reference)",
+    )
+    parser.add_argument(
         "--no-live",
         action="store_true",
         help="Skip live HTTP retrieval (use provider-only without live network fetching)",
@@ -140,6 +153,7 @@ def _build_pipeline(
     truth_service: ProductTruthService,
     fetcher: SourceFetcher,
     source_disc: ProductSourceDiscoveryService,
+    reference_pack: ReferencePack | None = None,
     *,
     live: bool = True,
 ) -> Phase65Pipeline:
@@ -149,8 +163,9 @@ def _build_pipeline(
     disc_agent = ManufacturerDiscoveryAgent(provider=provider, resolver=resolver)  # type: ignore[arg-type]
     extractor = EvidenceExtractor(provider=provider)  # type: ignore[arg-type]
     mfg_service = ManufacturerIntelligenceService(fetcher=fetcher, extractor=extractor)
+    planner = AttributePlanner(reference_pack=reference_pack)
     enrichment_service = EnrichmentService(
-        planner=AttributePlanner(),
+        planner=planner,
         agent=EvidenceGroundedEnrichmentAgent(provider=provider),  # type: ignore[arg-type]
         validator=ValidationPipeline(),
         truth_service=truth_service,
@@ -264,6 +279,53 @@ def main() -> None:
     print(f"Output:         {output_path}")
     print("=" * 65)
 
+    # ── Discover Reference Pack ONCE at startup ─────────────────────────────
+    ref_roots: list[Path] = []
+    if args.reference_root:
+        ref_roots.append(Path(args.reference_root))
+    settings = get_settings()
+    if settings.reference_root:
+        ref_roots.append(Path(settings.reference_root))
+    ref_roots.extend([_ROOT, _ROOT / "data" / "reference", _ROOT / "data"])
+
+    ref_pack = ReferencePack.discover(ref_roots)
+
+    uom_count = len(ref_pack.uom_standards.records) if ref_pack.uom_standards else 0
+    dec_frac_count = (
+        len(ref_pack.decimal_fractions.fraction_to_decimal)
+        if ref_pack.decimal_fractions
+        else 0
+    )
+    brand_count = (
+        len(ref_pack.manufacturer_brands.records)
+        if ref_pack.manufacturer_brands
+        else 0
+    )
+    global_lov_count = len(ref_pack.global_lov.rules) if ref_pack.global_lov else 0
+    cat_lovs = ", ".join(ref_pack.category_lovs.keys()) if ref_pack.category_lovs else "NONE"
+
+    print("=" * 65)
+    print("REFERENCE PACK STATUS")
+    print("=" * 65)
+    print(f"Overall Status:     {ref_pack.availability.value}")
+    print(
+        f"UOM Standards:      {ref_pack.status.get(ReferenceType.UOM_STANDARD, ReferenceAvailability.REFERENCE_UNAVAILABLE).value} ({uom_count} records)"
+    )
+    print(
+        f"Decimal/Fraction:   {ref_pack.status.get(ReferenceType.DECIMAL_FRACTION, ReferenceAvailability.REFERENCE_UNAVAILABLE).value} ({dec_frac_count} mappings)"
+    )
+    print(
+        f"Manufacturer/Brand: {ref_pack.status.get(ReferenceType.MANUFACTURER_BRAND, ReferenceAvailability.REFERENCE_UNAVAILABLE).value} ({brand_count} records)"
+    )
+    print(
+        f"Global LOV:         {ref_pack.status.get(ReferenceType.GLOBAL_LOV, ReferenceAvailability.REFERENCE_UNAVAILABLE).value} ({global_lov_count} rules)"
+    )
+    print(
+        f"Category LOVs:      {ref_pack.status.get(ReferenceType.CATEGORY_LOV, ReferenceAvailability.REFERENCE_UNAVAILABLE).value} ({cat_lovs})"
+    )
+    print(f"Discovered Files:   {len(ref_pack.files)}")
+    print("=" * 65)
+
     # ── Load schema and configure adapter ────────────────────────────────────
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)
@@ -283,7 +345,12 @@ def main() -> None:
     fetcher = SourceFetcher(timeout=args.timeout or 3.5, max_retries=0, requests_per_second=5.0)
     source_disc = ProductSourceDiscoveryService(fetcher=fetcher)
     pipeline = _build_pipeline(
-        provider, truth_service, fetcher, source_disc, live=not args.no_live
+        provider,
+        truth_service,
+        fetcher,
+        source_disc,
+        reference_pack=ref_pack,
+        live=not args.no_live,
     )
 
     # ── Open output CSV for incremental writing ───────────────────────────────
@@ -512,6 +579,26 @@ def main() -> None:
                             "attributes_validated": p6_validated,
                             "attributes_review": p6_review,
                             "attributes_rejected": p6_rejected,
+                            "reference_availability": (
+                                result.enrichment.reference_availability.value
+                                if result.enrichment
+                                else ref_pack.availability.value
+                            ),
+                            "schema_source": (
+                                result.enrichment.attribute_plans[0].schema_source
+                                if (result.enrichment and result.enrichment.attribute_plans)
+                                else "FALLBACK_EXISTING_ATTRIBUTES"
+                            ),
+                            "allowed_uom_count": (
+                                sum(len(p.allowed_uom) for p in result.enrichment.attribute_plans)
+                                if result.enrichment
+                                else 0
+                            ),
+                            "lov_constraint_count": (
+                                sum(len(p.allowed_values) for p in result.enrichment.attribute_plans)
+                                if result.enrichment
+                                else 0
+                            ),
                             "input_tokens": p6_input_tokens,
                             "output_tokens": p6_output_tokens,
                             "cached_tokens": p6_cached_tokens,
@@ -557,6 +644,24 @@ def main() -> None:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "total_rows": total,
                 "stats": stats,
+                "reference_pack": {
+                    "availability": ref_pack.availability.value,
+                    "discovered_files": len(ref_pack.files),
+                    "roots": [str(r) for r in ref_roots],
+                    "types": {
+                        t.value: ref_pack.status.get(
+                            t, ReferenceAvailability.REFERENCE_UNAVAILABLE
+                        ).value
+                        for t in ReferenceType
+                    },
+                    "counts": {
+                        "uom_standards": uom_count,
+                        "decimal_fractions": dec_frac_count,
+                        "manufacturer_brands": brand_count,
+                        "global_lov_rules": global_lov_count,
+                        "category_lov_packs": len(ref_pack.category_lovs),
+                    },
+                },
                 "traces": traces,
             },
             f,

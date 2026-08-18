@@ -1,0 +1,690 @@
+{
+  "dataset": "Unihack_ Sample Dataset - Input.csv",
+  "rows_selected": 50,
+  "selection_method": "first_50_rows",
+  "ground_truth_overlap": 0,
+  "distributor_masked_rows": 50,
+  "unique_manufacturers": 4,
+  "expected_output_mpns": [
+    "PDSH4816AF",
+    "WDTS7024RZ"
+  ],
+  "manifest": [
+    {
+      "row_index": 1,
+      "mpn": "DCB518ASTS06G",
+      "manufacturer_raw": "Freud Inc (2435)",
+      "description": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 2,
+      "mpn": "3MABR-7100075678",
+      "manufacturer_raw": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P150 - Cubitron II 50 Disc/Box",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 3,
+      "mpn": "3MABR-7100045865",
+      "manufacturer_raw": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P120 - Cubitron II 50 Disc/Box",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 4,
+      "mpn": "3MABR-7100048736",
+      "manufacturer_raw": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P80 - Cubitron II 50 Disc/Box",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 5,
+      "mpn": "3MABR-7100075690",
+      "manufacturer_raw": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P180 - Cubitron II 50 Disc/Box",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 6,
+      "mpn": "3MABR-7100075692",
+      "manufacturer_raw": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P220 - Cubitron II 50 Disc/Box",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 7,
+      "mpn": "3MABR-7100145365",
+      "manufacturer_raw": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P320 - Cubitron II 50 Disc/Box",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 8,
+      "mpn": "5B-332-080",
+      "manufacturer_raw": "Mirka Abrasives Inc (MIRUS)",
+      "description": "5B-332-080 HIOLIT 5\" P80",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 9,
+      "mpn": "5B-332-120",
+      "manufacturer_raw": "Mirka Abrasives Inc (MIRUS)",
+      "description": "5B-332-120 HIOLIT 5\" P120",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 10,
+      "mpn": "9A-570-240",
+      "manufacturer_raw": "Mirka Abrasives Inc (MIRUS)",
+      "description": "9A-570-240 Abranet 2.75x30",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 11,
+      "mpn": "9A-570-320",
+      "manufacturer_raw": "Mirka Abrasives Inc (MIRUS)",
+      "description": "9A-570-320 Abranet 2.75x30",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 12,
+      "mpn": "DBD090094101F",
+      "manufacturer_raw": "Freud Inc (2435)",
+      "description": "DBD090094101F Diablo 9\" - Metal Cut-Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 13,
+      "mpn": "DBDS12125A01F",
+      "manufacturer_raw": "Freud Inc (2435)",
+      "description": "DBDS12125A01F Diablo 12\" - Steel Demon Metal Cut-Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 14,
+      "mpn": "DBDS12125G01F",
+      "manufacturer_raw": "Freud Inc (2435)",
+      "description": "DBDS12125G01F Diablo 12\"x20mm - Speed Demon Metal Cut-Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 15,
+      "mpn": "DBDS14125A01F",
+      "manufacturer_raw": "Freud Inc (2435)",
+      "description": "DBDS14125A01F Diablo 14\"x1\" - Steel Demon Metal Cut-Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 16,
+      "mpn": "DBDS14125G01F",
+      "manufacturer_raw": "Freud Inc (2435)",
+      "description": "DBDS14125G01F Diablo 14\"x20mm - Steel Demon Metal Cut-Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 17,
+      "mpn": "49-94-0013",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0013 Milw 5\"x.045\"x7/8\" Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 18,
+      "mpn": "49-94-0029",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0029 Milw 6-1/2\"x1/8\"x5/8\" DKO Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 19,
+      "mpn": "49-94-0033",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0033 Milw 7\"x1/16\"x7/8\" Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 20,
+      "mpn": "49-94-0001",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0001 Milw 4\"x.040\"x5/8\" Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 21,
+      "mpn": "49-94-0039",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0039 Milw 7\"x1/8\"x5/8\" DKO Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 22,
+      "mpn": "49-94-0043",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0043 Milw 9\"x3/32\"x7/8\" Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 23,
+      "mpn": "49-94-0048",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0048 Milw 12\"x7/64\"x1\" Metal Cut Off Disc General Purpose",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 24,
+      "mpn": "49-94-0053",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0053 Milw 12\"x1/8\"x1\" Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 25,
+      "mpn": "49-94-0058",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0058 Milw 12\"x1/8\"x20mm Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 26,
+      "mpn": "49-94-0063",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0063 Milw 14\"x7/64\"x1\" Metal Cut Off Disc General Purpose",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 27,
+      "mpn": "49-94-0068",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0068 Milw 14\"x1/8\"x20mm Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 28,
+      "mpn": "49-94-0073",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0073 Milw 14\"x1/8\"x1\" Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 29,
+      "mpn": "49-94-0101",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0101 Milw 4-1/2\"x.045\"x7/8\" Perform+ Metal Cut Off Disc 10pc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 30,
+      "mpn": "49-94-0107",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0107 Milw 4-1/2\"x.045\"x7/8\" Performance+ Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 31,
+      "mpn": "49-94-0117",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0117 Milw 5\"x.045\"x7/8\" Performance+ Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 32,
+      "mpn": "49-94-0123",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0123 Milw 6\"x.045\"x7/8\" Performance+ Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 33,
+      "mpn": "49-94-0023",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0023 Milw 6\"x.045\"x7/8\" Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 34,
+      "mpn": "49-94-0121",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0121 Milw 6\"x.045\"x7/8\" Performance+ Metal Cut Off Disc 10pc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 35,
+      "mpn": "49-94-0127",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0127 Milw 6\"x.045\"x7/8\" Performance+Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 36,
+      "mpn": "49-94-0137",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0137 Milw 7\"x3/32\"x7/8\" Performance+ Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 37,
+      "mpn": "49-94-0160",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0160 Milw 14\"x7/64\"x1\" Performance+ Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 38,
+      "mpn": "49-94-0223",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0223 Milw 6\"x.045\"x7/8\" Ceramic+ Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 39,
+      "mpn": "49-94-0445",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0445 Milw 10\"x3/32\"x5/8\" Performance+ Metal Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 40,
+      "mpn": "49-94-0803",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0803 Milw 4-1/2\"x1/8\"x7/8\" Dual Metal Cut and Grind Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 41,
+      "mpn": "49-94-0903",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0903 Milw 4-1/2\"x1/8\"x7/8\"Perform+Dual Metal Cut and Grind Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 42,
+      "mpn": "49-94-0907",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0907 Milw 4-1/2\"x1/8\"x5/8-11\"Perform+Dual Metal Cut n Grind Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 43,
+      "mpn": "49-94-0923",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-0923 Milw 6\"x1/8\"x7/8\" Perform+Dual Metal Cut and Grind Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 44,
+      "mpn": "49-94-1900",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-1900 Milw 4\"x1/8\"x5/8\" Masonry Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 45,
+      "mpn": "49-94-1905",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-1905 Milw 4-1/2\"x1/8\"x7/8\" Masonry Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 46,
+      "mpn": "49-94-1915",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-1915 Milw 6-1/2\"x1/8\"x5/8\" DKO Masonry Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 47,
+      "mpn": "49-94-1920",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-1920 Milw 7\"x1/8\"x5/8\" DKO Masonry Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 48,
+      "mpn": "49-94-1925",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-1925 Milw 10\"x1/8\"x5/8\" Masonry Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 49,
+      "mpn": "49-94-1935",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-1935 Milw 12\"x1/8\"x1\" Masonry Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    },
+    {
+      "row_index": 50,
+      "mpn": "49-94-1940",
+      "manufacturer_raw": "Milwaukee Accessory (4031)",
+      "description": "49-94-1940 Milw 14\"x1/8\"x1\" Masonry Cut Off Disc",
+      "e1_brand": "-- Unbranded --",
+      "unilog_brand": "-- No Unilog Brand --",
+      "distributor_masked": true,
+      "category_hints": [
+        "Abrasives",
+        "Milwaukee Tool Accessories"
+      ],
+      "expected_ground_truth": "NO_EXACT_GROUND_TRUTH"
+    }
+  ]
+}
