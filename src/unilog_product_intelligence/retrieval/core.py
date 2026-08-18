@@ -392,6 +392,56 @@ class DomainResolver:
         "honeywell": ("honeywell.com",),
         # 3M
         "3m": ("3m.com",),
+        # ── Appliances ────────────────────────────────────────────────────────
+        # Frigidaire (Electrolux brand)
+        "frigidaire": ("frigidaire.com",),
+        "electrolux": ("electroluxappliances.com", "electrolux.com"),
+        # Whirlpool
+        "whirlpool": ("whirlpool.com",),
+        "whirlpool corporation": ("whirlpool.com",),
+        # Maytag (Whirlpool brand)
+        "maytag": ("maytag.com",),
+        # KitchenAid (Whirlpool brand)
+        "kitchenaid": ("kitchenaid.com",),
+        # GE Appliances (Haier brand)
+        "ge appliances": ("geappliances.com",),
+        "ge": ("geappliances.com",),
+        "general electric": ("geappliances.com",),
+        # Rheem / Ruud (water heaters, HVAC)
+        "rheem": ("rheem.com",),
+        "ruud": ("ruud.com",),
+        # Samsung Electronics
+        "samsung": ("samsung.com",),
+        # LG Electronics
+        "lg": ("lg.com",),
+        "lg electronics": ("lg.com",),
+        # Moen
+        "moen": ("moen.com",),
+        # Kohler
+        "kohler": ("kohler.com",),
+        # American Standard / Delta (plumbing)
+        "delta": ("deltafaucet.com",),
+        "american standard": ("americanstandard-us.com",),
+        # Carrier / Bryant (HVAC)
+        "carrier": ("carrier.com",),
+        "bryant": ("bryantac.com",),
+        # Lennox (HVAC)
+        "lennox": ("lennox.com",),
+        # Trane (HVAC)
+        "trane": ("trane.com",),
+        # York (HVAC)
+        "york": ("york.com",),
+        # A.O. Smith (water heaters)
+        "a.o. smith": ("hotwater.com",),
+        "ao smith": ("hotwater.com",),
+        # Amana (Whirlpool brand)
+        "amana": ("amana.com",),
+        # Speed Queen (laundry)
+        "speed queen": ("speedqueen.com",),
+        # Bosch Home Appliances
+        "bosch home": ("bosch-home.com",),
+        # Thermador (BSH brand)
+        "thermador": ("thermador.com",),
     }
 
     def __init__(self, profiles: Mapping[str, ManufacturerProfile] | None = None) -> None:

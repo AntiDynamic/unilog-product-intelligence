@@ -140,6 +140,100 @@ _COMPILED_BRAND_TOKENS: list[tuple[re.Pattern[str], str | None, str | None]] = [
 ]
 
 
+# ── MPN prefix → brand mapping ────────────────────────────────────────────────
+# When Part_Manuf is a distributor AND description contains no brand keyword,
+# the leading characters of the MPN (manufacturer part number) often uniquely
+# identify the brand.  Entries here are audited — every prefix corresponds to
+# a publicly documented model-number range for that manufacturer.
+#
+# Tuple value: (manufacturer_key, canonical_brand)
+# manufacturer_key must match a key in DomainResolver._known_manufacturer_domains.
+_MPN_PREFIX_BRAND_MAP: dict[str, tuple[str, str]] = {
+    # Frigidaire / Electrolux dishwashers and appliances
+    "PDSH": ("frigidaire", "Frigidaire"),
+    "FGID": ("frigidaire", "Frigidaire"),
+    "FFID": ("frigidaire", "Frigidaire"),
+    "FPHD": ("frigidaire", "Frigidaire"),
+    "FGCD": ("frigidaire", "Frigidaire"),
+    "FGBD": ("frigidaire", "Frigidaire"),
+    "FGEI": ("frigidaire", "Frigidaire"),
+    "FGEF": ("frigidaire", "Frigidaire"),
+    "FGEW": ("frigidaire", "Frigidaire"),
+    "FGEC": ("frigidaire", "Frigidaire"),
+    "FPEH": ("frigidaire", "Frigidaire"),
+    "FGHD": ("frigidaire", "Frigidaire"),
+    # Whirlpool dishwashers and appliances
+    "WDTS": ("whirlpool", "Whirlpool"),
+    "WDTC": ("whirlpool", "Whirlpool"),
+    "WDT": ("whirlpool", "Whirlpool"),
+    "WRS": ("whirlpool", "Whirlpool"),
+    "WRF": ("whirlpool", "Whirlpool"),
+    "WFE": ("whirlpool", "Whirlpool"),
+    "WFG": ("whirlpool", "Whirlpool"),
+    "WMH": ("whirlpool", "Whirlpool"),
+    "WML": ("whirlpool", "Whirlpool"),
+    "WED": ("whirlpool", "Whirlpool"),
+    "WFW": ("whirlpool", "Whirlpool"),
+    # Maytag (Whirlpool brand)
+    "MDB": ("maytag", "Maytag"),
+    "MDT": ("maytag", "Maytag"),
+    "MED": ("maytag", "Maytag"),
+    "MFI": ("maytag", "Maytag"),
+    "MFT": ("maytag", "Maytag"),
+    "MGR": ("maytag", "Maytag"),
+    # KitchenAid (Whirlpool brand)
+    "KDTE": ("kitchenaid", "KitchenAid"),
+    "KDTM": ("kitchenaid", "KitchenAid"),
+    "KDFE": ("kitchenaid", "KitchenAid"),
+    "KRFF": ("kitchenaid", "KitchenAid"),
+    "KFGG": ("kitchenaid", "KitchenAid"),
+    # GE Appliances
+    "GDT": ("ge appliances", "GE"),
+    "GDF": ("ge appliances", "GE"),
+    "GDP": ("ge appliances", "GE"),
+    "GTW": ("ge appliances", "GE"),
+    "GFW": ("ge appliances", "GE"),
+    "GSS": ("ge appliances", "GE"),
+    # Rheem / Ruud water heaters and HVAC
+    "XG40": ("rheem", "Rheem"),
+    "XG50": ("rheem", "Rheem"),
+    "PRSE": ("rheem", "Rheem"),
+    "PROG": ("rheem", "Rheem"),
+    "PROE": ("rheem", "Rheem"),
+    "PROPH": ("rheem", "Rheem"),
+    "ECH2": ("rheem", "Rheem"),
+    # Samsung appliances
+    "DW80": ("samsung", "Samsung"),
+    "DW60": ("samsung", "Samsung"),
+    "RF28": ("samsung", "Samsung"),
+    "RF23": ("samsung", "Samsung"),
+    "NE58": ("samsung", "Samsung"),
+    "NE63": ("samsung", "Samsung"),
+    # LG appliances
+    "LDT": ("lg", "LG"),
+    "LDP": ("lg", "LG"),
+    "LFXS": ("lg", "LG"),
+    "LRMVS": ("lg", "LG"),
+    "LRE": ("lg", "LG"),
+    "LRG": ("lg", "LG"),
+    "WT7": ("lg", "LG"),
+    "WM9": ("lg", "LG"),
+}
+
+
+def _match_mpn_prefix(mpn: str) -> tuple[str, str] | None:
+    """Return (mfg_key, brand) if the MPN starts with a known prefix, else None.
+
+    Matches are tried longest-prefix-first to avoid false positives from
+    shorter prefixes that are substrings of longer ones (e.g. 'WDT' vs 'WDTS').
+    """
+    mpn_upper = mpn.upper()
+    for prefix in sorted(_MPN_PREFIX_BRAND_MAP, key=len, reverse=True):
+        if mpn_upper.startswith(prefix):
+            return _MPN_PREFIX_BRAND_MAP[prefix]
+    return None
+
+
 # ── Known distributor name fragments ─────────────────────────────────────────
 # These substrings in Part_Manuf (case-insensitive) signal a distributor entity.
 _DISTRIBUTOR_FRAGMENTS: tuple[str, ...] = (
@@ -184,6 +278,8 @@ class BrandManufacturerResolver:
         self,
         part_manuf: str | None,
         part_desc: str | None,
+        *,
+        mpn: str | None = None,
     ) -> ResolvedIdentity:
         """Resolve manufacturer and brand from raw input fields.
 
@@ -193,6 +289,10 @@ class BrandManufacturerResolver:
             Raw Part_Manuf string, e.g. "Jam Industrial Supply LLC (JAMIN)".
         part_desc:
             Raw Part_Desc string, e.g. "3M 775L Stikit Film P150 - Cubitron II".
+        mpn:
+            Manufacturer part number, e.g. "PDSH4816AF".  Used as a last-resort
+            brand signal when Part_Manuf is a distributor and description contains
+            no brand keyword.  Optional and backwards-compatible.
 
         Returns
         -------
@@ -216,7 +316,7 @@ class BrandManufacturerResolver:
                         resolution_method="distributor_map",
                         is_distributor=True,
                     )
-                # Known distributor but no direct mapping — scan description
+                # Known distributor but no direct mapping — scan description first
                 desc_result = _scan_desc_for_brand(desc)
                 if desc_result:
                     mfg_from_desc, brand_from_desc = desc_result
@@ -226,6 +326,17 @@ class BrandManufacturerResolver:
                         resolution_method="desc_brand_token",
                         is_distributor=True,
                     )
+                # Description scan yielded nothing — try MPN prefix
+                if mpn:
+                    mpn_result = _match_mpn_prefix(mpn)
+                    if mpn_result:
+                        mfg_from_mpn, brand_from_mpn = mpn_result
+                        return ResolvedIdentity(
+                            manufacturer=mfg_from_mpn,
+                            brand=brand_from_mpn,
+                            resolution_method="mpn_prefix",
+                            is_distributor=True,
+                        )
                 # Distributor confirmed but can't resolve manufacturer
                 return ResolvedIdentity(
                     manufacturer=_strip_code(manuf),
@@ -244,6 +355,16 @@ class BrandManufacturerResolver:
                         resolution_method="desc_brand_token",
                         is_distributor=True,
                     )
+                if mpn:
+                    mpn_result = _match_mpn_prefix(mpn)
+                    if mpn_result:
+                        mfg_from_mpn, brand_from_mpn = mpn_result
+                        return ResolvedIdentity(
+                            manufacturer=mfg_from_mpn,
+                            brand=brand_from_mpn,
+                            resolution_method="mpn_prefix",
+                            is_distributor=True,
+                        )
         else:
             # No parenthetical code — check distributor fragment heuristic
             if _looks_like_distributor(manuf):
@@ -256,6 +377,16 @@ class BrandManufacturerResolver:
                         resolution_method="desc_brand_token",
                         is_distributor=True,
                     )
+                if mpn:
+                    mpn_result = _match_mpn_prefix(mpn)
+                    if mpn_result:
+                        mfg_from_mpn, brand_from_mpn = mpn_result
+                        return ResolvedIdentity(
+                            manufacturer=mfg_from_mpn,
+                            brand=brand_from_mpn,
+                            resolution_method="mpn_prefix",
+                            is_distributor=True,
+                        )
 
         # Step 5: Part_Manuf looks like a real manufacturer — use as-is,
         # but also extract brand from description if present
@@ -268,6 +399,7 @@ class BrandManufacturerResolver:
             resolution_method="raw_manuf",
             is_distributor=False,
         )
+
 
 
 # ── Internal helpers ──────────────────────────────────────────────────────────

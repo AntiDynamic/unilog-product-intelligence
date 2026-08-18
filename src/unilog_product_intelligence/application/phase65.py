@@ -90,7 +90,8 @@ class Phase65Pipeline:
         # Resolve real manufacturer/brand, removing distributor masking
         raw_manuf = str(product.raw_value("Part_Manuf") or "")
         raw_desc = str(product.raw_value("Part_Desc") or "")
-        resolved = _brand_resolver.resolve(raw_manuf, raw_desc)
+        mpn = _identity_value(product, "manufacturer_part_number")
+        resolved = _brand_resolver.resolve(raw_manuf, raw_desc, mpn=mpn)
 
         if not evidence_references(product):
             # Use resolved manufacturer name (strips distributor, maps to real maker)
@@ -104,7 +105,6 @@ class Phase65Pipeline:
                     or ""
                 )
                 brand = _extract_brand(product) or resolved.brand
-            mpn = _identity_value(product, "manufacturer_part_number")
             try:
                 discovery_result = self.discovery.discover(
                     manufacturer_id=manufacturer_name,
