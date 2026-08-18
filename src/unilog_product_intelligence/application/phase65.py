@@ -149,13 +149,7 @@ class Phase65Pipeline:
         source_ctx = (
             manufacturer_job.verified_source_context if manufacturer_job is not None else None
         )
-        if source_ctx is not None:
-            try:
-                enrichment_result = self.enrichment.enrich(product, source_context=source_ctx)
-            except TypeError:
-                enrichment_result = self.enrichment.enrich(product)
-        else:
-            enrichment_result = self.enrichment.enrich(product)
+        enrichment_result = self.enrichment.enrich(product, source_context=source_ctx)
         status = (
             Phase65Status.ENRICHED
             if enrichment_result.status.value == "ENRICHED"

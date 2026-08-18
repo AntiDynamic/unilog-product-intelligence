@@ -80,7 +80,14 @@ class EvidenceGroundedEnrichmentAgent:
             self.last_run = EnrichmentAgentRun(error=None)
             self.last_run.completed_at = datetime.now(UTC)
             return ()
-        key = self.cache_key(product, selected, evidence_items, model_version, schema_version)
+        key = self.cache_key(
+            product,
+            selected,
+            evidence_items,
+            model_version,
+            schema_version,
+            source_context=source_context,
+        )
         if key in self.cache:
             self.last_run = EnrichmentAgentRun(
                 LLMResponse(output_text="", model=model_version, cached_tokens=1)
@@ -243,6 +250,7 @@ class EvidenceGroundedEnrichmentAgent:
         evidence: Iterable[EvidenceReference],
         model_version: str,
         schema_version: str,
+        source_context: VerifiedProductSourceContext | None = None,
     ) -> str:
         payload = {
             "product": product.product_id,
@@ -251,6 +259,9 @@ class EvidenceGroundedEnrichmentAgent:
             "model": model_version,
             "schema": schema_version,
             "prompt": EvidenceGroundedEnrichmentAgent.prompt_version,
+            "source_context": (
+                source_context.model_dump(mode="json") if source_context is not None else None
+            ),
         }
         return sha256(
             json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")

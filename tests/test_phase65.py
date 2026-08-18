@@ -144,7 +144,7 @@ class FakeEnrichment:
     def __init__(self) -> None:
         self.inputs = []
 
-    def enrich(self, product):
+    def enrich(self, product, *args: object, **kwargs: object):
         self.inputs.append(product)
         return EnrichmentResult(
             product_id=product.product_id,

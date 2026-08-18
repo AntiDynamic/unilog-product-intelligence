@@ -626,7 +626,7 @@ def test_brand_passed_from_product_truth_to_discovery_resolves_distributor_manuf
             )
 
     class FakeEnrich:
-        def enrich(self, p):
+        def enrich(self, p, *args: object, **kwargs: object):
             from unilog_product_intelligence.enrichment.models import PublicationState
             return EnrichmentResult(
                 product_id=p.product_id,
@@ -915,7 +915,7 @@ def test_pipeline_recovers_when_primary_source_404s() -> None:
             )
 
     class FakeEnrich:
-        def enrich(self, p):
+        def enrich(self, p, *args: object, **kwargs: object):
             from unilog_product_intelligence.enrichment.models import PublicationState
             return EnrichmentResult(
                 product_id=p.product_id,
@@ -1044,7 +1044,7 @@ def test_row_2_real_vertical_slice() -> None:
             )
 
     class FakeEnrich:
-        def enrich(self, p):
+        def enrich(self, p, *args: object, **kwargs: object):
             from unilog_product_intelligence.enrichment.models import PublicationState
             return EnrichmentResult(
                 product_id=p.product_id,
