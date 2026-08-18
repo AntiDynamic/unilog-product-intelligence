@@ -33,6 +33,7 @@ from .models import (
     FinalAttributeStatus,
     PublicationState,
     ValidationResult,
+    ValidationSeverity,
 )
 from .persistence import EnrichmentPersistence
 from .planner import AttributePlanner
@@ -152,6 +153,29 @@ class EnrichmentService:
         product, desc_validations = self.description_service.generate_descriptions(
             product, reference_pack=self.planner.reference_pack
         )
+        blocking_desc_errors = [
+            dv
+            for dv in desc_validations
+            if not dv.passed
+            and (
+                dv.severity == ValidationSeverity.BLOCKING
+                or getattr(dv.severity, "value", str(dv.severity)).casefold() == "blocking"
+            )
+        ]
+        error_desc_errors = [
+            dv
+            for dv in desc_validations
+            if not dv.passed
+            and (
+                dv.severity == ValidationSeverity.ERROR
+                or getattr(dv.severity, "value", str(dv.severity)).casefold() == "error"
+            )
+        ]
+        if blocking_desc_errors:
+            publication = PublicationState.BLOCKED
+        elif error_desc_errors and publication == PublicationState.READY:
+            publication = PublicationState.REVIEW_REQUIRED
+
         if publication == PublicationState.BLOCKED:
             status = EnrichmentStatus.BLOCKED
         elif publication == PublicationState.REVIEW_REQUIRED:

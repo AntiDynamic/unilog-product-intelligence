@@ -413,17 +413,16 @@ def _build_attribute_triplets(
 ) -> list[tuple[str | None, str | None, str | None]]:
     """Build a list of (label, value, uom) from enriched attributes.
 
-    Attributes with no value are skipped.  Sorted: verified/enriched first,
+    Attributes with no value are skipped. Sorted: verified/enriched first,
     then alphabetical by name.
     """
     results: list[tuple[str | None, str | None, str | None]] = []
-    # Priority: attributes with actual candidates first
     attrs_with_values = []
     for attr in product.attributes:
         val = _best_value(attr)
         if val is not None:
-            attrs_with_values.append((attr.canonical_name, val, attr.uom))
-    # Sort: by status priority then canonical_name
+            uom = _best_uom(attr)
+            attrs_with_values.append((attr.canonical_name, val, uom))
     for name, val, uom in attrs_with_values:
         results.append((name, val, uom))
     return results
@@ -431,7 +430,6 @@ def _build_attribute_triplets(
 
 def _best_value(attr: Any) -> str | None:
     """Return the best available value for an attribute record."""
-    # Try normalized_value, then raw_value, then best candidate
     if attr.normalized_value is not None:
         return str(attr.normalized_value).strip() or None
     if attr.raw_value is not None:
@@ -440,6 +438,16 @@ def _best_value(attr: Any) -> str | None:
         v = candidate.normalized_value or candidate.raw_value
         if v is not None:
             return str(v).strip() or None
+    return None
+
+
+def _best_uom(attr: Any) -> str | None:
+    """Return the best available UOM for an attribute record."""
+    if getattr(attr, "uom", None):
+        return str(attr.uom).strip() or None
+    for candidate in getattr(attr, "candidates", ()):
+        if getattr(candidate, "uom", None):
+            return str(candidate.uom).strip() or None
     return None
 
 

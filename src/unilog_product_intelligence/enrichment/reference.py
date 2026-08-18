@@ -1287,7 +1287,7 @@ class ReferencePack:
 
 
 _MEASUREMENT_UNIT_RE = re.compile(
-    r"^([+-]?(?:\d+(?:[./]\d+)?|\d+\s+\d+/\d+))\s*([a-zA-Z°%\"'#].*)$"
+    r"^([+-]?(?:\d+(?:[./]\d+)?|\d+[- ]\d+/\d+|\.\d+))\s*([a-zA-Z°%\"'#].*)$"
 )
 
 

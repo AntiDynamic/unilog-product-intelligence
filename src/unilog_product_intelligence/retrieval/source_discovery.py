@@ -320,6 +320,138 @@ class ThreeMRetrievalStrategy:
         return any(pat in path for pat in self.product_link_patterns)
 
 
+class MirkaRetrievalStrategy:
+    """Specialized retrieval strategy for Mirka abrasives, polishers, and tools."""
+
+    name: str = "mirka"
+    domains: tuple[str, ...] = ("www.mirka.com", "mirka.com", "mirkausa.com")
+
+    direct_path_templates: tuple[str, ...] = (
+        "https://www.mirka.com/en-us/products/{mpn}",
+        "https://www.mirka.com/en-US/products/{mpn}",
+        "https://www.mirka.com/en/products/{mpn}",
+        "https://www.mirka.com/products/{mpn}",
+        "https://www.mirka.com/en-us/products/abrasives-and-compounds/abrasives/{mpn}",
+    )
+
+    search_url_templates: tuple[str, ...] = (
+        "https://www.mirka.com/en-us/search/?searchTerm={mpn}",
+        "https://www.mirka.com/en-us/search/?searchTerm={mpn}&tab=products",
+        "https://www.mirka.com/en-us/search?q={mpn}",
+    )
+
+    product_link_patterns: tuple[str, ...] = (
+        "/en-us/products/",
+        "/products/",
+        "/product/",
+        "/detail",
+        ".pdf",
+    )
+
+    def matches(self, profile: ManufacturerProfile, domains: tuple[str, ...]) -> bool:
+        mfg_id = profile.manufacturer_id.casefold()
+        canonical = (profile.canonical_name or "").casefold()
+        if "mirka" in mfg_id or "mirka" in canonical:
+            return True
+        return any(any(_same_or_subdomain(d, pd) for pd in self.domains) for d in domains)
+
+    def direct_path_urls(
+        self,
+        domain: str,
+        hypotheses: list[MpnHypothesis],
+        product: ProductTruth,
+        profile: ManufacturerProfile,
+    ) -> list[str]:
+        urls: list[str] = []
+        for tmpl in self.direct_path_templates:
+            for hyp in hypotheses:
+                try:
+                    urls.append(tmpl.format(mpn=hyp.value, domain=domain))
+                except KeyError:
+                    urls.append(tmpl.format(mpn=hyp.value))
+        return urls
+
+    def search_urls(
+        self,
+        domain: str,
+        hypotheses: list[MpnHypothesis],
+        product: ProductTruth,
+        profile: ManufacturerProfile,
+    ) -> list[str]:
+        urls: list[str] = []
+        for tmpl in self.search_url_templates:
+            for hyp in hypotheses:
+                try:
+                    urls.append(tmpl.format(mpn=hyp.value, domain=domain))
+                except KeyError:
+                    urls.append(tmpl.format(mpn=hyp.value))
+
+        # Include product family keywords from Part_Desc
+        desc = str(product.raw_value("Part_Desc") or "").casefold()
+        mirka_kws = (
+            "hiolit", "abranet", "abralon", "iridium", "galaxy", "mirlon", "gold", "polarstar"
+        )
+        for kw in mirka_kws:
+            if kw in desc:
+                urls.append(f"https://www.mirka.com/en-us/search/?searchTerm={kw.upper()}")
+                urls.append(
+                    f"https://www.mirka.com/en-us/search/?searchTerm={kw.upper()}&tab=products"
+                )
+
+        return urls
+
+    def is_product_link(
+        self,
+        link: DocumentLink,
+        mpn_hypotheses: list[MpnHypothesis],
+        domains: tuple[str, ...],
+    ) -> bool:
+        allowed = domains + self.domains
+        if not any(_same_or_subdomain(_host(link.url), d) for d in allowed):
+            return False
+        text = f"{link.anchor_text} {link.url}".casefold()
+        if any(_identity_present(hyp.value, text) for hyp in mpn_hypotheses):
+            return True
+        path = urlsplit(link.url).path.casefold()
+        return any(pat in path for pat in self.product_link_patterns)
+
+
+class AuthorizedDistributorFallbackStrategy:
+    """Secondary fallback retrieval strategy targeting authorized distributors."""
+
+    name: str = "authorized_distributor_fallback"
+    domains: tuple[str, ...] = (
+        "www.jamindustrialsupply.com",
+        "jamindustrialsupply.com",
+        "www.zoro.com",
+        "zoro.com",
+        "www.grainger.com",
+        "grainger.com",
+    )
+
+    def generate_urls(self, product: ProductTruth, hypotheses: list[MpnHypothesis]) -> list[str]:
+        mfg = _product_value(product, "manufacturer") or str(
+            product.raw_value("Part_Manuf") or ""
+        ).strip()
+        clean_mfg = re.sub(r"\s*\([^)]*\)", "", mfg).strip()
+
+        urls: list[str] = []
+        for hyp in hypotheses:
+            val = hyp.value.strip()
+            if not val:
+                continue
+            # Direct distributor URLs
+            urls.append(f"https://www.jamindustrialsupply.com/?s={val}&post_type=product")
+            urls.append(f"https://www.jamindustrialsupply.com/part-number/{val}/")
+            urls.append(f"https://www.jamindustrialsupply.com/product-id/{val}/")
+            urls.append(f"https://www.jamindustrialsupply.com/3m-{val}")
+            urls.append(f"https://www.jamindustrialsupply.com/mirka-{val}")
+            urls.append(f"https://www.jamindustrialsupply.com/{val}")
+            urls.append(f"https://www.zoro.com/search?q={clean_mfg}+{val}")
+            urls.append(f"https://www.grainger.com/search?searchQuery={val}")
+        return urls
+
+
 class GenericManufacturerRetrievalStrategy:
     """Default retrieval strategy using standard URL conventions and profiles."""
 
@@ -386,6 +518,7 @@ class GenericManufacturerRetrievalStrategy:
 
 _SPECIALIZED_STRATEGIES: tuple[ManufacturerRetrievalStrategy, ...] = (
     ThreeMRetrievalStrategy(),
+    MirkaRetrievalStrategy(),
 )
 
 
@@ -464,6 +597,8 @@ class ProductSourceDiscoveryService:
 
         domains = tuple(_host(domain) for domain in profile.verified_domains if domain)
         if not domains:
+            domains = tuple(_host(domain) for domain in profile.candidate_domains if domain)
+        if not domains:
             return []
 
         retrieval_profile = _get_retrieval_profile(domains)
@@ -481,31 +616,56 @@ class ProductSourceDiscoveryService:
         seen: set[str] = set()
         candidates: list[ProductSourceCandidate] = []
         matcher = ProductIdentityMatcher()
+        domain_waf_blocked: set[str] = set()
 
-        def test_product_url(url: str, method: str) -> ProductSourceCandidate | None:
+        def test_product_url(
+            url: str,
+            method: str,
+            allowed_domains: tuple[str, ...] | None = None,
+            is_secondary_distributor: bool = False,
+        ) -> ProductSourceCandidate | None:
             try:
                 norm_url = canonicalize_url(url)
             except ValueError:
                 return None
+            target_host = _host(norm_url)
+            if target_host in domain_waf_blocked:
+                return None
+            effective_domains = allowed_domains or domains
             if norm_url in seen or not any(
-                _same_or_subdomain(_host(norm_url), d) for d in domains
+                _same_or_subdomain(target_host, d) for d in effective_domains
             ):
                 return None
             seen.add(norm_url)
 
-            source_kind = _source_kind(norm_url)
+            source_kind = (
+                SourceKind.DISTRIBUTOR_PRODUCT_PAGE
+                if is_secondary_distributor
+                else _source_kind(norm_url)
+            )
+            decision = (
+                SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE
+                if is_secondary_distributor
+                else SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+            )
             source = SourceRecord(
                 canonical_url=norm_url,
                 original_url=norm_url,
                 source_kind=source_kind,
-                decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+                decision=decision,
                 manufacturer_id=profile.manufacturer_id,
-                manufacturer_domain=_host(norm_url),
-                verified_domains=profile.verified_domains,
+                manufacturer_domain=target_host,
+                verified_domains=profile.verified_domains if not is_secondary_distributor else (),
                 product_id=product.product_id,
             )
             fetched = self.fetcher.fetch(source)
             if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
+                if (
+                    fetched.source.retrieval_status == RetrievalStatus.BLOCKED
+                    or fetched.source.http_status in {403, 429}
+                ):
+                    domain_waf_blocked.add(target_host)
+                    domain_failures[target_host] = "waf_blocked"
                 return None
 
             content_type = fetched.source.content_type or ""
@@ -522,7 +682,7 @@ class ProductSourceDiscoveryService:
             match = matcher.match(product, document)
             if match.identity_score >= self.minimum_score:
                 canonical = document.canonical_url or fetched.source.canonical_url or norm_url
-                if not any(_same_or_subdomain(_host(canonical), d) for d in domains):
+                if not any(_same_or_subdomain(_host(canonical), d) for d in effective_domains):
                     canonical = fetched.source.canonical_url or norm_url
                 cand = ProductSourceCandidate(
                     url=canonical,
@@ -534,7 +694,7 @@ class ProductSourceDiscoveryService:
                     matched_manufacturer=match.matched_manufacturer,
                     matched_brand=match.matched_brand,
                     identity_score=match.identity_score,
-                    domain_score=1.0,
+                    domain_score=0.75 if is_secondary_distributor else 1.0,
                     relevance_score=match.relevance_score,
                     mpn_match_type=match.mpn_match_type,
                     raw_mpn_match=match.raw_mpn_match,
@@ -559,6 +719,8 @@ class ProductSourceDiscoveryService:
         # ── DOMAIN-BY-DOMAIN ITERATION ────────────────────────────────────────
         for domain in ranked_domains:
             attempted_domains.append(domain)
+            if domain in domain_waf_blocked:
+                continue
 
             # --- A. Direct Product Paths ---
             direct_urls = mfg_strategy.direct_path_urls(
@@ -566,6 +728,8 @@ class ProductSourceDiscoveryService:
             )
             max_directs = self.max_direct_candidates_per_domain * self.max_hypotheses
             for direct_url in list(dict.fromkeys(direct_urls))[:max_directs]:
+                if domain in domain_waf_blocked:
+                    break
                 cand = test_product_url(direct_url, "direct_product_path")
                 if cand:
                     candidates.append(cand)
@@ -575,12 +739,17 @@ class ProductSourceDiscoveryService:
                         self.domain_attempt_failure_reasons = domain_failures
                         return candidates
 
+            if domain in domain_waf_blocked:
+                continue
+
             # --- B. Targeted Site-Search Probe & Link Extraction ---
             search_urls = mfg_strategy.search_urls(
                 domain, mpn_hypotheses[: self.max_hypotheses], product, profile
             )
             max_searches = self.max_search_templates_per_domain * self.max_hypotheses
             for search_url in list(dict.fromkeys(search_urls))[:max_searches]:
+                if domain in domain_waf_blocked:
+                    break
                 try:
                     norm_search_url = canonicalize_url(search_url)
                 except ValueError:
@@ -601,6 +770,12 @@ class ProductSourceDiscoveryService:
                 )
                 fetched = self.fetcher.fetch(source)
                 if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
+                    if (
+                        fetched.source.retrieval_status == RetrievalStatus.BLOCKED
+                        or fetched.source.http_status in {403, 429}
+                    ):
+                        domain_waf_blocked.add(domain)
+                        domain_failures[domain] = "waf_blocked"
                     continue
 
                 parser = HtmlParser()
@@ -614,6 +789,8 @@ class ProductSourceDiscoveryService:
                 for ext_url in list(dict.fromkeys(extracted_links))[
                     : self.max_search_result_links
                 ]:
+                    if domain in domain_waf_blocked:
+                        break
                     cand = test_product_url(ext_url, "site_search_result_link")
                     if cand:
                         candidates.append(cand)
@@ -651,11 +828,16 @@ class ProductSourceDiscoveryService:
                         self.domain_attempt_failure_reasons = domain_failures
                         return candidates
 
+            if domain in domain_waf_blocked:
+                continue
+
             # --- C. Sitemap Filtering ---
             sitemap_candidates = list(self.url_strategy.sitemap_candidates(domain))[
                 : self.max_sitemap_paths_per_domain
             ]
             for sitemap_url in sitemap_candidates:
+                if domain in domain_waf_blocked:
+                    break
                 try:
                     norm_sm_url = canonicalize_url(sitemap_url)
                 except ValueError:
@@ -676,6 +858,12 @@ class ProductSourceDiscoveryService:
                 )
                 fetched = self.fetcher.fetch(source)
                 if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
+                    if (
+                        fetched.source.retrieval_status == RetrievalStatus.BLOCKED
+                        or fetched.source.http_status in {403, 429}
+                    ):
+                        domain_waf_blocked.add(domain)
+                        domain_failures[domain] = "waf_blocked"
                     continue
                 product_locs, child_sitemaps = _parse_sitemap_xml(fetched.body)
                 if not product_locs and child_sitemaps:
@@ -713,7 +901,70 @@ class ProductSourceDiscoveryService:
                                 self.domain_attempt_failure_reasons = domain_failures
                                 return candidates
 
-            domain_failures[domain] = "no_matching_verified_product"
+            if domain not in domain_failures:
+                domain_failures[domain] = "no_matching_verified_product"
+
+        # ── PHASE 3: Authorized Distributor Secondary Fallback ────────────────
+        if not candidates:
+            distributor_strategy = AuthorizedDistributorFallbackStrategy()
+            distributor_urls = distributor_strategy.generate_urls(
+                product, mpn_hypotheses[: self.max_hypotheses]
+            )
+            for dist_url in distributor_urls[:12]:
+                cand = test_product_url(
+                    dist_url,
+                    "distributor_secondary_fallback",
+                    allowed_domains=distributor_strategy.domains,
+                    is_secondary_distributor=True,
+                )
+                if cand:
+                    candidates.append(cand)
+                    if cand.identity_score >= self.minimum_score and cand.matched_mpn:
+                        self.selected_domain = _host(cand.url)
+                        self.domains_attempted = tuple(attempted_domains) + (_host(cand.url),)
+                        self.domain_attempt_failure_reasons = domain_failures
+                        return candidates
+
+                # If dist_url was a search page, also test extracted product links
+                try:
+                    norm_dist_url = canonicalize_url(dist_url)
+                    source = SourceRecord(
+                        canonical_url=norm_dist_url,
+                        original_url=norm_dist_url,
+                        source_kind=SourceKind.DISTRIBUTOR_PRODUCT_PAGE,
+                        decision=SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE,
+                        manufacturer_id=profile.manufacturer_id,
+                        manufacturer_domain=_host(norm_dist_url),
+                        verified_domains=(),
+                        product_id=product.product_id,
+                    )
+                    fetched = self.fetcher.fetch(source)
+                    if fetched.source.retrieval_status == RetrievalStatus.SUCCESS:
+                        doc = HtmlParser().parse(fetched)
+                        for link in doc.links:
+                            if _is_search_result_product_link(
+                                link, mpn_hypotheses, distributor_strategy.domains
+                            ):
+                                sub_cand = test_product_url(
+                                    link.url,
+                                    "distributor_search_result_link",
+                                    allowed_domains=distributor_strategy.domains,
+                                    is_secondary_distributor=True,
+                                )
+                                if sub_cand:
+                                    candidates.append(sub_cand)
+                                    if (
+                                        sub_cand.identity_score >= self.minimum_score
+                                        and sub_cand.matched_mpn
+                                    ):
+                                        self.selected_domain = _host(sub_cand.url)
+                                        self.domains_attempted = tuple(attempted_domains) + (
+                                            _host(sub_cand.url),
+                                        )
+                                        self.domain_attempt_failure_reasons = domain_failures
+                                        return candidates
+                except Exception:
+                    continue
 
         self.domains_attempted = tuple(attempted_domains)
         self.selected_domain = _host(candidates[0].url) if candidates else None
@@ -940,12 +1191,11 @@ class DeterministicUrlStrategy:
     _product_prefixes = ("products", "product", "p", "catalog", "items", "item", "tools")
     _site_search_patterns = (
         "/search?q={mpn}",
-        "/search?query={mpn}",
-        "/search?term={mpn}",
-        "/search?keywords={mpn}",
-        "/search/{mpn}",
-        "/catalogsearch/result?q={mpn}",
         "/?s={mpn}",
+        "/?s={mpn}&post_type=product",
+        "/search?query={mpn}",
+        "/catalogsearch/result/?q={mpn}",
+        "/search/{mpn}",
     )
     _sitemap_paths = (
         "/sitemap.xml",
@@ -1110,6 +1360,8 @@ def _is_search_result_product_link(
         "/tools/",
         "/detail",
         "/pd/",
+        "/part-number/",
+        "/product-id/",
     )
     if any(marker in path for marker in product_markers):
         return True

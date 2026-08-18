@@ -39,12 +39,14 @@ class SourceKind(StrEnum):
     MANUFACTURER_SDS = "manufacturer_sds"
     MANUFACTURER_COMPLIANCE = "manufacturer_compliance"
     MANUFACTURER_OTHER = "manufacturer_other"
+    DISTRIBUTOR_PRODUCT_PAGE = "distributor_product_page"
     DISCOVERY_RESULT = "discovery_result"
     NON_AUTHORITATIVE_SOURCE = "non_authoritative_source"
 
 
 class SourceDecision(StrEnum):
     VERIFIED_MANUFACTURER_SOURCE = "verified_manufacturer_source"
+    SECONDARY_DISTRIBUTOR_SOURCE = "secondary_distributor_source"
     CANDIDATE_MANUFACTURER_SOURCE = "candidate_manufacturer_source"
     NON_AUTHORITATIVE = "non_authoritative"
     REJECTED = "rejected"
@@ -613,8 +615,8 @@ class SourceFetcher:
         cache: SourceCache | None = None,
         opener: Callable[..., Any] | None = None,
         max_bytes: int = 34 * 1024 * 1024,
-        timeout: float = 15.0,
-        max_retries: int = 2,
+        timeout: float = 6.0,
+        max_retries: int = 1,
         requests_per_second: float = 2.0,
         resolver: SafeNetworkTargetResolver | None = None,
         max_redirects: int = 3,
@@ -943,21 +945,32 @@ class HtmlParser:
         parser._flush()
         document_id = "document-" + str(uuid4())
         base_url = fetch.source.canonical_url
-        links = [
-            DocumentLink(
-                url=canonicalize_url(urljoin(base_url, href)),
-                anchor_text=text,
-                rel=rel,
-                content_type=content_type,
-            )
-            for href, text, rel, content_type in parser.links
-            if href and not href.casefold().startswith(("javascript:", "mailto:"))
-        ]
-        links.extend(
-            DocumentLink(url=canonicalize_url(urljoin(base_url, href)), location="embedded_script")
-            for href in _embedded_catalog_links(html_text)
-            if _safe_joined_url(base_url, href) is not None
-        )
+        links: list[DocumentLink] = []
+        for href, text, rel, content_type in parser.links:
+            if not href or href.strip().startswith("#"):
+                continue
+            clean_href = re.sub(
+                r"(&quot;|&apos;|&amp;|[&\"',;:\)\s])+$", "", href
+            ).rstrip(".,;:)\"'")
+            try:
+                full_url = canonicalize_url(urljoin(base_url, clean_href))
+                links.append(
+                    DocumentLink(
+                        url=full_url,
+                        anchor_text=text,
+                        rel=rel,
+                        content_type=content_type,
+                    )
+                )
+            except ValueError:
+                continue
+
+        for href in _embedded_catalog_links(html_text):
+            try:
+                full_url = canonicalize_url(urljoin(base_url, href))
+                links.append(DocumentLink(url=full_url, location="embedded_script"))
+            except ValueError:
+                continue
         deduped_links: dict[str, DocumentLink] = {}
         for link in links:
             has_anchor = bool(link.anchor_text)
@@ -982,6 +995,16 @@ class HtmlParser:
                 structured_metadata["canonical_url"] = canonicalize_url(
                     urljoin(base_url, parser.canonical_url)
                 )
+        from unilog_product_intelligence.retrieval.html_extractor import (
+            HtmlProductEvidenceExtractor,
+        )
+        with suppress(Exception):
+            extracted_cands = HtmlProductEvidenceExtractor().extract_evidence_candidates(
+                html_text, base_url, fetch.source.source_id
+            )
+            structured_metadata["html_candidates"] = [
+                c.model_dump(mode="json") for c in extracted_cands
+            ]
         chunks = [
             DocumentChunk(
                 document_id=document_id,
@@ -1160,7 +1183,22 @@ def _deterministic_evidence_candidates(
 ) -> list[EvidenceCandidate]:
     """Use structured manufacturer catalog data or HTML metadata when model returns none."""
     candidates: list[EvidenceCandidate] = []
+    seen_attributes: set[str] = set()
 
+    # 1. Primary: Rich structured HTML candidates (JSON-LD, tables, DLs, meta)
+    raw_html_cands = document.structured_metadata.get("html_candidates")
+    if isinstance(raw_html_cands, list) and raw_html_cands:
+        for c_dict in raw_html_cands:
+            if isinstance(c_dict, dict):
+                attr = str(c_dict.get("attribute", ""))
+                if attr and attr.casefold() not in seen_attributes:
+                    cand = EvidenceCandidate.model_validate(
+                        {**c_dict, "source_id": document.source_id, "url": url}
+                    )
+                    candidates.append(cand)
+                    seen_attributes.add(attr.casefold())
+
+    # 2. Secondary: Embedded product metadata (e.g. Diablo embedded script)
     embedded = document.structured_metadata.get("embedded_product")
     product = embedded.get("product") if isinstance(embedded, dict) else None
     if isinstance(product, dict):
@@ -1325,10 +1363,12 @@ def _embedded_catalog_links(html_text: str) -> tuple[str, ...]:
     )
     values: list[str] = []
     for raw in raw_links:
-        value = raw.replace(r"\/", "/").rstrip(".,;:)\"'")
+        value = raw.replace(r"\/", "/")
+        value = re.sub(r"(&quot;|&apos;|&amp;|[&\"',;:\)\s])+$", "", value)
+        value = value.rstrip(".,;:)\"'")
         if value.startswith("//"):
             value = "https:" + value
-        if value not in values:
+        if value and value not in values:
             values.append(value)
     return tuple(values)
 

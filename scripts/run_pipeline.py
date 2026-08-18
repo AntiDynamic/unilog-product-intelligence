@@ -60,9 +60,9 @@ from unilog_product_intelligence.enrichment.service import EnrichmentService  # 
 from unilog_product_intelligence.enrichment.validation import ValidationPipeline  # noqa: E402
 from unilog_product_intelligence.providers.factory import (  # noqa: E402
     ExecutionMode,
-    GeminiConfigurationError,
     build_provider,
 )
+from unilog_product_intelligence.providers.gemini import GeminiConfigurationError  # noqa: E402
 from unilog_product_intelligence.retrieval.agents import (  # noqa: E402
     DiscoveryResult,
     ManufacturerDiscoveryAgent,
@@ -73,10 +73,12 @@ from unilog_product_intelligence.retrieval.core import (  # noqa: E402
     ManufacturerProfile,
     SourceDecision,
     SourceFetcher,
+    SourceKind,
     SourcePolicy,
     SourceRecord,
     SourceVerifier,
     _host,
+    _same_or_subdomain,
 )
 from unilog_product_intelligence.retrieval.service import (
     ManufacturerIntelligenceService,  # noqa: E402
@@ -195,8 +197,7 @@ def _build_pipeline(
             for c in disc.candidates
             if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
         )
-        if not verified_candidates:
-            # If no verified domain exists, do NOT create a profile that falsely claims candidate domains are verified.
+        if not verified_candidates and not candidate_candidates:
             return None
 
         profile = ManufacturerProfile(
@@ -212,20 +213,29 @@ def _build_pipeline(
             return None
         best = candidates[0]
         best_domain = _host(best.url)
+        is_secondary = (
+            best.source_kind == SourceKind.DISTRIBUTOR_PRODUCT_PAGE
+            or not profile.verified_domains
+            or not any(_same_or_subdomain(best_domain, d) for d in profile.verified_domains)
+        )
 
         # Ensure the discovered candidate is verified against the profile
         candidate_source = SourceRecord(
             canonical_url=best.url,
             original_url=best.url,
-            source_kind=best.source_kind,
-            decision=SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+            source_kind=SourceKind.DISTRIBUTOR_PRODUCT_PAGE if is_secondary else best.source_kind,
+            decision=SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE if is_secondary else SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
             manufacturer_id=profile.manufacturer_id,
             manufacturer_domain=best_domain,
+            verified_domains=profile.verified_domains if not is_secondary else (),
             product_id=product.product_id,
         )
-        verified_source = SourceVerifier(SourcePolicy()).verify_source(candidate_source, profile)
-        if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
-            return None
+        if is_secondary:
+            verified_source = candidate_source
+        else:
+            verified_source = SourceVerifier(SourcePolicy()).verify_source(candidate_source, profile)
+            if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
+                return None
 
         return verified_source, profile
 
@@ -478,12 +488,12 @@ def main() -> None:
                         },
                         "resolved_manufacturer": (
                             str(result.product_truth.identity.manufacturer.normalized_value or "")
-                            if getattr(result.product_truth.identity, "manufacturer", None)
+                            if (result.product_truth.identity and result.product_truth.identity.manufacturer)
                             else ""
                         ),
                         "resolved_brand": (
                             str(result.product_truth.identity.brand.normalized_value or "")
-                            if getattr(result.product_truth.identity, "brand", None)
+                            if (result.product_truth.identity and result.product_truth.identity.brand)
                             else ""
                         ),
                         "execution_mode": exec_mode.value,
@@ -534,28 +544,51 @@ def main() -> None:
                             "source_status": (
                                 "success"
                                 if any(
-                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE, SourceAuthority.SECONDARY}
                                     for s in result.product_truth.sources
                                 )
                                 else "not_found"
                             ),
                             "identity_score": (
-                                1.0
-                                if any(
-                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
-                                    for s in result.product_truth.sources
-                                )
-                                else 0.0
+                                result.manufacturer_job.identity_score
+                                if result.manufacturer_job and result.manufacturer_job.identity_score is not None
+                                else (1.0 if any(s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE} for s in result.product_truth.sources) else 0.0)
+                            ),
+                            "mpn_match_type": (
+                                result.manufacturer_job.mpn_match_type
+                                if result.manufacturer_job
+                                else None
+                            ),
+                            "raw_mpn_match": (
+                                result.manufacturer_job.raw_mpn_match
+                                if result.manufacturer_job
+                                else None
+                            ),
+                            "transformed_mpn_match": (
+                                result.manufacturer_job.transformed_mpn_match
+                                if result.manufacturer_job
+                                else None
+                            ),
+                            "identity_rejection_reason": (
+                                result.manufacturer_job.identity_rejection_reason
+                                if result.manufacturer_job
+                                else None
                             ),
                             "identity_classification": (
                                 "STRONG_MATCH"
                                 if any(
-                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                                    s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE, SourceAuthority.SECONDARY}
                                     for s in result.product_truth.sources
                                 )
                                 else None
                             ),
                             "evidence_count": len(result.product_truth.evidence),
+                            "digital_asset_count": len(result.product_truth.digital_assets),
+                            "asset_discovery_status": (
+                                result.manufacturer_job.asset_discovery_status
+                                if result.manufacturer_job
+                                else None
+                            ),
                             "search_requested": p5_search_requested,
                             "search_tool_calls": p5_search_tool_calls,
                             "search_calls": p5_search_calls,

@@ -31,6 +31,11 @@ from .digital_assets import (
     DigitalAssetDiscoveryService,
     DocumentClassifier,
 )
+from .html_extractor import (
+    ExtractedField,
+    ExtractedProductData,
+    HtmlProductEvidenceExtractor,
+)
 from .mpn_normalizer import MpnHypothesis, MpnHypothesisType, MpnNormalizer
 from .service import ManufacturerIntelligenceService
 from .source_discovery import (
@@ -58,7 +63,10 @@ __all__ = [
     "EvidenceCandidate",
     "EvidenceExtractor",
     "EvidenceSelector",
+    "ExtractedField",
+    "ExtractedProductData",
     "HtmlParser",
+    "HtmlProductEvidenceExtractor",
     "IMAGE_EXCLUSION_KEYWORDS",
     "KNOWN_MANUFACTURER_ASSET_HOSTS",
     "ManufacturerDiscoveryAgent",

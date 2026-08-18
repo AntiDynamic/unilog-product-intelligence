@@ -57,11 +57,33 @@ KNOWN_MANUFACTURER_ASSET_HOSTS: dict[str, tuple[str, ...]] = {
         "www.milwaukeetool.com",
         "media.milwaukeetool.com",
         "images.milwaukeetool.com",
+        "milwaukeetool.scene7.com",
     ),
     "diablo": (
         "diablotools.com",
         "www.diablotools.com",
         "media.diablotools.com",
+        "cdn.shopify.com",
+        "ik.imagekit.io",
+        "imagekit.io",
+        "freudtools.com",
+        "www.freudtools.com",
+    ),
+    "freud": (
+        "freudtools.com",
+        "www.freudtools.com",
+        "diablotools.com",
+        "www.diablotools.com",
+        "cdn.shopify.com",
+        "ik.imagekit.io",
+        "imagekit.io",
+    ),
+    "mirka": (
+        "mirka.com",
+        "www.mirka.com",
+        "mirkausa.com",
+        "cms.mirka.com",
+        "media.mirka.com",
     ),
     "kohler": (
         "kohler.com",
@@ -193,7 +215,7 @@ class AssetAuthorityVerifier:
 
         # Check against verified domains (and their subdomains)
         for vdomain in verified_domains:
-            if _same_or_subdomain(host, vdomain):
+            if vdomain and (_same_or_subdomain(host, vdomain) or _same_or_subdomain(vdomain, host)):
                 return True
 
         # Check against known authorized manufacturer asset hosts

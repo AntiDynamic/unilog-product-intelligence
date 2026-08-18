@@ -44,6 +44,7 @@ class SourceType(StrEnum):
     MANUFACTURER_PAGE = "manufacturer_page"
     MANUFACTURER_DOCUMENT = "manufacturer_document"
     MANUFACTURER_CATALOG = "manufacturer_catalog"
+    AUTHORIZED_DISTRIBUTOR = "authorized_distributor"
     OTHER_PERMITTED_SOURCE = "other_permitted_source"
     MODEL_INFERENCE = "model_inference"
 
@@ -54,6 +55,7 @@ class SourceAuthority(StrEnum):
     AUTHORITATIVE = "authoritative"
     HIGH = "high"
     MEDIUM = "medium"
+    SECONDARY = "secondary"
     LOW = "low"
     UNKNOWN = "unknown"
 

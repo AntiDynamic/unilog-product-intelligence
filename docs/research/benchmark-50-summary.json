@@ -1,51 +1,51 @@
 {
   "total_rows": 50,
-  "total_duration_ms": 532854,
-  "avg_duration_ms": 10657,
+  "total_duration_ms": 478903,
+  "avg_duration_ms": 9578,
   "reference_availability": "REFERENCE_UNAVAILABLE",
   "outcome_buckets": {
-    "READY_FULL": 0,
-    "READY_PARTIAL": 40,
-    "REVIEW_REQUIRED": 10,
+    "READY_FULL": 39,
+    "READY_PARTIAL": 0,
+    "REVIEW_REQUIRED": 11,
     "BLOCKED": 0,
     "ERRORS": 0
   },
   "rates": {
-    "full_success_rate_pct": 0.0,
-    "partial_success_rate_pct": 80.0,
-    "enriched_rate_pct": 80.0,
-    "review_required_rate_pct": 20.0,
+    "full_success_rate_pct": 78.0,
+    "partial_success_rate_pct": 0.0,
+    "enriched_rate_pct": 78.0,
+    "review_required_rate_pct": 22.0,
     "blocked_rate_pct": 0.0,
     "source_verified_rate_pct": 100.0,
-    "evidence_present_rate_pct": 80.0,
+    "evidence_present_rate_pct": 78.0,
     "assets_found_rate_pct": 0.0
   },
   "retrieval": {
     "source_verified_count": 50,
-    "evidence_nonzero_count": 40,
+    "evidence_nonzero_count": 39,
     "failure_modes": {
-      "SUCCESS": 40,
-      "SOURCE_NOT_FOUND": 10
+      "SUCCESS": 39,
+      "SOURCE_NOT_FOUND": 11
     }
   },
   "failure_stages": {
-    "ATTRIBUTE_ENRICHMENT": 40,
-    "SOURCE_DISCOVERY": 10
+    "NONE": 39,
+    "SOURCE_DISCOVERY": 11
   },
   "attributes": {
-    "total_planned": 93,
-    "total_candidate": 0,
-    "total_validated": 0,
+    "total_planned": 159,
+    "total_candidate": 125,
+    "total_validated": 125,
     "total_review": 0,
     "total_rejected": 0,
-    "avg_planned_per_row": 1.9,
-    "avg_candidate_per_row": 0.0,
-    "avg_fill_rate": 0.0
+    "avg_planned_per_row": 3.2,
+    "avg_candidate_per_row": 2.5,
+    "avg_fill_rate": 0.786
   },
   "descriptions": {
-    "boilerplate_rows": 50,
-    "boilerplate_total_instances": 100,
-    "boilerplate_rate_pct": 100.0
+    "boilerplate_rows": 1,
+    "boilerplate_total_instances": 1,
+    "boilerplate_rate_pct": 2.0
   },
   "assets": {
     "rows_with_primary_image": 0,
@@ -54,8 +54,8 @@
   "delivery_schema": {
     "column_count": 252,
     "schema_compliance": "100%",
-    "avg_fill_rate_pct": 13.4,
-    "avg_non_empty_fields": 33.7
+    "avg_fill_rate_pct": 16.1,
+    "avg_non_empty_fields": 40.5
   },
   "rows": [
     {
@@ -65,7 +65,7 @@
       "resolved_manufacturer": "Freud Inc (2435)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "diablotools.com",
         "freudtools.com",
@@ -73,27 +73,26 @@
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 15,
+      "evidence_count": 17,
       "fetched_urls": [
         "https://diablotools.com/products/DCB518ASTS06G"
       ],
       "failure_reason": "",
       "attributes_planned": 15,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_candidate": 15,
+      "attributes_validated": 15,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 1.0,
       "descriptions_non_empty": 5,
       "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
+        "ideal for"
       ],
       "has_boilerplate": true,
       "has_primary_image": false,
-      "delivery_non_empty": 74,
-      "delivery_fill_pct": 29.37,
-      "duration_ms": 2071
+      "delivery_non_empty": 76,
+      "delivery_fill_pct": 30.16,
+      "duration_ms": 1714
     },
     {
       "row_number": 3,
@@ -118,15 +117,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 28074
+      "duration_ms": 22696
     },
     {
       "row_number": 4,
@@ -151,15 +147,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 30712
+      "duration_ms": 47715
     },
     {
       "row_number": 5,
@@ -184,15 +177,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 39663
+      "duration_ms": 25271
     },
     {
       "row_number": 6,
@@ -217,15 +207,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 31851
+      "duration_ms": 28268
     },
     {
       "row_number": 7,
@@ -250,15 +237,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 45104
+      "duration_ms": 48537
     },
     {
       "row_number": 8,
@@ -283,15 +267,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 42647
+      "duration_ms": 24774
     },
     {
       "row_number": 9,
@@ -317,15 +298,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 37271
+      "duration_ms": 18004
     },
     {
       "row_number": 10,
@@ -351,15 +329,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 31683
+      "duration_ms": 12309
     },
     {
       "row_number": 11,
@@ -385,15 +360,12 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 34056
+      "duration_ms": 14349
     },
     {
       "row_number": 12,
@@ -419,52 +391,44 @@
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
       "delivery_non_empty": 20,
       "delivery_fill_pct": 7.94,
-      "duration_ms": 33735
+      "duration_ms": 13965
     },
     {
       "row_number": 13,
       "mpn": "DBD090094101F",
       "manufacturer": "Freud Inc (2435)",
       "resolved_manufacturer": "Freud Inc (2435)",
-      "final_status": "ENRICHED",
-      "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "final_status": "REVIEW_REQUIRED",
+      "blocker": "SOURCE_NOT_FOUND",
+      "primary_failure_stage": "SOURCE_DISCOVERY",
       "verified_domains": [
         "diablotools.com",
         "freudtools.com",
         "info.freudtools.com"
       ],
       "has_verified_source": true,
-      "has_evidence": true,
-      "evidence_count": 2,
-      "fetched_urls": [
-        "https://diablotools.com/products/DBD090094101F"
-      ],
-      "failure_reason": "",
-      "attributes_planned": 2,
+      "has_evidence": false,
+      "evidence_count": 0,
+      "fetched_urls": [],
+      "failure_reason": "SOURCE_NOT_FOUND",
+      "attributes_planned": 0,
       "attributes_candidate": 0,
       "attributes_validated": 0,
       "attributes_review": 0,
       "attributes_rejected": 0,
       "attr_fill_rate": 0.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 32,
-      "delivery_fill_pct": 12.7,
-      "duration_ms": 3199
+      "delivery_non_empty": 20,
+      "delivery_fill_pct": 7.94,
+      "duration_ms": 54742
     },
     {
       "row_number": 14,
@@ -473,7 +437,7 @@
       "resolved_manufacturer": "Freud Inc (2435)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "diablotools.com",
         "freudtools.com",
@@ -481,27 +445,24 @@
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 4,
       "fetched_urls": [
         "https://diablotools.com/products/DBDS12125A01F"
       ],
       "failure_reason": "",
       "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_candidate": 2,
+      "attributes_validated": 2,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 1.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 31,
-      "delivery_fill_pct": 12.3,
-      "duration_ms": 3665
+      "delivery_non_empty": 35,
+      "delivery_fill_pct": 13.89,
+      "duration_ms": 3153
     },
     {
       "row_number": 15,
@@ -510,7 +471,7 @@
       "resolved_manufacturer": "Freud Inc (2435)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "diablotools.com",
         "freudtools.com",
@@ -518,27 +479,24 @@
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 4,
       "fetched_urls": [
         "https://diablotools.com/products/DBDS12125G01F"
       ],
       "failure_reason": "",
       "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_candidate": 2,
+      "attributes_validated": 2,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 1.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 31,
-      "delivery_fill_pct": 12.3,
-      "duration_ms": 2848
+      "delivery_non_empty": 35,
+      "delivery_fill_pct": 13.89,
+      "duration_ms": 2813
     },
     {
       "row_number": 16,
@@ -547,7 +505,7 @@
       "resolved_manufacturer": "Freud Inc (2435)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "diablotools.com",
         "freudtools.com",
@@ -555,27 +513,24 @@
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 4,
       "fetched_urls": [
         "https://diablotools.com/products/DBDS14125A01F"
       ],
       "failure_reason": "",
       "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_candidate": 2,
+      "attributes_validated": 2,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 1.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 31,
-      "delivery_fill_pct": 12.3,
-      "duration_ms": 2910
+      "delivery_non_empty": 35,
+      "delivery_fill_pct": 13.89,
+      "duration_ms": 3053
     },
     {
       "row_number": 17,
@@ -584,7 +539,7 @@
       "resolved_manufacturer": "Freud Inc (2435)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "diablotools.com",
         "freudtools.com",
@@ -592,27 +547,24 @@
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 4,
       "fetched_urls": [
         "https://diablotools.com/products/DBDS14125G01F"
       ],
       "failure_reason": "",
       "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_candidate": 2,
+      "attributes_validated": 2,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 1.0,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 31,
-      "delivery_fill_pct": 12.3,
-      "duration_ms": 4242
+      "delivery_non_empty": 35,
+      "delivery_fill_pct": 13.89,
+      "duration_ms": 2582
     },
     {
       "row_number": 18,
@@ -621,34 +573,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/5-x-045-x-7-8-metal-cut-off-wheel-type-1/49-94-0013"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4592
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3834
     },
     {
       "row_number": 19,
@@ -657,34 +606,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-1-2-x-1-8-x-5-8-dko-metal-cut-off-wheel-type-1/49-94-0029"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 38,
-      "delivery_fill_pct": 15.08,
-      "duration_ms": 5501
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 3796
     },
     {
       "row_number": 20,
@@ -693,34 +639,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/7-x-1-16-x-7-8-metal-cut-off-wheel-type-1/49-94-0033"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4398
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 4005
     },
     {
       "row_number": 21,
@@ -729,34 +672,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-x-040-x-5-8-metal-cut-off-wheel-type-1/49-94-0001"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 36,
-      "delivery_fill_pct": 14.29,
-      "duration_ms": 4400
+      "delivery_non_empty": 45,
+      "delivery_fill_pct": 17.86,
+      "duration_ms": 3967
     },
     {
       "row_number": 22,
@@ -765,34 +705,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/7-x-1-8-x-5-8-dko-metal-cut-off-wheel-type-1/49-94-0039"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4795
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 4079
     },
     {
       "row_number": 23,
@@ -801,34 +738,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/9-x-3-32-x-7-8-metal-cut-off-wheel-type-1/49-94-0043"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4417
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3461
     },
     {
       "row_number": 24,
@@ -837,34 +771,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/12-x-7-64-x-1-metal-cut-off-wheel-type-1/49-94-0048"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4794
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 4265
     },
     {
       "row_number": 25,
@@ -873,34 +804,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/12-x-1-8-x-1-metal-cut-off-wheel-type-1/49-94-0053"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4644
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3549
     },
     {
       "row_number": 26,
@@ -909,34 +837,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/12-x-1-8-x-20mm-metal-cut-off-wheel-type-1/49-94-0058"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 5162
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3790
     },
     {
       "row_number": 27,
@@ -945,34 +870,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/14-x-7-64-x-1-metal-cut-off-wheel-type-1/49-94-0063"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4857
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3544
     },
     {
       "row_number": 28,
@@ -981,34 +903,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/14-x-1-8-x-20mm-metal-cut-off-wheel-type-1/49-94-0068"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4989
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3148
     },
     {
       "row_number": 29,
@@ -1017,34 +936,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/14-x-1-8-x-1-metal-cut-off-wheel-type-1/49-94-0073"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 38,
-      "delivery_fill_pct": 15.08,
-      "duration_ms": 4522
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 3642
     },
     {
       "row_number": 30,
@@ -1053,34 +969,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-1-2-x-045-x-7-8-performance-metal-cut-off-wheel-type-1-10pk/49-94-0101"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 36,
-      "delivery_fill_pct": 14.29,
-      "duration_ms": 5046
+      "delivery_non_empty": 45,
+      "delivery_fill_pct": 17.86,
+      "duration_ms": 4445
     },
     {
       "row_number": 31,
@@ -1089,34 +1002,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-1-2-x-045-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0107"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 5149
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 4436
     },
     {
       "row_number": 32,
@@ -1125,34 +1035,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/5-x-045-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0117"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 36,
-      "delivery_fill_pct": 14.29,
-      "duration_ms": 5178
+      "delivery_non_empty": 45,
+      "delivery_fill_pct": 17.86,
+      "duration_ms": 4112
     },
     {
       "row_number": 33,
@@ -1161,34 +1068,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-performance-metal-cut-off-wheel-type-1/49-94-0123"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4795
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 4149
     },
     {
       "row_number": 34,
@@ -1197,34 +1101,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-metal-cut-off-wheel-type-1/49-94-0023"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4346
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3371
     },
     {
       "row_number": 35,
@@ -1233,34 +1134,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-performance-metal-cut-off-wheel-type-1/49-94-0121"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 6617
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 4372
     },
     {
       "row_number": 36,
@@ -1269,34 +1167,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0127"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 35,
-      "delivery_fill_pct": 13.89,
-      "duration_ms": 4842
+      "delivery_non_empty": 44,
+      "delivery_fill_pct": 17.46,
+      "duration_ms": 4341
     },
     {
       "row_number": 37,
@@ -1305,34 +1200,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/7-x-3-32-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0137"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 36,
-      "delivery_fill_pct": 14.29,
-      "duration_ms": 4599
+      "delivery_non_empty": 45,
+      "delivery_fill_pct": 17.86,
+      "duration_ms": 4831
     },
     {
       "row_number": 38,
@@ -1341,34 +1233,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/14-x-7-64-x-1-performance-metal-cut-off-wheel-type-1-stud-cutter/49-94-0160"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4780
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 3888
     },
     {
       "row_number": 39,
@@ -1377,34 +1266,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-ceramic-metal-cut-off-wheel-type-1/49-94-0223"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4458
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3818
     },
     {
       "row_number": 40,
@@ -1413,34 +1299,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/10-x-3-32-x-5-8-performance-metal-cut-off-wheel-type-1/49-94-0445"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4796
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 4164
     },
     {
       "row_number": 41,
@@ -1449,34 +1332,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-7-8-dual-metal-cut-grind-wheel-type-27/49-94-0803"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 38,
-      "delivery_fill_pct": 15.08,
-      "duration_ms": 4624
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 3607
     },
     {
       "row_number": 42,
@@ -1485,34 +1365,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-7-8-performance-dual-metal-cut-grind-wheel-type-27/49-94-0903"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4297
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 2910
     },
     {
       "row_number": 43,
@@ -1521,34 +1398,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-5-8-11-performance-dual-metal-cut-grind-wheel-type-27/49-94-0907"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 38,
-      "delivery_fill_pct": 15.08,
-      "duration_ms": 3605
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 3630
     },
     {
       "row_number": 44,
@@ -1557,34 +1431,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-x-1-8-x-7-8-performance-dual-metal-cut-grind-wheel-type-27/49-94-0923"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 35,
-      "delivery_fill_pct": 13.89,
-      "duration_ms": 4948
+      "delivery_non_empty": 44,
+      "delivery_fill_pct": 17.46,
+      "duration_ms": 4174
     },
     {
       "row_number": 45,
@@ -1593,34 +1464,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-x-1-8-x-5-8-masonry-cut-off-wheel-type-1/49-94-1900"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 38,
-      "delivery_fill_pct": 15.08,
-      "duration_ms": 4128
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 3566
     },
     {
       "row_number": 46,
@@ -1629,34 +1497,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-7-8-masonry-cut-off-wheel-type-1/49-94-1905"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 38,
-      "delivery_fill_pct": 15.08,
-      "duration_ms": 4740
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 4287
     },
     {
       "row_number": 47,
@@ -1665,34 +1530,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/6-1-2-x-1-8-x-5-8-dko-masonry-cut-off-wheel-type-1/49-94-1915"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 39,
-      "delivery_fill_pct": 15.48,
-      "duration_ms": 4058
+      "delivery_non_empty": 49,
+      "delivery_fill_pct": 19.44,
+      "duration_ms": 3605
     },
     {
       "row_number": 48,
@@ -1701,34 +1563,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/7-x-1-8-x-5-8-dko-masonry-cut-off-wheel-type-1/49-94-1920"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 38,
-      "delivery_fill_pct": 15.08,
-      "duration_ms": 4404
+      "delivery_non_empty": 48,
+      "delivery_fill_pct": 19.05,
+      "duration_ms": 3761
     },
     {
       "row_number": 49,
@@ -1737,34 +1596,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/10-x-1-8-x-5-8-masonry-cut-off-wheel-type-1/49-94-1925"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 4430
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 27372
     },
     {
       "row_number": 50,
@@ -1773,34 +1629,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/12-x-1-8-x-1-masonry-cut-off-wheel-type-1/49-94-1935"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 35,
-      "delivery_fill_pct": 13.89,
-      "duration_ms": 4323
+      "delivery_non_empty": 44,
+      "delivery_fill_pct": 17.46,
+      "duration_ms": 3838
     },
     {
       "row_number": 51,
@@ -1809,34 +1662,31 @@
       "resolved_manufacturer": "Milwaukee Accessory (4031)",
       "final_status": "ENRICHED",
       "blocker": "",
-      "primary_failure_stage": "ATTRIBUTE_ENRICHMENT",
+      "primary_failure_stage": "NONE",
       "verified_domains": [
         "www.milwaukeetool.com",
         "milwaukeetool.com"
       ],
       "has_verified_source": true,
       "has_evidence": true,
-      "evidence_count": 2,
+      "evidence_count": 6,
       "fetched_urls": [
         "https://www.milwaukeetool.com/products/details/14-x-1-8-x-1-masonry-cut-off-wheel-type-1/49-94-1940"
       ],
       "failure_reason": "",
-      "attributes_planned": 2,
-      "attributes_candidate": 0,
-      "attributes_validated": 0,
+      "attributes_planned": 4,
+      "attributes_candidate": 3,
+      "attributes_validated": 3,
       "attributes_review": 0,
       "attributes_rejected": 0,
-      "attr_fill_rate": 0.0,
+      "attr_fill_rate": 0.75,
       "descriptions_non_empty": 5,
-      "boilerplate_phrases": [
-        "delivers reliable performance",
-        "is an industrial solution"
-      ],
-      "has_boilerplate": true,
+      "boilerplate_phrases": [],
+      "has_boilerplate": false,
       "has_primary_image": false,
-      "delivery_non_empty": 37,
-      "delivery_fill_pct": 14.68,
-      "duration_ms": 3889
+      "delivery_non_empty": 47,
+      "delivery_fill_pct": 18.65,
+      "duration_ms": 3201
     }
   ]
 }

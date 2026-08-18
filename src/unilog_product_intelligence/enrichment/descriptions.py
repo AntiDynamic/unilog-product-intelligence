@@ -42,6 +42,48 @@ class DescriptionLimits:
     max_features: int = 20
 
 
+def is_placeholder_brand(text: str | None) -> bool:
+    """Detect unassigned, generic, or UI placeholder brand strings."""
+    if not text:
+        return True
+    cleaned = text.strip()
+    if not cleaned or cleaned in {"-", "--", "N/A", "n/a", "null", "None", "empty", "Unknown"}:
+        return True
+    lower = cleaned.casefold()
+    if lower.startswith("--") and lower.endswith("--"):
+        return True
+    placeholder_exact = {
+        "-- no unilog brand --",
+        "-- unbranded --",
+        "-- no dib brand --",
+        "-- unassigned --",
+        "-- unbranded/generic --",
+        "no brand",
+        "unbranded",
+        "generic",
+        "unassigned",
+        "no unilog brand",
+        "no dib brand",
+    }
+    placeholder_prefixes = ("-- no unilog brand --", "-- unbranded --", "-- no dib brand --")
+    return lower in placeholder_exact or any(p in lower for p in placeholder_prefixes)
+
+
+def is_placeholder_brand_in_text(text: str) -> bool:
+    """Check whether a text string contains leaked placeholder brand tokens."""
+    lower = text.casefold()
+    return any(
+        ph in lower
+        for ph in (
+            "-- no unilog brand --",
+            "-- unbranded --",
+            "-- no dib brand --",
+            "-- unassigned --",
+            "-- unbranded/generic --",
+        )
+    )
+
+
 @dataclass(frozen=True)
 class DescriptionContext:
     """Compact structured description context containing ONLY publishable/verified facts."""
@@ -67,17 +109,49 @@ class DescriptionContext:
         reference_pack: ReferencePack | None = None,
     ) -> DescriptionContext:
         identity = product.identity
-        brand = (
-            (identity.brand.normalized_value or str(identity.brand.raw_value or ""))
-            if identity.brand
-            else str(product.raw_value("Unilog_Brand") or "")
-        ).strip() or None
 
-        mfg = (
-            (identity.manufacturer.normalized_value or str(identity.manufacturer.raw_value or ""))
-            if identity.manufacturer
-            else str(product.raw_value("Part_Manuf") or "")
-        ).strip() or None
+        # 1. Brand selection priority (never expose raw placeholder tokens)
+        brand_candidate: str | None = None
+        if identity.brand:
+            b_val = identity.brand.normalized_value or str(identity.brand.raw_value or "").strip()
+            if not is_placeholder_brand(b_val):
+                brand_candidate = b_val
+
+        if not brand_candidate:
+            for attr in product.attributes:
+                if (
+                    attr.canonical_name.casefold() == "brand"
+                    and attr.normalized_value
+                    and not is_placeholder_brand(str(attr.normalized_value))
+                ):
+                    brand_candidate = str(attr.normalized_value).strip()
+                    break
+
+        if not brand_candidate:
+            if identity.manufacturer:
+                m_raw = identity.manufacturer.normalized_value or identity.manufacturer.raw_value
+                m_val = str(m_raw or "").strip()
+            else:
+                m_val = str(product.raw_value("Part_Manuf") or "").strip()
+            clean_m = re.sub(r"\s*\([^)]*\)", "", m_val).strip()
+            if clean_m and not is_placeholder_brand(clean_m):
+                brand_candidate = clean_m
+
+        if not brand_candidate:
+            raw_unilog = str(product.raw_value("Unilog_Brand") or "").strip()
+            if not is_placeholder_brand(raw_unilog):
+                brand_candidate = raw_unilog
+
+        brand = brand_candidate or None
+
+        # 2. Manufacturer demasked
+        mfg: str | None = None
+        if identity.manufacturer:
+            m_val = identity.manufacturer.normalized_value or identity.manufacturer.raw_value
+            mfg = str(m_val or "").strip()
+        if not mfg:
+            raw_mfg = str(product.raw_value("Part_Manuf") or "").strip()
+            mfg = re.sub(r"\s*\([^)]*\)", "", raw_mfg).strip() or None
 
         mpn_field = identity.manufacturer_part_number
         mpn = (
@@ -92,12 +166,27 @@ class DescriptionContext:
             else None
         )
 
-        pname = str(product.raw_value("Part_Desc") or "").strip()
+        # 3. Product Title priority (prefer verified manufacturer title over raw Part_Desc)
+        pname: str | None = None
+        for attr in product.attributes:
+            if attr.canonical_name.casefold() in {"product title", "title", "product name"} and (
+                attr.normalized_value or attr.raw_value
+            ):
+                pname = str(attr.normalized_value or attr.raw_value).strip()
+                break
+
         if not pname:
-            pname = product.classification.class_name or ""
+            raw_desc = str(product.raw_value("Part_Desc") or "").strip()
+            if raw_desc:
+                clean_desc = raw_desc
+                if mpn and clean_desc.casefold().startswith(mpn.casefold()):
+                    clean_desc = clean_desc[len(mpn):].strip(" -_")
+                pname = clean_desc or raw_desc
+
+        if not pname:
+            pname = product.classification.class_name or product.classification.fine or "Product"
 
         # Include only publishable/verified attributes
-        # (status in verified, normalized, enriched with valid value and evidence)
         verified_attrs = tuple(
             attr
             for attr in product.attributes
@@ -265,12 +354,12 @@ class DeterministicDescriptionBuilder:
         """Technical structured overview aggregating verified facts."""
         sections: list[str] = []
 
-        brand_str = ctx.brand or ""
+        brand_str = f"{ctx.brand} " if ctx.brand else ""
         mpn_str = f" (MPN: {ctx.mpn})" if ctx.mpn else ""
         name_str = ctx.product_name or ctx.category or "Product"
         cat_str = f" in the {' > '.join(ctx.classpath)} category" if ctx.classpath else ""
 
-        overview = f"The {brand_str} {name_str}{mpn_str} is an industrial solution{cat_str}."
+        overview = f"{brand_str}{name_str}{mpn_str}{cat_str}."
         sections.append(overview.strip())
 
         if ctx.verified_attributes:
@@ -292,14 +381,13 @@ class DeterministicDescriptionBuilder:
 
     def build_retail_desc(self, ctx: DescriptionContext) -> str:
         """Evidence-grounded customer-facing description without unsupported superlatives."""
-        brand_name = ctx.brand or "This"
+        brand_name = f"{ctx.brand} " if ctx.brand else ""
         p_name = ctx.product_name or ctx.category or "product"
         mpn_tag = f" ({ctx.mpn})" if ctx.mpn else ""
+        cat_suffix = f" in {ctx.category}" if ctx.category else ""
 
-        lines: list[str] = [
-            f"{brand_name} {p_name}{mpn_tag} delivers reliable performance "
-            "for professional and industrial applications."
-        ]
+        lead = f"{brand_name}{p_name}{mpn_tag}{cat_suffix}.".strip()
+        lines: list[str] = [lead]
 
         attr_highlights: list[str] = []
         for attr in ctx.verified_attributes:
@@ -434,7 +522,26 @@ class DescriptionValidator:
                         )
                     )
 
-        # 3. Brand Consistency Check
+        # 3. Brand Consistency & Placeholder Leakage Check
+        for fname, val in [
+            ("short", descriptions.short),
+            ("long", descriptions.long),
+            ("mobile", descriptions.mobile),
+            ("invoice", descriptions.invoice),
+            ("retail", descriptions.retail),
+        ]:
+            if val and is_placeholder_brand_in_text(val):
+                results.append(
+                    DescriptionValidationResult(
+                        validator="placeholder_leakage",
+                        passed=False,
+                        severity=ValidationSeverity.BLOCKING,
+                        message=f"Placeholder brand leaked into {fname}_desc: '{val[:60]}'",
+                        field_name=fname,
+                        actual_value=val,
+                    )
+                )
+
         if ctx.brand:
             brand_clean = ctx.brand.strip()
             for fname, val in [

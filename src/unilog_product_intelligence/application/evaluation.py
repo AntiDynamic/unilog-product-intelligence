@@ -179,9 +179,111 @@ class ProductExecutionTrace(BaseModel):
     ground_truth_comparison: dict[str, Any] | None = None
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# 3. Deterministic Offline Rule-Based Provider for Zero-Gemini Evaluation
-# ──────────────────────────────────────────────────────────────────────────────
+_ATTR_ALIASES: dict[str, list[str]] = {
+    "diameter": ["wheel diameter", "disc diameter", "blade diameter", "size"],
+    "thickness": ["wheel thickness", "blade thickness", "width"],
+    "arbor size": ["arbor", "arbor diameter", "bore", "hole size", "arbor size"],
+    "grit": ["grit size", "grit / grade", "grade"],
+    "material": ["abrasive material", "backing material", "composition"],
+    "package quantity": [
+        "pack qty", "pkg qty", "quantity", "pieces", "box qty", "package qty", "pack of"
+    ],
+    "maximum rpm": ["max rpm", "max speed", "rated rpm", "speed"],
+    "color": ["colour"],
+    "length": ["overall length"],
+    "width": ["overall width"],
+}
+
+
+def _deterministic_enrich_from_evidence_prompt(prompt: str) -> dict[str, Any]:
+    from unilog_product_intelligence.enrichment.reference import separate_value_and_uom
+
+    # 1. Parse planned attributes: lines starting with "- attribute-"
+    plans: list[dict[str, Any]] = []
+    plan_matches = re.findall(
+        r"-\s+(attribute-[a-z0-9-]+)\s+\(([^)]+)\)\s+applicability=([A-Z_]+)",
+        prompt,
+    )
+    for attr_id, attr_name, _ in plan_matches:
+        plans.append({"id": attr_id, "name": attr_name.strip()})
+
+    # 2. Parse verified evidence: lines starting with "- evidence_id="
+    evidence_items: list[dict[str, str]] = []
+    ev_matches = re.findall(
+        r"-\s+evidence_id=([^\s]+)\s+source_id=([^\s]+)(?:\s+source=([^\s]*))?\s+text=(.+)",
+        prompt,
+    )
+    for ev_id, src_id, src_url, ev_text in ev_matches:
+        evidence_items.append(
+            {
+                "evidence_id": ev_id,
+                "source_id": src_id,
+                "source_url": src_url or "",
+                "text": ev_text.strip(),
+            }
+        )
+
+    candidates: list[dict[str, Any]] = []
+    unresolved: list[str] = []
+
+    for plan in plans:
+        attr_id = plan["id"]
+        attr_name = plan["name"]
+        matched = False
+
+        for ev in evidence_items:
+            text = ev["text"]
+            # Pattern 1: Exact label match e.g. "Diameter: 5 in"
+            p1 = rf"(?i)\b{re.escape(attr_name)}\s*:\s*([^;,\n]+)"
+            m1 = re.search(p1, text)
+            if m1:
+                raw_val = m1.group(1).strip()
+                val_clean, uom = separate_value_and_uom(raw_val)
+                candidates.append(
+                    {
+                        "attribute": attr_id,
+                        "value": val_clean or raw_val,
+                        "raw_value": raw_val,
+                        "normalized_value": val_clean or raw_val,
+                        "uom": uom,
+                        "evidence_id": ev["evidence_id"],
+                        "evidence_text": text,
+                        "reason": f"Direct specification from evidence {ev['evidence_id']}",
+                        "status": "direct",
+                    }
+                )
+                matched = True
+                break
+
+            # Pattern 2: Alias match
+            for alias in _ATTR_ALIASES.get(attr_name.casefold(), []):
+                p2 = rf"(?i)\b{re.escape(alias)}\s*:\s*([^;,\n]+)"
+                m2 = re.search(p2, text)
+                if m2:
+                    raw_val = m2.group(1).strip()
+                    val_clean, uom = separate_value_and_uom(raw_val)
+                    candidates.append(
+                        {
+                            "attribute": attr_id,
+                            "value": val_clean or raw_val,
+                            "raw_value": raw_val,
+                            "normalized_value": val_clean or raw_val,
+                            "uom": uom,
+                            "evidence_id": ev["evidence_id"],
+                            "evidence_text": text,
+                            "reason": f"Matched alias '{alias}' from {ev['evidence_id']}",
+                            "status": "direct",
+                        }
+                    )
+                    matched = True
+                    break
+            if matched:
+                break
+
+        if not matched:
+            unresolved.append(attr_id)
+
+    return {"candidates": candidates, "unresolved_attributes": unresolved}
 
 
 class DeterministicEvaluationProvider(LLMProvider):
@@ -190,7 +292,6 @@ class DeterministicEvaluationProvider(LLMProvider):
     model: str = "deterministic-evaluator"
 
     def generate(self, request: LLMRequest) -> LLMResponse:
-        # Phase 4 understanding / classification / extraction from input text
         task = request.task
         if task == "product_understanding":
             return LLMResponse(
@@ -228,13 +329,23 @@ class DeterministicEvaluationProvider(LLMProvider):
                 model="deterministic-evaluator",
             )
         if task == "evidence_grounded_enrichment":
+            result = _deterministic_enrich_from_evidence_prompt(request.input_text)
             return LLMResponse(
-                output_text=json.dumps({"candidates": [], "unresolved_attributes": []}),
+                output_text=json.dumps(result),
                 model="deterministic-evaluator",
             )
         return LLMResponse(output_text="{}", model="deterministic-evaluator")
 
     def generate_with_tools(self, request: LLMRequest, tools: Any) -> LLMResponse:
+        task = request.task
+        if task == "evidence_grounded_enrichment":
+            result = _deterministic_enrich_from_evidence_prompt(request.input_text)
+            return LLMResponse(
+                output_text=json.dumps(result),
+                model="deterministic-evaluator",
+                tool_calls=0,
+                search_call_count=0,
+            )
         return LLMResponse(
             output_text='{"candidates": []}',
             model="deterministic-evaluator",
