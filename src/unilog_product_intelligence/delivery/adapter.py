@@ -134,8 +134,10 @@ class Phase65ResultDeliveryAdapter:
         # ── 1. Source URL columns ─────────────────────────────────────────────
         mfr_url, ref_urls = _extract_source_urls(phase65_result, product)
         values["MFR URL"] = mfr_url
-        for i, url in enumerate(ref_urls[: self.MAX_REF_URLS], start=1):
-            values[f"Ref URL {i}"] = url
+        for i in range(1, self.MAX_REF_URLS + 1):
+            values[f"Ref URL {i}"] = (
+                ref_urls[i - 1] if i - 1 < len(ref_urls) else None
+            )
 
         # ── 2. Raw input passthrough ──────────────────────────────────────────
         raw = {f.field_name: f.raw_value for f in product.raw_inputs}
@@ -371,41 +373,120 @@ def _resolved_brand(result: Any) -> str | None:
     return None
 
 
+def _rank_document_url(url: str) -> int:
+    """Rank document URL priority: lower value = higher priority.
+
+    Priority order:
+    1. Installation / User Manuals
+    2. Specification sheets / Datasheets / Brochures
+    3. Technical documentation / Wiring diagrams / Service
+    4. Warranty documents
+    5. General PDFs / documents
+    """
+    u = url.casefold()
+    if any(
+        k in u
+        for k in (
+            "manual",
+            "install",
+            "user-guide",
+            "user_guide",
+            "owner",
+            "use-and-care",
+            "instruction",
+            "setup",
+        )
+    ):
+        return 1
+    if any(k in u for k in ("spec", "datasheet", "brochure", "cutsheet", "catalog")):
+        return 2
+    if any(
+        k in u
+        for k in (
+            "tech",
+            "wiring",
+            "diagram",
+            "service",
+            "bulletin",
+            "engineering",
+            "drawing",
+        )
+    ):
+        return 3
+    if any(k in u for k in ("warranty", "guarantee")):
+        return 4
+    if u.endswith(".pdf") or "document" in u or "download" in u or "/pdf" in u:
+        return 5
+    return 6
+
+
 def _extract_source_urls(
     result: Any, product: ProductTruth
 ) -> tuple[str | None, list[str]]:
-    """Extract MFR URL (primary) and reference URLs from Phase65Result + ProductTruth."""
+    """Extract MFR URL and ranked reference/document URLs from result and truth."""
     mfr_url: str | None = None
-    ref_urls: list[str] = []
+    candidate_urls: list[str] = []
 
-    # Prefer the URL from the manufacturer job's retrieved source
+    # 1. Primary MFR URL from verified source context or job
     job = getattr(result, "manufacturer_job", None)
-    if job:
+    source_ctx = getattr(job, "verified_source_context", None) if job else None
+    if source_ctx and getattr(source_ctx, "canonical_product_url", None):
+        mfr_url = source_ctx.canonical_product_url
+
+    if job and not mfr_url:
         ctx_urls = getattr(job, "url_context_urls", ()) or ()
         for url in ctx_urls:
-            if url and not mfr_url:
+            if url:
                 mfr_url = url
-            elif url:
-                ref_urls.append(url)
+                break
 
-    # Supplement from ProductTruth sources
+    # 2. ProductTruth sources
     for source in product.sources:
         url = source.uri
         if not url:
             continue
         if not mfr_url:
             mfr_url = url
-        elif url != mfr_url and url not in ref_urls:
-            ref_urls.append(url)
+        elif url != mfr_url:
+            candidate_urls.append(url)
 
-    # Evidence sources as additional ref URLs
+    # 3. Document URLs from verified source context
+    if source_ctx and getattr(source_ctx, "document_urls", None):
+        for doc_url in source_ctx.document_urls:
+            if doc_url and doc_url != mfr_url:
+                candidate_urls.append(doc_url)
+
+    # 4. Digital assets documents
+    image_types = {
+        AssetType.IMAGE,
+        AssetType.PRIMARY_IMAGE,
+        AssetType.ALTERNATE_IMAGE,
+    }
+    for asset in product.digital_assets:
+        if asset.asset_type not in image_types and asset.uri and asset.uri != mfr_url:
+            candidate_urls.append(asset.uri)
+
+    # 5. Evidence sources as additional ref URLs
     for evidence in product.evidence:
         source_id = evidence.source_id
         src = next((s for s in product.sources if s.source_id == source_id), None)
-        if src and src.uri and src.uri not in ref_urls and src.uri != mfr_url:
-            ref_urls.append(src.uri)
+        if src and src.uri and src.uri != mfr_url:
+            candidate_urls.append(src.uri)
 
-    return mfr_url, ref_urls
+    # Deduplicate while preserving discovery order
+    seen: set[str] = set()
+    unique_candidates: list[str] = []
+    for u in candidate_urls:
+        u_clean = u.strip()
+        if u_clean and u_clean.casefold() not in seen and u_clean != mfr_url:
+            seen.add(u_clean.casefold())
+            unique_candidates.append(u_clean)
+
+    # Sort candidates by document type priority:
+    # manual/install > spec/datasheet > tech doc/diagram > warranty > general doc
+    ranked_urls = sorted(unique_candidates, key=_rank_document_url)
+
+    return mfr_url, ranked_urls
 
 
 def _build_attribute_triplets(
