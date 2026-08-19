@@ -96,6 +96,7 @@ from unilog_product_intelligence.retrieval.service import (
 )
 from unilog_product_intelligence.retrieval.source_discovery import (  # noqa: E402
     ProductSourceDiscoveryService,
+    _get_retrieval_profile,
 )
 
 # ── Default paths relative to project root ────────────────────────────────────
@@ -245,10 +246,22 @@ def _build_pipeline(
         if not verified_candidates and not candidate_candidates:
             return None
 
+        profile_base_domains = tuple(c.domain for c in verified_candidates)
+        # Enrich verified_domains from the static catalog — the discovery LLM may
+        # return companion domains (e.g. learnwhirlpool.com) as CANDIDATE rather
+        # than VERIFIED, but they are authoritative per our catalog.
+        catalog_profile = _get_retrieval_profile(
+            tuple(c.domain for c in verified_candidates + candidate_candidates)
+        )
+        if catalog_profile is not None:
+            all_verified = frozenset(profile_base_domains) | frozenset(catalog_profile.domains)
+        else:
+            all_verified = frozenset(profile_base_domains)
+
         profile = ManufacturerProfile(
             manufacturer_id=mfg_name or "unknown",
             canonical_name=mfg_name or "unknown",
-            verified_domains=tuple(c.domain for c in verified_candidates),
+            verified_domains=tuple(all_verified),
             candidate_domains=tuple(c.domain for c in candidate_candidates),
         )
         candidates = source_disc.discover(
