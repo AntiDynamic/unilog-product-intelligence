@@ -7,6 +7,7 @@ from enum import StrEnum
 from unilog_product_intelligence.config import Settings, get_settings
 from unilog_product_intelligence.providers.base import LLMProvider
 from unilog_product_intelligence.providers.gemini import (
+    GeminiConcurrencyLimiter,
     GeminiConfigurationError,
     GeminiProvider,
 )
@@ -34,6 +35,7 @@ class ExecutionMode(StrEnum):
 def build_provider(
     mode: ExecutionMode | str,
     settings: Settings | None = None,
+    limiter: GeminiConcurrencyLimiter | None = None,
 ) -> LLMProvider:
     """Build and return the appropriate LLMProvider for the requested execution mode.
 
@@ -62,6 +64,6 @@ def build_provider(
         # Enable live external execution if API key is supplied
         if not cfg.live_external_execution:
             cfg = cfg.model_copy(update={"live_external_execution": True})
-        return GeminiProvider(settings=cfg)
+        return GeminiProvider(settings=cfg, limiter=limiter)
 
     raise ValueError(f"Unsupported execution mode: {exec_mode}")

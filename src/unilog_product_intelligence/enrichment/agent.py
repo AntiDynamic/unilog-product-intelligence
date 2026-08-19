@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import threading
 from collections.abc import Iterable
 from datetime import UTC, datetime
 from hashlib import sha256
@@ -38,7 +39,7 @@ class EnrichmentAgentRun:
     """Observable call metadata; no hidden model reasoning is retained."""
 
     def __init__(self, response: LLMResponse | None = None, error: str | None = None) -> None:
-        self.started_at = datetime.now(UTC)
+        self.started_at: datetime = datetime.now(UTC)
         self.completed_at: datetime | None = None
         self.response = response
         self.error = error
@@ -57,7 +58,16 @@ class EvidenceGroundedEnrichmentAgent:
         self.provider = provider
         self.max_repair_attempts = max_repair_attempts
         self.cache: dict[str, tuple[EnrichmentCandidate, ...]] = {}
-        self.last_run: EnrichmentAgentRun | None = None
+        self._cache_lock = threading.Lock()
+        self._local = threading.local()
+
+    @property
+    def last_run(self) -> EnrichmentAgentRun | None:
+        return getattr(self._local, "last_run", None)
+
+    @last_run.setter
+    def last_run(self, value: EnrichmentAgentRun | None) -> None:
+        self._local.last_run = value
 
     def enrich(
         self,
@@ -88,12 +98,14 @@ class EvidenceGroundedEnrichmentAgent:
             schema_version,
             source_context=source_context,
         )
-        if key in self.cache:
+        with self._cache_lock:
+            cached_result = self.cache.get(key)
+        if cached_result is not None:
             self.last_run = EnrichmentAgentRun(
                 LLMResponse(output_text="", model=model_version, cached_tokens=1)
             )
             self.last_run.completed_at = datetime.now(UTC)
-            return self.cache[key]
+            return cached_result
         if self.provider is None:
             self.last_run = EnrichmentAgentRun(error="provider_unavailable")
             self.last_run.completed_at = datetime.now(UTC)
@@ -162,7 +174,8 @@ class EvidenceGroundedEnrichmentAgent:
                     )
                 )
             result = tuple(candidates)
-            self.cache[key] = result
+            with self._cache_lock:
+                self.cache[key] = result
             run.completed_at = datetime.now(UTC)
             return result
         except (ValidationError, ValueError, TypeError) as error:

@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     retrieval_request_timeout: float = 4.0
     retrieval_max_domain_failures: int = 3
 
+    # Bounded worker concurrency & Gemini rate limits
+    pipeline_workers: int = 8
+    gemini_max_concurrency: int = 5
+    gemini_requests_per_minute: int = 60
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

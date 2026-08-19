@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import threading
+import time
+from collections import deque
 from collections.abc import Mapping
 from dataclasses import dataclass
 from time import monotonic
@@ -36,15 +39,83 @@ class GeminiProviderError(RuntimeError):
         )
 
 
+class GeminiConcurrencyLimiter:
+    """Thread-safe rate and concurrency limiter shared across workers and pipeline phases."""
+
+    def __init__(
+        self,
+        max_concurrency: int = 5,
+        requests_per_minute: int | None = 60,
+    ) -> None:
+        self.max_concurrency = max(1, max_concurrency)
+        self.requests_per_minute = requests_per_minute
+        self._semaphore = threading.Semaphore(self.max_concurrency)
+        self._lock = threading.Lock()
+        self._request_timestamps: deque[float] = deque()
+        self.active_requests: int = 0
+        self.peak_concurrency: int = 0
+        self.total_requests: int = 0
+
+    def acquire(self) -> None:
+        """Acquire concurrency slot and respect rate-limit window."""
+        self._semaphore.acquire()
+        with self._lock:
+            self.active_requests += 1
+            if self.active_requests > self.peak_concurrency:
+                self.peak_concurrency = self.active_requests
+            self.total_requests += 1
+
+            if self.requests_per_minute and self.requests_per_minute > 0:
+                now = time.monotonic()
+                while self._request_timestamps and now - self._request_timestamps[0] >= 60.0:
+                    self._request_timestamps.popleft()
+
+                if len(self._request_timestamps) >= self.requests_per_minute:
+                    sleep_time = 60.0 - (now - self._request_timestamps[0])
+                    if sleep_time > 0:
+                        time.sleep(sleep_time)
+                        now = time.monotonic()
+                        while (
+                            self._request_timestamps
+                            and now - self._request_timestamps[0] >= 60.0
+                        ):
+                            self._request_timestamps.popleft()
+
+                self._request_timestamps.append(time.monotonic())
+
+    def release(self) -> None:
+        """Release concurrency slot."""
+        with self._lock:
+            self.active_requests = max(0, self.active_requests - 1)
+        self._semaphore.release()
+
+    def __enter__(self) -> GeminiConcurrencyLimiter:
+        self.acquire()
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        self.release()
+
+
 class GeminiProvider(LLMProvider):
     """Uses current Interactions structured output and explicit built-in tools."""
 
-    def __init__(self, settings: Settings, client: Any | None = None, max_retries: int = 0) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        client: Any | None = None,
+        max_retries: int = 0,
+        limiter: GeminiConcurrencyLimiter | None = None,
+    ) -> None:
         self.model = settings.gemini_model
         self._api_key = settings.gemini_api_key
         self._client = client
         self._max_retries = max_retries
         self._live_external_execution = settings.live_external_execution
+        self.limiter = limiter or GeminiConcurrencyLimiter(
+            max_concurrency=settings.gemini_max_concurrency,
+            requests_per_minute=settings.gemini_requests_per_minute,
+        )
 
     @property
     def api_key_configured(self) -> bool:
@@ -80,7 +151,8 @@ class GeminiProvider(LLMProvider):
                 ]
             if tools:
                 arguments["tools"] = tools
-            response = client.interactions.create(**arguments)
+            with self.limiter:
+                response = client.interactions.create(**arguments)
         except Exception as error:
             raise GeminiProviderError(error) from error
         usage = getattr(response, "usage_metadata", None) or getattr(response, "usage", None)

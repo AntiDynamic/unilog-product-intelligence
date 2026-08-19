@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import socket
+import threading
 import time
 from collections import defaultdict
 from collections.abc import Callable, Mapping
@@ -205,9 +206,11 @@ class SourceCache:
     def __init__(self, freshness: timedelta = timedelta(hours=24)) -> None:
         self._items: dict[str, FetchResult] = {}
         self.freshness = freshness
+        self._lock = threading.Lock()
 
     def get(self, url: str, refresh: bool = False) -> FetchResult | None:
-        item = self._items.get(canonicalize_url(url))
+        with self._lock:
+            item = self._items.get(canonicalize_url(url))
         if item is None:
             return None
         if refresh or item.source.fetched_at is None:
@@ -217,10 +220,12 @@ class SourceCache:
         return FetchResult(**{**item.model_dump(), "cache_status": CacheStatus.HIT})
 
     def put(self, result: FetchResult) -> None:
-        self._items[result.source.canonical_url] = result
+        with self._lock:
+            self._items[result.source.canonical_url] = result
 
     def __len__(self) -> int:
-        return len(self._items)
+        with self._lock:
+            return len(self._items)
 
 
 class SourcePolicy:
@@ -937,6 +942,7 @@ class DomainCircuitBreaker:
         self._consecutive_failures: dict[str, int] = defaultdict(int)
         self._domain_status: dict[str, DomainHealthStatus] = {}
         self._failure_reasons: dict[str, str] = {}
+        self._lock = threading.Lock()
 
     def _norm(self, domain: str) -> str:
         h = _host(domain)
@@ -947,34 +953,43 @@ class DomainCircuitBreaker:
     def is_available(self, domain: str) -> bool:
         """Return True if the domain is healthy and permitted to receive requests."""
         d = self._norm(domain)
-        status = self._domain_status.get(d, DomainHealthStatus.HEALTHY)
+        with self._lock:
+            status = self._domain_status.get(d, DomainHealthStatus.HEALTHY)
         return status == DomainHealthStatus.HEALTHY
 
     def record_success(self, domain: str) -> None:
         """Reset failures and mark domain as healthy."""
         d = self._norm(domain)
-        self._consecutive_failures[d] = 0
-        self._domain_status[d] = DomainHealthStatus.HEALTHY
+        with self._lock:
+            self._consecutive_failures[d] = 0
+            self._domain_status[d] = DomainHealthStatus.HEALTHY
 
     def record_failure(self, domain: str, reason: str) -> None:
         """Increment failure counter and trip circuit breaker if threshold is exceeded."""
         d = self._norm(domain)
-        self._consecutive_failures[d] += 1
-        self._failure_reasons[d] = reason
-        if reason in {"waf_blocked", "http_403"}:
-            self._domain_status[d] = DomainHealthStatus.WAF_BLOCKED
-        elif reason in {"tarpitting", "timeout", "transient_fetch_failure", "connection_timeout"}:
-            if self._consecutive_failures[d] >= self.max_failures:
-                self._domain_status[d] = DomainHealthStatus.TARPITTING
-        elif reason in {"http_429", "rate_limited"}:
-            self._domain_status[d] = DomainHealthStatus.RATE_LIMITED
-        elif self._consecutive_failures[d] >= self.max_failures:
-            self._domain_status[d] = DomainHealthStatus.FAILED
+        with self._lock:
+            self._consecutive_failures[d] += 1
+            self._failure_reasons[d] = reason
+            if reason in {"waf_blocked", "http_403"}:
+                self._domain_status[d] = DomainHealthStatus.WAF_BLOCKED
+            elif reason in {
+                "tarpitting",
+                "timeout",
+                "transient_fetch_failure",
+                "connection_timeout",
+            }:
+                if self._consecutive_failures[d] >= self.max_failures:
+                    self._domain_status[d] = DomainHealthStatus.TARPITTING
+            elif reason in {"http_429", "rate_limited"}:
+                self._domain_status[d] = DomainHealthStatus.RATE_LIMITED
+            elif self._consecutive_failures[d] >= self.max_failures:
+                self._domain_status[d] = DomainHealthStatus.FAILED
 
     def get_failure_reason(self, domain: str) -> str | None:
         """Return the observed failure reason for the domain if tripped."""
         d = self._norm(domain)
-        return self._failure_reasons.get(d)
+        with self._lock:
+            return self._failure_reasons.get(d)
 
 
 class AsyncSourceFetcher:
@@ -1003,22 +1018,24 @@ class AsyncSourceFetcher:
         self.target_resolver = resolver or SafeNetworkTargetResolver()
         self.max_redirects = max_redirects
         self.circuit_breaker = circuit_breaker or DomainCircuitBreaker()
-        self._session: aiohttp.ClientSession | None = None
-        self._session_lock: asyncio.Lock | None = None
-        self._global_semaphore: asyncio.Semaphore | None = None
-        self._host_semaphores: dict[str, asyncio.Semaphore] = defaultdict(
-            lambda: asyncio.Semaphore(self.per_host_concurrency)
-        )
+        self._local = threading.local()
+        self._all_sessions: list[aiohttp.ClientSession] = []
+        self._sessions_lock = threading.Lock()
 
     def _ensure_async_primitives(self) -> None:
-        if self._session_lock is None:
-            self._session_lock = asyncio.Lock()
-        if self._global_semaphore is None:
-            self._global_semaphore = asyncio.Semaphore(self.global_concurrency)
+        if not hasattr(self._local, "session_lock") or self._local.session_lock is None:
+            self._local.session_lock = asyncio.Lock()
+        if not hasattr(self._local, "global_semaphore") or self._local.global_semaphore is None:
+            self._local.global_semaphore = asyncio.Semaphore(self.global_concurrency)
+        if not hasattr(self._local, "host_semaphores") or self._local.host_semaphores is None:
+            self._local.host_semaphores = defaultdict(
+                lambda: asyncio.Semaphore(self.per_host_concurrency)
+            )
 
     async def _get_session(self) -> aiohttp.ClientSession:
         self._ensure_async_primitives()
-        if self._session is None or self._session.closed:
+        session = getattr(self._local, "session", None)
+        if session is None or session.closed:
             connector = aiohttp.TCPConnector(
                 limit=self.global_concurrency,
                 limit_per_host=self.per_host_concurrency,
@@ -1029,7 +1046,7 @@ class AsyncSourceFetcher:
                 sock_connect=self.connect_timeout,
                 total=self.request_timeout,
             )
-            self._session = aiohttp.ClientSession(
+            session = aiohttp.ClientSession(
                 connector=connector,
                 timeout=timeout,
                 headers={
@@ -1045,12 +1062,21 @@ class AsyncSourceFetcher:
                     "Accept-Language": "en-US,en;q=0.9",
                 },
             )
-        return self._session
+            self._local.session = session
+            with self._sessions_lock:
+                self._all_sessions.append(session)
+        return session
 
     async def close_async(self) -> None:
-        if self._session and not self._session.closed:
-            await self._session.close()
-            self._session = None
+        with self._sessions_lock:
+            sessions_to_close = list(self._all_sessions)
+            self._all_sessions.clear()
+        for session in sessions_to_close:
+            if not session.closed:
+                with suppress(Exception):
+                    await session.close()
+        if hasattr(self._local, "session"):
+            self._local.session = None
 
     async def __aenter__(self) -> AsyncSourceFetcher:
         await self._get_session()
@@ -1090,10 +1116,11 @@ class AsyncSourceFetcher:
             )
 
         self._ensure_async_primitives()
-        assert self._global_semaphore is not None
+        global_sem = self._local.global_semaphore
+        host_sem = self._local.host_semaphores[target_host]
 
         started = time.monotonic()
-        async with self._global_semaphore, self._host_semaphores[target_host]:
+        async with global_sem, host_sem:
             session = await self._get_session()
             headers: dict[str, str] = {}
             if stale is not None:
@@ -1639,7 +1666,15 @@ class EvidenceExtractor:
 
     def __init__(self, provider: LLMProvider) -> None:
         self.provider = provider
-        self.last_response: LLMResponse | None = None
+        self._local = threading.local()
+
+    @property
+    def last_response(self) -> LLMResponse | None:
+        return getattr(self._local, "last_response", None)
+
+    @last_response.setter
+    def last_response(self, value: LLMResponse | None) -> None:
+        self._local.last_response = value
 
     def extract(
         self, document: ParsedDocument, url: str, product_context: Mapping[str, object]
