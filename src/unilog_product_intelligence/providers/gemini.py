@@ -100,6 +100,8 @@ class GeminiConcurrencyLimiter:
 class GeminiProvider(LLMProvider):
     """Uses current Interactions structured output and explicit built-in tools."""
 
+    supports_unified_pre_enrichment: bool = True
+
     def __init__(
         self,
         settings: Settings,

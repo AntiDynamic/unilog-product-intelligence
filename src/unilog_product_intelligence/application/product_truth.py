@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import Protocol
+from typing import Any, Protocol
 from uuid import uuid4
 
 from unilog_product_intelligence.data.normalize import normalize_value
@@ -140,8 +140,10 @@ class ProductTruthService:
         return result
 
     def add_classification(
-        self, product: ProductTruth, classification: ProductClassification
+        self, product: ProductTruth, classification: ProductClassification | dict[str, Any]
     ) -> ProductTruth:
+        if isinstance(classification, dict):
+            classification = ProductClassification(**classification)
         result = _copy(product)
         if result.lifecycle_state == LifecycleState.RAW:
             _transition(result, LifecycleState.UNDERSTOOD, "classification_input_received")

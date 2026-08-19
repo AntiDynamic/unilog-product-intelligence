@@ -428,7 +428,7 @@ class ManufacturerIntelligenceService:
             else:
                 candidate_status = ValueStatus.CANDIDATE
             attribute_id = "attribute-" + "-".join(evidence_candidate.attribute.casefold().split())
-            candidate_id = evidence_candidate.candidate_id
+            candidate_id = evidence_candidate.candidate_id or ("evidence-cand-" + str(uuid4()))
             candidate = CandidateValue(
                 candidate_id=candidate_id,
                 raw_value=evidence_candidate.raw_value,

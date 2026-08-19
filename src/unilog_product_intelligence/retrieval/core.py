@@ -1679,6 +1679,16 @@ class EvidenceExtractor:
     def extract(
         self, document: ParsedDocument, url: str, product_context: Mapping[str, object]
     ) -> EvidenceExtractionResult:
+        # Fast path: Check deterministic structured evidence candidates first
+        det_candidates = _deterministic_evidence_candidates(document, url)
+        if det_candidates and _has_meaningful_specifications(det_candidates):
+            return EvidenceExtractionResult(
+                candidates=[
+                    candidate.model_copy(update={"source_id": document.source_id, "url": url})
+                    for candidate in det_candidates
+                ]
+            )
+
         selected_chunks = EvidenceSelector().select(document, product_context)
         context_parts = [
             "DOCUMENT_METADATA="
@@ -1730,6 +1740,23 @@ class EvidenceExtractor:
                 ]
             }
         )
+
+
+def _has_meaningful_specifications(candidates: list[EvidenceCandidate]) -> bool:
+    """Check if candidates contain technical specifications beyond simple page metadata."""
+    generic_metadata = {
+        "product title",
+        "page title",
+        "title",
+        "canonical url",
+        "meta description",
+        "manufacturer part number",
+        "brand",
+    }
+    spec_candidates = [
+        c for c in candidates if c.attribute.strip().casefold() not in generic_metadata
+    ]
+    return len(spec_candidates) >= 1
 
 
 def _deterministic_evidence_candidates(

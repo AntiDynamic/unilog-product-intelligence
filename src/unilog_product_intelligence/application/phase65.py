@@ -129,6 +129,23 @@ class Phase65Pipeline:
                     blocker = "SOURCE_NOT_FOUND"
                 else:
                     binding = self.source_binding(product, discovery_result)
+                    if (
+                        binding is None
+                        and not discovery_result.search_requested
+                        and hasattr(self.discovery, "search_fallback")
+                    ):
+                        fallback_result = self.discovery.search_fallback(
+                            manufacturer_id=manufacturer_name,
+                            manufacturer_name=manufacturer_name,
+                            mpn=mpn,
+                            description=str(product.raw_value("Part_Desc") or ""),
+                            brand=brand,
+                            existing_result=discovery_result,
+                        )
+                        if fallback_result.search_result_urls:
+                            binding = self.source_binding(product, fallback_result)
+                            discovery_result = fallback_result
+
                     if binding is None:
                         blocker = "SOURCE_NOT_FOUND"
                     else:

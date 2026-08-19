@@ -301,9 +301,40 @@ class DeterministicEvaluationProvider(LLMProvider):
     """Deterministic, zero-network LLMProvider for reproducible offline evaluation."""
 
     model: str = "deterministic-evaluator"
+    supports_unified_pre_enrichment: bool = True
 
     def generate(self, request: LLMRequest) -> LLMResponse:
         task = request.task
+        if task == "product_pre_enrichment":
+            return LLMResponse(
+                output_text=json.dumps(
+                    {
+                        "understanding": {
+                            "product_type": "Industrial Tool / Supply",
+                            "product_family": None,
+                            "semantic_features": [],
+                            "evidence": [],
+                            "uncertain_items": [],
+                        },
+                        "classification": {
+                            "candidates": [
+                                {
+                                    "department": "Tools",
+                                    "class_name": "Industrial",
+                                    "fine": "General",
+                                    "classpath": ["Tools", "Industrial", "General"],
+                                }
+                            ],
+                            "selected_candidate": 0,
+                        },
+                        "attributes": {
+                            "attributes": [],
+                            "missing_attributes": [],
+                        },
+                    }
+                ),
+                model="deterministic-evaluator",
+            )
         if task == "product_understanding":
             return LLMResponse(
                 output_text=json.dumps(

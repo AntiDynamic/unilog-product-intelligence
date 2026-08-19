@@ -76,6 +76,12 @@ class AttributeExtractionResult(DTO):
     missing_attributes: list[str] = Field(default_factory=list)
 
 
+class ProductPreEnrichmentResult(DTO):
+    understanding: ProductUnderstandingResult = Field(default_factory=ProductUnderstandingResult)
+    classification: ClassificationResult = Field(default_factory=ClassificationResult)
+    attributes: AttributeExtractionResult = Field(default_factory=AttributeExtractionResult)
+
+
 class JobState(StrEnum):
     RECEIVED = "received"
     PREPROCESSED = "preprocessed"
@@ -138,28 +144,64 @@ class ProductOrchestrator:
         context = {field.field_name: field.raw_value for field in product.raw_inputs}
         try:
             job.state = JobState.UNDERSTANDING
-            understanding = self._call(
-                "product_understanding", context, ProductUnderstandingResult, job, prompt_version
-            )
+            if getattr(self._provider, "supports_unified_pre_enrichment", False):
+                pre_enrichment = cast(
+                    ProductPreEnrichmentResult,
+                    self._call(
+                        "product_pre_enrichment",
+                        context,
+                        ProductPreEnrichmentResult,
+                        job,
+                        prompt_version,
+                    ),
+                )
+                understanding = pre_enrichment.understanding
+                classification = pre_enrichment.classification
+                attributes = pre_enrichment.attributes
+                job.agent_outputs["product_understanding"] = understanding.model_dump(mode="json")
+                job.agent_outputs["classification"] = classification.model_dump(mode="json")
+                job.agent_outputs["attribute_extraction"] = attributes.model_dump(mode="json")
+            else:
+                understanding = cast(
+                    ProductUnderstandingResult,
+                    self._call(
+                        "product_understanding",
+                        context,
+                        ProductUnderstandingResult,
+                        job,
+                        prompt_version,
+                    ),
+                )
+                classification = cast(
+                    ClassificationResult,
+                    self._call(
+                        "classification", context, ClassificationResult, job, prompt_version
+                    ),
+                )
+                attributes = cast(
+                    AttributeExtractionResult,
+                    self._call(
+                        "attribute_extraction",
+                        context,
+                        AttributeExtractionResult,
+                        job,
+                        prompt_version,
+                    ),
+                )
+
             job.state = JobState.UNDERSTOOD
             job.state = JobState.CLASSIFYING
-            classification = self._call(
-                "classification", context, ClassificationResult, job, prompt_version
-            )
-            product = self._classification(product, cast(ClassificationResult, classification))
+            product = self._classification(product, classification)
             job.state = JobState.CLASSIFIED
             job.state = JobState.EXTRACTING
-            attributes = self._call(
-                "attribute_extraction", context, AttributeExtractionResult, job, prompt_version
-            )
+            product = self._attributes(product, attributes)
             job.state = JobState.EXTRACTED
-            product = self._attributes(product, cast(AttributeExtractionResult, attributes))
             product.audit_events.append(
                 _audit(
                     product.product_id,
                     "product_understood",
                     {
-                        "product_type": cast(ProductUnderstandingResult, understanding).product_type
+                        "product_type": understanding.product_type
                         or "unknown"
                     },
                 )

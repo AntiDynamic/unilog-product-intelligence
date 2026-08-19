@@ -126,6 +126,35 @@ class ManufacturerDiscoveryAgent:
                 )
 
         # ── Step 3: Gemini Search fallback ────────────────────────────────────
+        return self.search_fallback(
+            manufacturer_id=manufacturer_id,
+            manufacturer_name=manufacturer_name,
+            mpn=mpn,
+            family=family,
+            description=description,
+            brand=brand,
+            existing_result=DiscoveryResult(
+                candidates=list(deterministic),
+                retrieval_strategies_attempted=tuple(strategies),
+                deterministic_candidates_tried=len(deterministic),
+            ),
+        )
+
+    def search_fallback(
+        self,
+        manufacturer_id: str,
+        manufacturer_name: str,
+        mpn: str | None = None,
+        family: str | None = None,
+        description: str | None = None,
+        brand: str | None = None,
+        existing_result: DiscoveryResult | None = None,
+    ) -> DiscoveryResult:
+        """Explicit Gemini search fallback when deterministic retrieval fails."""
+        deterministic = existing_result.candidates if existing_result else []
+        strategies = (
+            list(existing_result.retrieval_strategies_attempted) if existing_result else []
+        )
         strategies.append("gemini_search_fallback")
         queries = self.resolver.discovery_queries(manufacturer_name, mpn, family, description)
         prompt = _prompt() + "\nQUERIES (discovery data):\n" + "\n".join(queries)
