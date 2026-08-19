@@ -234,6 +234,52 @@ class DescriptionContext:
 # ==============================================================================
 
 
+def _clean_feature_text(text: str) -> str | None:
+    """Clean feature bullet text, removing bullets/numbering and invalid tokens."""
+    if not text:
+        return None
+    # Strip leading bullet points, dashes, asterisks, or list numbering
+    # (e.g. "• ", "- ", "* ", "1. ", "1) ")
+    cleaned = re.sub(
+        r"^(\s*(\d{1,2}[\.\)\:]|[•\-\*\u2022\u2023\u25E6\u2043\u2219\|#>]))+\s*",
+        "",
+        text,
+    ).strip()
+    # Normalize internal whitespace
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+
+    if not cleaned or len(cleaned) < 5 or len(cleaned) > 250:
+        return None
+
+    # Filter out URLs, script tags, HTML fragments
+    if cleaned.startswith(("http://", "https://", "www.", "<", "{")):
+        return None
+
+    # Filter out generic headers/boilerplate
+    generic_headers = {
+        "features",
+        "key features",
+        "product features",
+        "specifications",
+        "tech specs",
+        "technical specifications",
+        "details",
+        "overview",
+        "description",
+        "about this item",
+        "highlights",
+        "n/a",
+        "none",
+        "null",
+        "features:",
+        "specifications:",
+    }
+    if cleaned.casefold() in generic_headers:
+        return None
+
+    return cleaned
+
+
 class DeterministicDescriptionBuilder:
     """Builds all five commerce description fields and feature bullets deterministically."""
 
@@ -410,23 +456,34 @@ class DeterministicDescriptionBuilder:
     def build_features(self, ctx: DescriptionContext) -> list[str]:
         """Evidence-backed feature bullets (up to max_features)."""
         bullets: list[str] = []
+        seen_casefolded: set[str] = set()
 
-        # 1. From verified attributes
+        def add_bullet(raw: str) -> bool:
+            clean = _clean_feature_text(raw)
+            if clean and clean.casefold() not in seen_casefolded:
+                seen_casefolded.add(clean.casefold())
+                bullets.append(clean)
+                return True
+            return False
+
+        # 1. From evidence snippets if formatted as bullet-like phrases / lines
+        for snippet in ctx.evidence_snippets:
+            lines = re.split(r"[\n\r;•\*\u2022\u2023\u25E6\u2043\u2219]", snippet)
+            for line in lines:
+                add_bullet(line)
+                if len(bullets) >= self.limits.max_features:
+                    return bullets[: self.limits.max_features]
+
+        # 2. From verified attributes
         for attr in ctx.verified_attributes:
             val = str(attr.normalized_value or attr.raw_value or "").strip()
+            if not val or val.casefold() in {"none", "n/a", "null"}:
+                continue
             uom_str = f" {attr.uom}" if attr.uom else ""
-            bullets.append(f"{attr.canonical_name}: {val}{uom_str}")
-
-        # 2. From evidence snippets if formatted as bullet-like phrases
-        for snippet in ctx.evidence_snippets:
-            for line in re.split(r"[\n\r•\-\*]", snippet):
-                clean = line.strip()
-                if 10 < len(clean) < 150 and not clean.startswith("http") and clean not in bullets:
-                    bullets.append(clean)
-                if len(bullets) >= self.limits.max_features:
-                    break
+            attr_feature = f"{attr.canonical_name}: {val}{uom_str}"
+            add_bullet(attr_feature)
             if len(bullets) >= self.limits.max_features:
-                break
+                return bullets[: self.limits.max_features]
 
         return bullets[: self.limits.max_features]
 
