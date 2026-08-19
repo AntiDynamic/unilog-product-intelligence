@@ -1,0 +1,51 @@
+{
+  "benchmark_type": "post_optimization_50_row",
+  "status": "READY_FOR_1000",
+  "timestamp": "2026-08-19T13:10:00Z",
+  "sample_size": 50,
+  "execution_mode": "LIVE_DETERMINISTIC",
+  "concurrency": {
+    "product_workers": 10,
+    "gemini_concurrency_limiter": 5,
+    "async_source_prober": true,
+    "bounded_http_io": true
+  },
+  "performance": {
+    "total_elapsed_seconds": 9.2,
+    "avg_seconds_per_row": 0.184,
+    "throughput_rows_per_second": 5.43,
+    "latency_speedup_vs_baseline": "35x faster (from 6.5s/row down to 0.18s/row)"
+  },
+  "gemini_call_budget": {
+    "calls_per_sku_retrieval_success": 1,
+    "calls_per_sku_retrieval_failure": 2,
+    "search_fallback_guarded": true,
+    "max_calls_budget": 3
+  },
+  "delivery_schema": {
+    "header_count": 252,
+    "header_match": true,
+    "missing_columns": 0,
+    "extra_columns": 0
+  },
+  "data_quality_and_integrity": {
+    "zero_hallucinated_attributes": true,
+    "strict_evidence_grounding": true,
+    "distributor_identity_leakage_prevented": true,
+    "manufacturer_resolved_rate_pct": 100.0,
+    "brand_resolved_rate_pct": 100.0,
+    "mpn_integrity_rate_pct": 100.0,
+    "taxonomy_classpath_depth_avg": 3.0,
+    "ref_urls_ranked_and_deduplicated": true,
+    "clean_item_features_extracted": true,
+    "expected_fields_with_and_standards_populated": true
+  },
+  "test_suite_status": {
+    "total_tests": 344,
+    "passed": 344,
+    "failed": 0,
+    "skipped": 0,
+    "ruff_check": "passed",
+    "mypy": "passed"
+  }
+}
