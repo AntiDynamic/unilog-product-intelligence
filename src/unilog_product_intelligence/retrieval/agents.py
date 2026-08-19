@@ -15,7 +15,7 @@ from .source_discovery import DeterministicUrlStrategy, _strategy_names_for
 
 
 class DiscoveryResult(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="ignore")
     candidates: list[DomainCandidate] = Field(default_factory=list)
     unresolved_reason: str | None = None
     queries: tuple[str, ...] = ()
@@ -161,7 +161,7 @@ class ManufacturerDiscoveryAgent:
         request = LLMRequest(
             task="manufacturer_discovery",
             input_text=prompt,
-            response_schema=DiscoveryResult.model_json_schema(),
+            response_schema=None,
         )
         generate_with_tools = cast(
             Callable[[LLMRequest, list[dict[str, object]]], LLMResponse] | None,

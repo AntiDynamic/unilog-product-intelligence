@@ -739,7 +739,7 @@ class DescriptionAgent:
                 LLMRequest(
                     task="commerce_description_composition",
                     input_text=prompt,
-                    response_schema=DescriptionCandidateEnvelope.model_json_schema(),
+                    response_schema=None,
                     metadata={"product_id": ctx.product_id},
                 )
             )

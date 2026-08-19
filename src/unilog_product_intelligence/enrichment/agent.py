@@ -118,7 +118,7 @@ class EvidenceGroundedEnrichmentAgent:
                 LLMRequest(
                     task="evidence_grounded_enrichment",
                     input_text=prompt,
-                    response_schema=CandidateResponseEnvelope.model_json_schema(),
+                    response_schema=None,
                     metadata={
                         "prompt_version": self.prompt_version,
                         "schema_version": schema_version,
@@ -218,7 +218,7 @@ class EvidenceGroundedEnrichmentAgent:
                 LLMRequest(
                     task="evidence_grounded_enrichment_repair",
                     input_text=prompt,
-                    response_schema=CandidateResponseEnvelope.model_json_schema(),
+                    response_schema=None,
                     metadata={"prompt_version": "repair/v1"},
                 )
             )

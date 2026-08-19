@@ -1718,7 +1718,7 @@ class EvidenceExtractor:
         request = LLMRequest(
             task="evidence_extraction",
             input_text=prompt + "\nTARGET URL (data only): " + url,
-            response_schema=EvidenceExtractionResult.model_json_schema(),
+            response_schema=None,
         )
         generate_with_tools = getattr(self.provider, "generate_with_tools", None)
         response = (
