@@ -194,17 +194,21 @@ class Phase65ResultDeliveryAdapter:
 
         # ── 5. Description columns ────────────────────────────────────────────
         desc = product.descriptions
-        values["MOBILE_DESC"] = desc.mobile
-        values["INVOICE_DESC"] = desc.invoice
-        values["SHORT_DESC"] = desc.short
-        values["LONG_DESC1"] = desc.long
-        values["RETAIL_DESC"] = desc.retail
-        values["MARKETING_DESCRIPTION"] = desc.marketing
+        values["MOBILE_DESC"] = desc.mobile if desc else None
+        values["INVOICE_DESC"] = desc.invoice if desc else None
+        values["SHORT_DESC"] = desc.short if desc else None
+        values["LONG_DESC1"] = desc.long if desc else None
+        values["RETAIL_DESC"] = desc.retail if desc else None
+        values["MARKETING_DESCRIPTION"] = (
+            (desc.marketing or desc.retail or desc.long) if desc else None
+        )
 
         # ── 6. Item feature bullets ───────────────────────────────────────────
-        features = desc.features
+        features = desc.features if desc else []
         for i in range(1, self.MAX_FEATURES + 1):
-            values[f"ITEM_FEATURES_{i}"] = features[i - 1] if i - 1 < len(features) else None
+            values[f"ITEM_FEATURES_{i}"] = (
+                features[i - 1] if i - 1 < len(features) else None
+            )
 
         # ── 7. Attribute triplets (LABEL / VALUE / UOM × 50) ─────────────────
         attr_candidates = _build_attribute_triplets(product)
@@ -221,16 +225,50 @@ class Phase65ResultDeliveryAdapter:
         attr_by_name = {
             a.canonical_name.casefold(): a for a in product.attributes if a.canonical_name
         }
-        values["With"] = _attr_value(attr_by_name, "with")
+        values["With"] = _attr_value(
+            attr_by_name,
+            "with",
+            "includes",
+            "package contents",
+            "accessories included",
+            "items included",
+            "package includes",
+            "what's included",
+            "contents",
+        )
         values["Standard/Approvals"] = _attr_value(
-            attr_by_name, "standard/approvals", "standards", "approvals", "certifications"
+            attr_by_name,
+            "standard/approvals",
+            "standards/approvals",
+            "standards",
+            "approvals",
+            "certifications",
+            "compliance",
+            "agency approvals",
+            "safety listing",
+            "listing",
+            "certifications / approvals",
+            "standards / approvals",
+            "ul listing",
+            "ul listed",
+            "csa certified",
+            "energy star",
+            "ansi",
+            "astm",
         )
         values["Prop 65"] = _attr_value(attr_by_name, "prop 65", "proposition 65", "prop65")
         values["Application"] = _attr_value(attr_by_name, "application")
         values["Includes"] = _attr_value(
-            attr_by_name, "includes", "what's included", "box contents"
+            attr_by_name,
+            "includes",
+            "what's included",
+            "box contents",
+            "package contents",
+            "with",
         )
-        values["Product Name"] = _attr_value(attr_by_name, "product name", "name")
+        values["Product Name"] = _attr_value(
+            attr_by_name, "product name", "name", "product title"
+        )
 
         # ── 9. Identifier columns ─────────────────────────────────────────────
         values["UPC"] = _attr_value(attr_by_name, "upc")
