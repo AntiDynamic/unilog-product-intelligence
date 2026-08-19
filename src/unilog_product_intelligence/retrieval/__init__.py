@@ -2,7 +2,10 @@
 
 from .agents import DiscoveryResult, ManufacturerDiscoveryAgent
 from .core import (
+    AsyncSourceFetcher,
     DocumentLink,
+    DomainCircuitBreaker,
+    DomainHealthStatus,
     DomainResolver,
     EvidenceCandidate,
     EvidenceExtractor,
@@ -52,6 +55,7 @@ __all__ = [
     "AssetAuthorityVerifier",
     "AssetBudgetConfig",
     "AssetContentStatus",
+    "AsyncSourceFetcher",
     "DISALLOWED_THIRD_PARTY_DOMAINS",
     "DOC_EXTENSIONS",
     "DeterministicUrlStrategy",
@@ -59,6 +63,8 @@ __all__ = [
     "DiscoveryResult",
     "DocumentClassifier",
     "DocumentLink",
+    "DomainCircuitBreaker",
+    "DomainHealthStatus",
     "DomainResolver",
     "EvidenceCandidate",
     "EvidenceExtractor",

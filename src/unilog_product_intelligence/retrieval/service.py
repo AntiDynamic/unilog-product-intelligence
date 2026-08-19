@@ -27,6 +27,7 @@ from unilog_product_intelligence.domain.truth import (
 from unilog_product_intelligence.enrichment.agent import evidence_references
 
 from .core import (
+    AsyncSourceFetcher,
     CacheStatus,
     EvidenceCandidate,
     EvidenceExtractor,
@@ -108,7 +109,7 @@ class ManufacturerIntelligenceService:
 
     def __init__(
         self,
-        fetcher: SourceFetcher,
+        fetcher: SourceFetcher | AsyncSourceFetcher,
         verifier: SourceVerifier | None = None,
         parser: HtmlParser | None = None,
         extractor: EvidenceExtractor | None = None,

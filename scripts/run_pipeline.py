@@ -68,6 +68,8 @@ from unilog_product_intelligence.retrieval.agents import (  # noqa: E402
     ManufacturerDiscoveryAgent,
 )
 from unilog_product_intelligence.retrieval.core import (  # noqa: E402
+    AsyncSourceFetcher,
+    DomainCircuitBreaker,
     DomainResolver,
     EvidenceExtractor,
     ManufacturerProfile,
@@ -153,7 +155,7 @@ def _parse_args() -> argparse.Namespace:
 def _build_pipeline(
     provider: object,
     truth_service: ProductTruthService,
-    fetcher: SourceFetcher,
+    fetcher: SourceFetcher | AsyncSourceFetcher,
     source_disc: ProductSourceDiscoveryService,
     reference_pack: ReferencePack | None = None,
     *,
@@ -354,8 +356,18 @@ def main() -> None:
 
     # ── Wire pipeline ─────────────────────────────────────────────────────────
     truth_service = ProductTruthService()
-    fetcher = SourceFetcher(timeout=args.timeout or 3.5, max_retries=0, requests_per_second=5.0)
-    source_disc = ProductSourceDiscoveryService(fetcher=fetcher)
+    settings = get_settings()
+    circuit_breaker = DomainCircuitBreaker(
+        max_consecutive_failures=settings.retrieval_max_domain_failures
+    )
+    fetcher = AsyncSourceFetcher(
+        connect_timeout=settings.retrieval_connect_timeout,
+        request_timeout=args.timeout or settings.retrieval_request_timeout,
+        global_concurrency=settings.retrieval_global_concurrency,
+        per_host_concurrency=settings.retrieval_per_host_concurrency,
+        circuit_breaker=circuit_breaker,
+    )
+    source_disc = ProductSourceDiscoveryService(fetcher=fetcher, circuit_breaker=circuit_breaker)
     pipeline = _build_pipeline(
         provider,
         truth_service,
@@ -738,6 +750,9 @@ def main() -> None:
             indent=2,
         )
     print(f"Traces: {traces_path}")
+
+    if hasattr(fetcher, "close"):
+        fetcher.close()
 
     # ── Print summary ─────────────────────────────────────────────────────────
     print("\n" + "=" * 65)

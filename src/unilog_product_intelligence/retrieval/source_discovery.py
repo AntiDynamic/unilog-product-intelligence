@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures
 import contextlib
 import re
 import xml.etree.ElementTree as ET
@@ -9,7 +11,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import PurePosixPath
-from typing import Protocol
+from typing import Any, Protocol
 from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -22,7 +24,10 @@ from unilog_product_intelligence.retrieval.mpn_normalizer import (
 )
 
 from .core import (
+    AsyncSourceFetcher,
     DocumentLink,
+    DomainCircuitBreaker,
+    FetchResult,
     HtmlParser,
     ManufacturerProfile,
     PdfParser,
@@ -591,21 +596,22 @@ def _get_manufacturer_strategy(
 
 
 class ProductSourceDiscoveryService:
-    """Find exact product sources with ranked, bounded, iterative strategy execution.
+    """Find exact product sources with ranked, bounded, asynchronous strategy execution.
 
     Executes unified deterministic retrieval strategies across all verified manufacturer domains:
       1. Candidate URLs supplied by caller or prior steps
-      2. Domain-by-domain iterative search across ranked verified domains:
+      2. Domain-by-domain concurrent search across ranked verified domains:
          a. Direct product URL path patterns (testing ordered MPN hypotheses)
          b. Targeted site-search probe & link extraction (multiple search templates)
          c. Sitemap discovery (testing multiple sitemap candidates & child sitemaps)
+      3. Authorized distributor secondary fallback
 
     Short-circuits immediately upon discovering an exact high-confidence product match.
     """
 
     def __init__(
         self,
-        fetcher: SourceFetcher,
+        fetcher: SourceFetcher | AsyncSourceFetcher | None = None,
         minimum_score: float = 0.6,
         max_candidates: int = 64,
         url_strategy: DeterministicUrlStrategy | None = None,
@@ -616,8 +622,9 @@ class ProductSourceDiscoveryService:
         max_search_result_links: int = 3,
         max_sitemap_paths_per_domain: int = 3,
         max_child_sitemaps: int = 3,
+        circuit_breaker: DomainCircuitBreaker | None = None,
     ) -> None:
-        self.fetcher = fetcher
+        self.fetcher = fetcher or SourceFetcher()
         self.minimum_score = minimum_score
         self.max_candidates = max_candidates
         self.url_strategy = url_strategy or DeterministicUrlStrategy()
@@ -628,13 +635,18 @@ class ProductSourceDiscoveryService:
         self.max_search_result_links = max_search_result_links
         self.max_sitemap_paths_per_domain = max_sitemap_paths_per_domain
         self.max_child_sitemaps = max_child_sitemaps
+        self.circuit_breaker = (
+            circuit_breaker
+            or getattr(self.fetcher, "circuit_breaker", None)
+            or DomainCircuitBreaker()
+        )
 
         self.verified_domains_available: tuple[str, ...] = ()
         self.domains_attempted: tuple[str, ...] = ()
         self.selected_domain: str | None = None
         self.domain_attempt_failure_reasons: dict[str, str] = {}
 
-    def discover(
+    async def adiscover(
         self,
         product: ProductTruth,
         profile: ManufacturerProfile,
@@ -672,9 +684,8 @@ class ProductSourceDiscoveryService:
         seen: set[str] = set()
         candidates: list[ProductSourceCandidate] = []
         matcher = ProductIdentityMatcher()
-        domain_waf_blocked: set[str] = set()
 
-        def test_product_url(
+        async def _test_url(
             url: str,
             method: str,
             allowed_domains: tuple[str, ...] | None = None,
@@ -685,7 +696,7 @@ class ProductSourceDiscoveryService:
             except ValueError:
                 return None
             target_host = _host(norm_url)
-            if target_host in domain_waf_blocked:
+            if not self.circuit_breaker.is_available(target_host):
                 return None
             effective_domains = allowed_domains or domains
             if norm_url in seen or not any(
@@ -714,13 +725,18 @@ class ProductSourceDiscoveryService:
                 verified_domains=profile.verified_domains if not is_secondary_distributor else (),
                 product_id=product.product_id,
             )
-            fetched = self.fetcher.fetch(source)
+
+            if hasattr(self.fetcher, "fetch_async"):
+                fetched = await self.fetcher.fetch_async(source)
+            else:
+                fetched = await asyncio.to_thread(self.fetcher.fetch, source)
+
             if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
                 if (
                     fetched.source.retrieval_status == RetrievalStatus.BLOCKED
                     or fetched.source.http_status in {403, 429}
                 ):
-                    domain_waf_blocked.add(target_host)
+                    self.circuit_breaker.record_failure(target_host, "waf_blocked")
                     domain_failures[target_host] = "waf_blocked"
                 return None
 
@@ -762,271 +778,374 @@ class ProductSourceDiscoveryService:
             return None
 
         # ── PHASE 1: Caller-supplied Candidate URLs ───────────────────────────
-        for cand_url in list(candidate_urls)[: self.max_direct_candidates_per_domain]:
-            cand = test_product_url(cand_url, "supplied_candidate_url")
-            if cand:
-                candidates.append(cand)
-                if cand.identity_score >= self.minimum_score and cand.matched_mpn:
-                    self.selected_domain = _host(cand.url)
-                    self.domains_attempted = tuple(attempted_domains) or (_host(cand.url),)
-                    self.domain_attempt_failure_reasons = domain_failures
-                    return candidates
+        supplied_urls = list(candidate_urls)[: self.max_direct_candidates_per_domain]
+        if supplied_urls:
+            tasks = [_test_url(u, "supplied_candidate_url") for u in supplied_urls]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            for r in results:
+                if isinstance(r, ProductSourceCandidate):
+                    candidates.append(r)
+                    if (
+                        r.identity_score >= self.minimum_score
+                        and r.matched_mpn
+                        and r.domain_score >= 1.0
+                    ):
+                        self.selected_domain = _host(r.url)
+                        self.domains_attempted = tuple(attempted_domains) or (_host(r.url),)
+                        self.domain_attempt_failure_reasons = domain_failures
+                        return sorted(candidates, key=_candidate_rank)
 
-        # ── DOMAIN-BY-DOMAIN ITERATION ────────────────────────────────────────
+        # ── PHASE 2: Domain-by-Domain Iteration ──────────────────────────────
         for domain in ranked_domains:
-            attempted_domains.append(domain)
-            if domain in domain_waf_blocked:
+            if not self.circuit_breaker.is_available(domain):
                 continue
+            attempted_domains.append(domain)
 
-            # --- A. Direct Product Paths ---
+            # --- A. Direct Product Paths (Concurrent within domain) ---
             direct_urls = mfg_strategy.direct_path_urls(
                 domain, mpn_hypotheses[: self.max_hypotheses], product, profile
             )
             max_directs = self.max_direct_candidates_per_domain * self.max_hypotheses
-            for direct_url in list(dict.fromkeys(direct_urls))[:max_directs]:
-                if domain in domain_waf_blocked:
-                    break
-                cand = test_product_url(direct_url, "direct_product_path")
-                if cand:
-                    candidates.append(cand)
-                    if cand.identity_score >= self.minimum_score and cand.matched_mpn:
-                        self.selected_domain = domain
-                        self.domains_attempted = tuple(attempted_domains)
-                        self.domain_attempt_failure_reasons = domain_failures
-                        return candidates
+            direct_urls = list(dict.fromkeys(direct_urls))[:max_directs]
+            if direct_urls:
+                direct_tasks = [
+                    asyncio.create_task(_test_url(url, "direct_product_path"))
+                    for url in direct_urls
+                ]
+                for finished in asyncio.as_completed(direct_tasks):
+                    try:
+                        cand = await finished
+                        if cand is not None:
+                            candidates.append(cand)
+                            # EARLY STOP: verified manufacturer source with matched MPN
+                            if (
+                                cand.identity_score >= self.minimum_score
+                                and cand.matched_mpn
+                                and cand.domain_score >= 1.0
+                            ):
+                                for t in direct_tasks:
+                                    if not t.done():
+                                        t.cancel()
+                                self.selected_domain = _host(cand.url)
+                                self.domains_attempted = tuple(attempted_domains)
+                                self.domain_attempt_failure_reasons = domain_failures
+                                return sorted(candidates, key=_candidate_rank)
+                    except asyncio.CancelledError:
+                        pass
+                    except Exception:
+                        pass
 
-            if domain in domain_waf_blocked:
+            if not self.circuit_breaker.is_available(domain):
                 continue
 
-            # --- B. Targeted Site-Search Probe & Link Extraction ---
+            # --- B. Targeted Site-Search & Sitemap Discovery ---
+            search_tasks: list[asyncio.Task[list[ProductSourceCandidate]]] = []
             search_urls = mfg_strategy.search_urls(
                 domain, mpn_hypotheses[: self.max_hypotheses], product, profile
             )
             max_searches = self.max_search_templates_per_domain * self.max_hypotheses
             for search_url in list(dict.fromkeys(search_urls))[:max_searches]:
-                if domain in domain_waf_blocked:
-                    break
-                try:
-                    norm_search_url = canonicalize_url(search_url)
-                except ValueError:
-                    continue
-                if norm_search_url in seen:
-                    continue
-                seen.add(norm_search_url)
-
-                source = SourceRecord(
-                    canonical_url=norm_search_url,
-                    original_url=norm_search_url,
-                    source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
-                    decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
-                    manufacturer_id=profile.manufacturer_id,
-                    manufacturer_domain=_host(norm_search_url),
-                    verified_domains=profile.verified_domains,
-                    product_id=product.product_id,
-                )
-                fetched = self.fetcher.fetch(source)
-                if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
-                    if (
-                        fetched.source.retrieval_status == RetrievalStatus.BLOCKED
-                        or fetched.source.http_status in {403, 429}
-                    ):
-                        domain_waf_blocked.add(domain)
-                        domain_failures[domain] = "waf_blocked"
-                    continue
-
-                parser = HtmlParser()
-                doc = parser.parse(fetched)
-
-                extracted_links: list[str] = []
-                for link in doc.links:
-                    if mfg_strategy.is_product_link(link, mpn_hypotheses, domains):
-                        extracted_links.append(link.url)
-
-                for ext_url in list(dict.fromkeys(extracted_links))[
-                    : self.max_search_result_links
-                ]:
-                    if domain in domain_waf_blocked:
-                        break
-                    cand = test_product_url(ext_url, "site_search_result_link")
-                    if cand:
-                        candidates.append(cand)
-                        if cand.identity_score >= self.minimum_score and cand.matched_mpn:
-                            self.selected_domain = domain
-                            self.domains_attempted = tuple(attempted_domains)
-                            self.domain_attempt_failure_reasons = domain_failures
-                            return candidates
-
-                # If no candidate product link matched, check if search result is a direct match
-                match = matcher.match(product, doc)
-                if match.identity_score >= self.minimum_score:
-                    cand = ProductSourceCandidate(
-                        url=norm_search_url,
-                        title=doc.title,
-                        source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
-                        discovery_method="site_search_page_match",
-                        evidence_snippet=_snippet(doc, raw_mpn),
-                        matched_mpn=match.matched_mpn,
-                        matched_manufacturer=match.matched_manufacturer,
-                        matched_brand=match.matched_brand,
-                        identity_score=match.identity_score,
-                        domain_score=1.0,
-                        relevance_score=match.relevance_score,
-                        mpn_match_type=match.mpn_match_type,
-                        raw_mpn_match=match.raw_mpn_match,
-                        normalized_mpn_match=match.normalized_mpn_match,
-                        transformed_mpn_match=match.transformed_mpn_match,
-                        rejection_reason=match.rejection_reason,
+                search_tasks.append(
+                    asyncio.create_task(
+                        self._probe_search_url(
+                            search_url,
+                            domain,
+                            profile,
+                            product,
+                            mfg_strategy,
+                            mpn_hypotheses,
+                            domains,
+                            seen,
+                            domain_failures,
+                            matcher,
+                            _test_url,
+                            raw_mpn,
+                        )
                     )
-                    candidates.append(cand)
-                    if cand.identity_score >= self.minimum_score and cand.matched_mpn:
-                        self.selected_domain = domain
-                        self.domains_attempted = tuple(attempted_domains)
-                        self.domain_attempt_failure_reasons = domain_failures
-                        return candidates
+                )
 
-            if domain in domain_waf_blocked:
-                continue
-
-            # --- C. Sitemap Filtering ---
             sitemap_candidates = list(self.url_strategy.sitemap_candidates(domain))[
                 : self.max_sitemap_paths_per_domain
             ]
             for sitemap_url in sitemap_candidates:
-                if domain in domain_waf_blocked:
-                    break
-                try:
-                    norm_sm_url = canonicalize_url(sitemap_url)
-                except ValueError:
-                    continue
-                if norm_sm_url in seen:
-                    continue
-                seen.add(norm_sm_url)
-
-                source = SourceRecord(
-                    canonical_url=norm_sm_url,
-                    original_url=norm_sm_url,
-                    source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
-                    decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
-                    manufacturer_id=profile.manufacturer_id,
-                    manufacturer_domain=_host(norm_sm_url),
-                    verified_domains=profile.verified_domains,
-                    product_id=product.product_id,
-                )
-                fetched = self.fetcher.fetch(source)
-                if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
-                    if (
-                        fetched.source.retrieval_status == RetrievalStatus.BLOCKED
-                        or fetched.source.http_status in {403, 429}
-                    ):
-                        domain_waf_blocked.add(domain)
-                        domain_failures[domain] = "waf_blocked"
-                    continue
-                product_locs, child_sitemaps = _parse_sitemap_xml(fetched.body)
-                if not product_locs and child_sitemaps:
-                    for child_url in child_sitemaps[: self.max_child_sitemaps]:
-                        try:
-                            norm_child_url = canonicalize_url(child_url)
-                        except ValueError:
-                            continue
-                        child_source = SourceRecord(
-                            canonical_url=norm_child_url,
-                            original_url=norm_child_url,
-                            source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
-                            decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
-                            manufacturer_id=profile.manufacturer_id,
-                            manufacturer_domain=_host(norm_child_url),
-                            verified_domains=profile.verified_domains,
-                            product_id=product.product_id,
+                search_tasks.append(
+                    asyncio.create_task(
+                        self._probe_sitemap_url(
+                            sitemap_url,
+                            domain,
+                            profile,
+                            product,
+                            mpn_hypotheses,
+                            seen,
+                            domain_failures,
+                            _test_url,
                         )
-                        child_fetched = self.fetcher.fetch(child_source)
-                        if child_fetched.source.retrieval_status is RetrievalStatus.SUCCESS:
-                            c_locs, _ = _parse_sitemap_xml(child_fetched.body)
-                            product_locs.extend(c_locs)
+                    )
+                )
 
-                for hyp in mpn_hypotheses[: self.max_hypotheses]:
-                    matched_urls = [
-                        loc for loc in product_locs if _sitemap_url_matches_mpn(loc, hyp.value)
-                    ]
-                    for loc in matched_urls[: self.max_direct_candidates_per_domain]:
-                        cand = test_product_url(loc, "sitemap_product_match")
-                        if cand:
-                            candidates.append(cand)
-                            if cand.identity_score >= self.minimum_score and cand.matched_mpn:
-                                self.selected_domain = domain
+            if search_tasks:
+                for search_fut in asyncio.as_completed(search_tasks):
+                    try:
+                        found_list = await search_fut
+                        for found_item in found_list:
+                            candidates.append(found_item)
+                            if (
+                                found_item.identity_score >= self.minimum_score
+                                and found_item.matched_mpn
+                                and found_item.domain_score >= 1.0
+                            ):
+                                for st in search_tasks:
+                                    if not st.done():
+                                        st.cancel()
+                                self.selected_domain = _host(found_item.url)
                                 self.domains_attempted = tuple(attempted_domains)
                                 self.domain_attempt_failure_reasons = domain_failures
-                                return candidates
+                                return sorted(candidates, key=_candidate_rank)
+                    except asyncio.CancelledError:
+                        pass
+                    except Exception:
+                        pass
 
             if domain not in domain_failures:
                 domain_failures[domain] = "no_matching_verified_product"
 
         # ── PHASE 3: Authorized Distributor Secondary Fallback ────────────────
-        if not candidates:
+        if not candidates or not any(c.matched_mpn for c in candidates):
             distributor_strategy = AuthorizedDistributorFallbackStrategy()
             distributor_urls = distributor_strategy.generate_urls(
                 product, mpn_hypotheses[: self.max_hypotheses]
             )
-            for dist_url in distributor_urls[:12]:
-                cand = test_product_url(
+            dist_tasks = [
+                _test_url(
                     dist_url,
                     "distributor_secondary_fallback",
                     allowed_domains=distributor_strategy.domains,
                     is_secondary_distributor=True,
                 )
-                if cand:
-                    candidates.append(cand)
-                    if cand.identity_score >= self.minimum_score and cand.matched_mpn:
-                        self.selected_domain = _host(cand.url)
-                        self.domains_attempted = tuple(attempted_domains) + (_host(cand.url),)
-                        self.domain_attempt_failure_reasons = domain_failures
-                        return candidates
-
-                # If dist_url was a search page, also test extracted product links
-                try:
-                    norm_dist_url = canonicalize_url(dist_url)
-                    source = SourceRecord(
-                        canonical_url=norm_dist_url,
-                        original_url=norm_dist_url,
-                        source_kind=SourceKind.DISTRIBUTOR_PRODUCT_PAGE,
-                        decision=SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE,
-                        manufacturer_id=profile.manufacturer_id,
-                        manufacturer_domain=_host(norm_dist_url),
-                        verified_domains=(),
-                        product_id=product.product_id,
-                    )
-                    fetched = self.fetcher.fetch(source)
-                    if fetched.source.retrieval_status == RetrievalStatus.SUCCESS:
-                        doc = HtmlParser().parse(fetched)
-                        for link in doc.links:
-                            if _is_search_result_product_link(
-                                link, mpn_hypotheses, distributor_strategy.domains
-                            ):
-                                sub_cand = test_product_url(
-                                    link.url,
-                                    "distributor_search_result_link",
-                                    allowed_domains=distributor_strategy.domains,
-                                    is_secondary_distributor=True,
-                                )
-                                if sub_cand:
-                                    candidates.append(sub_cand)
-                                    if (
-                                        sub_cand.identity_score >= self.minimum_score
-                                        and sub_cand.matched_mpn
-                                    ):
-                                        self.selected_domain = _host(sub_cand.url)
-                                        self.domains_attempted = tuple(attempted_domains) + (
-                                            _host(sub_cand.url),
-                                        )
-                                        self.domain_attempt_failure_reasons = domain_failures
-                                        return candidates
-                except Exception:
-                    continue
+                for dist_url in distributor_urls[:12]
+            ]
+            if dist_tasks:
+                dist_results = await asyncio.gather(*dist_tasks, return_exceptions=True)
+                for r in dist_results:
+                    if isinstance(r, ProductSourceCandidate):
+                        candidates.append(r)
 
         self.domains_attempted = tuple(attempted_domains)
         self.domain_attempt_failure_reasons = domain_failures
         sorted_candidates = sorted(candidates, key=_candidate_rank)
         self.selected_domain = _host(sorted_candidates[0].url) if sorted_candidates else None
         return sorted_candidates
+
+    async def _probe_search_url(
+        self,
+        search_url: str,
+        domain: str,
+        profile: ManufacturerProfile,
+        product: ProductTruth,
+        mfg_strategy: Any,
+        mpn_hypotheses: Any,
+        domains: tuple[str, ...],
+        seen: set[str],
+        domain_failures: dict[str, str],
+        matcher: ProductIdentityMatcher,
+        test_url_fn: Any,
+        raw_mpn: str,
+    ) -> list[ProductSourceCandidate]:
+        try:
+            norm_search_url = canonicalize_url(search_url)
+        except ValueError:
+            return []
+        target_host = _host(norm_search_url)
+        if not self.circuit_breaker.is_available(target_host):
+            return []
+        if norm_search_url in seen:
+            return []
+        seen.add(norm_search_url)
+
+        source = SourceRecord(
+            canonical_url=norm_search_url,
+            original_url=norm_search_url,
+            source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
+            decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+            manufacturer_id=profile.manufacturer_id,
+            manufacturer_domain=target_host,
+            verified_domains=profile.verified_domains,
+            product_id=product.product_id,
+        )
+        if hasattr(self.fetcher, "fetch_async"):
+            fetched = await self.fetcher.fetch_async(source)
+        else:
+            fetched = await asyncio.to_thread(self.fetcher.fetch, source)
+
+        if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
+            if (
+                fetched.source.retrieval_status == RetrievalStatus.BLOCKED
+                or fetched.source.http_status in {403, 429}
+            ):
+                domain_failures[domain] = "waf_blocked"
+            return []
+
+        try:
+            doc = HtmlParser().parse(fetched)
+        except Exception:
+            return []
+
+        found: list[ProductSourceCandidate] = []
+        extracted_links: list[str] = []
+        for link in doc.links:
+            if mfg_strategy.is_product_link(link, mpn_hypotheses, domains):
+                extracted_links.append(link.url)
+
+        link_tasks = [
+            test_url_fn(ext_url, "site_search_result_link")
+            for ext_url in list(dict.fromkeys(extracted_links))[: self.max_search_result_links]
+        ]
+        if link_tasks:
+            link_results = await asyncio.gather(*link_tasks, return_exceptions=True)
+            for r in link_results:
+                if isinstance(r, ProductSourceCandidate):
+                    found.append(r)
+
+        if not found:
+            match = matcher.match(product, doc)
+            if match.identity_score >= self.minimum_score:
+                cand = ProductSourceCandidate(
+                    url=norm_search_url,
+                    title=doc.title,
+                    source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
+                    discovery_method="site_search_page_match",
+                    evidence_snippet=_snippet(doc, raw_mpn),
+                    matched_mpn=match.matched_mpn,
+                    matched_manufacturer=match.matched_manufacturer,
+                    matched_brand=match.matched_brand,
+                    identity_score=match.identity_score,
+                    domain_score=1.0,
+                    relevance_score=match.relevance_score,
+                    mpn_match_type=match.mpn_match_type,
+                    raw_mpn_match=match.raw_mpn_match,
+                    normalized_mpn_match=match.normalized_mpn_match,
+                    transformed_mpn_match=match.transformed_mpn_match,
+                    rejection_reason=match.rejection_reason,
+                )
+                found.append(cand)
+
+        return found
+
+    async def _probe_sitemap_url(
+        self,
+        sitemap_url: str,
+        domain: str,
+        profile: ManufacturerProfile,
+        product: ProductTruth,
+        mpn_hypotheses: Any,
+        seen: set[str],
+        domain_failures: dict[str, str],
+        test_url_fn: Any,
+    ) -> list[ProductSourceCandidate]:
+        try:
+            norm_sm_url = canonicalize_url(sitemap_url)
+        except ValueError:
+            return []
+        target_host = _host(norm_sm_url)
+        if not self.circuit_breaker.is_available(target_host):
+            return []
+        if norm_sm_url in seen:
+            return []
+        seen.add(norm_sm_url)
+
+        source = SourceRecord(
+            canonical_url=norm_sm_url,
+            original_url=norm_sm_url,
+            source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
+            decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+            manufacturer_id=profile.manufacturer_id,
+            manufacturer_domain=target_host,
+            verified_domains=profile.verified_domains,
+            product_id=product.product_id,
+        )
+        if hasattr(self.fetcher, "fetch_async"):
+            fetched = await self.fetcher.fetch_async(source)
+        else:
+            fetched = await asyncio.to_thread(self.fetcher.fetch, source)
+
+        if fetched.source.retrieval_status is not RetrievalStatus.SUCCESS:
+            if (
+                fetched.source.retrieval_status == RetrievalStatus.BLOCKED
+                or fetched.source.http_status in {403, 429}
+            ):
+                domain_failures[domain] = "waf_blocked"
+            return []
+
+        product_locs, child_sitemaps = _parse_sitemap_xml(fetched.body)
+        if not product_locs and child_sitemaps:
+            child_tasks = []
+            for child_url in child_sitemaps[: self.max_child_sitemaps]:
+                try:
+                    norm_child_url = canonicalize_url(child_url)
+                except ValueError:
+                    continue
+                child_source = SourceRecord(
+                    canonical_url=norm_child_url,
+                    original_url=norm_child_url,
+                    source_kind=SourceKind.MANUFACTURER_PRODUCT_PAGE,
+                    decision=SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+                    manufacturer_id=profile.manufacturer_id,
+                    manufacturer_domain=_host(norm_child_url),
+                    verified_domains=profile.verified_domains,
+                    product_id=product.product_id,
+                )
+                child_tasks.append(
+                    self.fetcher.fetch_async(child_source)
+                    if hasattr(self.fetcher, "fetch_async")
+                    else asyncio.to_thread(self.fetcher.fetch, child_source)
+                )
+            if child_tasks:
+                child_fetched_list = await asyncio.gather(*child_tasks, return_exceptions=True)
+                for c_res in child_fetched_list:
+                    if (
+                        isinstance(c_res, FetchResult)
+                        and c_res.source.retrieval_status == RetrievalStatus.SUCCESS
+                    ):
+                        c_locs, _ = _parse_sitemap_xml(c_res.body)
+                        product_locs.extend(c_locs)
+
+        matched_sitemap_urls = []
+        for hyp in mpn_hypotheses[: self.max_hypotheses]:
+            for loc in product_locs:
+                if _sitemap_url_matches_mpn(loc, hyp.value):
+                    matched_sitemap_urls.append(loc)
+
+        cand_tasks = [
+            test_url_fn(loc, "sitemap_product_match")
+            for loc in list(dict.fromkeys(matched_sitemap_urls))[
+                : self.max_direct_candidates_per_domain
+            ]
+        ]
+        if cand_tasks:
+            cand_results = await asyncio.gather(*cand_tasks, return_exceptions=True)
+            return [r for r in cand_results if isinstance(r, ProductSourceCandidate)]
+        return []
+
+    def discover(
+        self,
+        product: ProductTruth,
+        profile: ManufacturerProfile,
+        candidate_urls: Iterable[str] = (),
+    ) -> list[ProductSourceCandidate]:
+        """Synchronous wrapper for adiscover."""
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop is not None and loop.is_running():
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(
+                    asyncio.run, self.adiscover(product, profile, candidate_urls=candidate_urls)
+                )
+                return future.result()
+        else:
+            return asyncio.run(self.adiscover(product, profile, candidate_urls=candidate_urls))
 
 
 def _candidate_rank(item: ProductSourceCandidate) -> tuple[int, float, float, float, str]:

@@ -32,6 +32,13 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://localhost/unilog"
     reference_root: str | None = None
 
+    # Bounded async retrieval settings
+    retrieval_global_concurrency: int = 24
+    retrieval_per_host_concurrency: int = 4
+    retrieval_connect_timeout: float = 2.5
+    retrieval_request_timeout: float = 4.0
+    retrieval_max_domain_failures: int = 3
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

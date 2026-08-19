@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import re
@@ -22,6 +23,7 @@ from urllib.parse import parse_qsl, urlencode, urljoin, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from uuid import uuid4
 
+import aiohttp
 from pydantic import BaseModel, ConfigDict, Field
 
 from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest, LLMResponse
@@ -917,6 +919,390 @@ class SourceFetcher:
                     )
                 time.sleep(0.25 * 2**attempt)
         return FetchResult(source=source, cache_status=CacheStatus.INVALID, error="fetch_failed")
+
+
+class DomainHealthStatus(StrEnum):
+    HEALTHY = "healthy"
+    WAF_BLOCKED = "waf_blocked"
+    TARPITTING = "tarpitting"
+    RATE_LIMITED = "rate_limited"
+    FAILED = "failed"
+
+
+class DomainCircuitBreaker:
+    """Tracks domain health across requests to avoid discovery waste on dead/tarpitted hosts."""
+
+    def __init__(self, max_consecutive_failures: int = 3) -> None:
+        self.max_failures = max_consecutive_failures
+        self._consecutive_failures: dict[str, int] = defaultdict(int)
+        self._domain_status: dict[str, DomainHealthStatus] = {}
+        self._failure_reasons: dict[str, str] = {}
+
+    def _norm(self, domain: str) -> str:
+        h = _host(domain)
+        if h.startswith("www."):
+            return h[4:]
+        return h
+
+    def is_available(self, domain: str) -> bool:
+        """Return True if the domain is healthy and permitted to receive requests."""
+        d = self._norm(domain)
+        status = self._domain_status.get(d, DomainHealthStatus.HEALTHY)
+        return status == DomainHealthStatus.HEALTHY
+
+    def record_success(self, domain: str) -> None:
+        """Reset failures and mark domain as healthy."""
+        d = self._norm(domain)
+        self._consecutive_failures[d] = 0
+        self._domain_status[d] = DomainHealthStatus.HEALTHY
+
+    def record_failure(self, domain: str, reason: str) -> None:
+        """Increment failure counter and trip circuit breaker if threshold is exceeded."""
+        d = self._norm(domain)
+        self._consecutive_failures[d] += 1
+        self._failure_reasons[d] = reason
+        if reason in {"waf_blocked", "http_403"}:
+            self._domain_status[d] = DomainHealthStatus.WAF_BLOCKED
+        elif reason in {"tarpitting", "timeout", "transient_fetch_failure", "connection_timeout"}:
+            if self._consecutive_failures[d] >= self.max_failures:
+                self._domain_status[d] = DomainHealthStatus.TARPITTING
+        elif reason in {"http_429", "rate_limited"}:
+            self._domain_status[d] = DomainHealthStatus.RATE_LIMITED
+        elif self._consecutive_failures[d] >= self.max_failures:
+            self._domain_status[d] = DomainHealthStatus.FAILED
+
+    def get_failure_reason(self, domain: str) -> str | None:
+        """Return the observed failure reason for the domain if tripped."""
+        d = self._norm(domain)
+        return self._failure_reasons.get(d)
+
+
+class AsyncSourceFetcher:
+    """Bounded asynchronous HTTP fetcher with connection pooling and domain circuit breaking."""
+
+    def __init__(
+        self,
+        cache: SourceCache | None = None,
+        max_bytes: int = 34 * 1024 * 1024,
+        connect_timeout: float = 2.5,
+        request_timeout: float = 4.0,
+        max_retries: int = 0,
+        global_concurrency: int = 24,
+        per_host_concurrency: int = 4,
+        resolver: SafeNetworkTargetResolver | None = None,
+        max_redirects: int = 3,
+        circuit_breaker: DomainCircuitBreaker | None = None,
+    ) -> None:
+        self.cache = cache or SourceCache()
+        self.max_bytes = max_bytes
+        self.connect_timeout = connect_timeout
+        self.request_timeout = request_timeout
+        self.max_retries = max_retries
+        self.global_concurrency = global_concurrency
+        self.per_host_concurrency = per_host_concurrency
+        self.target_resolver = resolver or SafeNetworkTargetResolver()
+        self.max_redirects = max_redirects
+        self.circuit_breaker = circuit_breaker or DomainCircuitBreaker()
+        self._session: aiohttp.ClientSession | None = None
+        self._session_lock: asyncio.Lock | None = None
+        self._global_semaphore: asyncio.Semaphore | None = None
+        self._host_semaphores: dict[str, asyncio.Semaphore] = defaultdict(
+            lambda: asyncio.Semaphore(self.per_host_concurrency)
+        )
+
+    def _ensure_async_primitives(self) -> None:
+        if self._session_lock is None:
+            self._session_lock = asyncio.Lock()
+        if self._global_semaphore is None:
+            self._global_semaphore = asyncio.Semaphore(self.global_concurrency)
+
+    async def _get_session(self) -> aiohttp.ClientSession:
+        self._ensure_async_primitives()
+        if self._session is None or self._session.closed:
+            connector = aiohttp.TCPConnector(
+                limit=self.global_concurrency,
+                limit_per_host=self.per_host_concurrency,
+                enable_cleanup_closed=True,
+                force_close=False,
+            )
+            timeout = aiohttp.ClientTimeout(
+                sock_connect=self.connect_timeout,
+                total=self.request_timeout,
+            )
+            self._session = aiohttp.ClientSession(
+                connector=connector,
+                timeout=timeout,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/124.0.0.0 Safari/537.36"
+                    ),
+                    "Accept": (
+                        "text/html,application/xhtml+xml,application/xml;q=0.9,"
+                        "application/pdf;q=0.9,image/avif,image/webp,*/*;q=0.8"
+                    ),
+                    "Accept-Language": "en-US,en;q=0.9",
+                },
+            )
+        return self._session
+
+    async def close_async(self) -> None:
+        if self._session and not self._session.closed:
+            await self._session.close()
+            self._session = None
+
+    async def __aenter__(self) -> AsyncSourceFetcher:
+        await self._get_session()
+        return self
+
+    async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        await self.close_async()
+
+    async def fetch_async(self, source: SourceRecord, refresh: bool = False) -> FetchResult:
+        if source.decision not in {
+            SourceDecision.VERIFIED_MANUFACTURER_SOURCE,
+            SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE,
+        }:
+            return FetchResult(
+                source=source.model_copy(update={"retrieval_status": RetrievalStatus.BLOCKED}),
+                cache_status=CacheStatus.INVALID,
+                error="source_not_verified",
+            )
+
+        cached = self.cache.get(source.canonical_url, refresh=refresh)
+        if cached is not None and cached.cache_status is CacheStatus.HIT:
+            return cached
+
+        stale = cached if cached is not None and cached.cache_status is CacheStatus.STALE else None
+        target_host = _host(source.canonical_url)
+
+        # Check circuit breaker before opening connection
+        if not self.circuit_breaker.is_available(target_host):
+            reason = (
+                self.circuit_breaker.get_failure_reason(target_host)
+                or "domain_circuit_tripped"
+            )
+            return FetchResult(
+                source=source.model_copy(update={"retrieval_status": RetrievalStatus.BLOCKED}),
+                cache_status=CacheStatus.INVALID,
+                error=reason,
+            )
+
+        self._ensure_async_primitives()
+        assert self._global_semaphore is not None
+
+        started = time.monotonic()
+        async with self._global_semaphore, self._host_semaphores[target_host]:
+            session = await self._get_session()
+            headers: dict[str, str] = {}
+            if stale is not None:
+                if stale.source.etag:
+                    headers["If-None-Match"] = stale.source.etag
+                if stale.source.last_modified:
+                    headers["If-Modified-Since"] = stale.source.last_modified
+
+            current_url = source.canonical_url
+            original_scheme = urlsplit(current_url).scheme.casefold()
+            allowed_domains = tuple(_host(d) for d in source.verified_domains) or (
+                _host(source.manufacturer_domain),
+            )
+
+            for redirect_step in range(self.max_redirects + 1):
+                try:
+                    self.target_resolver.validate(current_url)
+                    timeout = aiohttp.ClientTimeout(
+                        sock_connect=self.connect_timeout,
+                        total=self.request_timeout,
+                    )
+                    async with session.get(
+                        current_url,
+                        headers=headers if redirect_step == 0 else {},
+                        allow_redirects=False,
+                        timeout=timeout,
+                    ) as response:
+                        status = response.status
+
+                        # Safe redirect handling
+                        if status in {301, 302, 303, 307, 308}:
+                            location = response.headers.get("Location")
+                            if not location:
+                                raise ValueError("redirect_missing_location")
+                            next_url = canonicalize_url(urljoin(current_url, location))
+                            next_parts = urlsplit(next_url)
+                            if original_scheme == "https" and next_parts.scheme != "https":
+                                raise ValueError("redirect_https_downgrade")
+                            next_host = _host(next_url)
+                            if not any(_same_or_subdomain(next_host, d) for d in allowed_domains):
+                                raise ValueError("redirect_external_domain")
+                            current_url = next_url
+                            continue
+
+                        # Revalidation (304)
+                        if status == 304 and stale is not None:
+                            updated = stale.source.model_copy(
+                                update={"http_status": 304, "fetched_at": datetime.now(UTC)}
+                            )
+                            result = stale.model_copy(
+                                update={
+                                    "source": updated,
+                                    "cache_status": CacheStatus.REVALIDATED,
+                                }
+                            )
+                            self.cache.put(result)
+                            self.circuit_breaker.record_success(target_host)
+                            return result
+
+                        # HTTP Error status
+                        if status >= 400:
+                            reason = f"http_{status}"
+                            if status in {403, 429}:
+                                self.circuit_breaker.record_failure(
+                                    target_host, "waf_blocked" if status == 403 else "http_429"
+                                )
+                            return FetchResult(
+                                source=source.model_copy(
+                                    update={
+                                        "retrieval_status": RetrievalStatus.HTTP_ERROR,
+                                        "http_status": status,
+                                    }
+                                ),
+                                cache_status=CacheStatus.INVALID,
+                                error=reason,
+                            )
+
+                        raw_body = await response.content.read(self.max_bytes + 1)
+                        if len(raw_body) > self.max_bytes:
+                            raise ValueError("content_too_large")
+
+                        raw_header_ct = str(response.headers.get("Content-Type", ""))
+                        raw_ct = raw_header_ct.split(";", 1)[0].casefold()
+                        content_type = _effective_content_type(raw_ct, raw_body)
+                        if content_type not in {
+                            "text/html",
+                            "text/plain",
+                            "application/pdf",
+                            "application/json",
+                            "text/xml",
+                            "application/xml",
+                            "application/xhtml+xml",
+                            "image/png",
+                            "image/jpeg",
+                            "image/webp",
+                        }:
+                            return FetchResult(
+                                source=source.model_copy(
+                                    update={
+                                        "retrieval_status": (
+                                            RetrievalStatus.INVALID_CONTENT_TYPE
+                                        ),
+                                        "content_type": content_type,
+                                    }
+                                ),
+                                cache_status=CacheStatus.INVALID,
+                                error="unsupported_content_type",
+                            )
+
+                        final_url = (
+                            canonicalize_url(str(response.url))
+                            if response.url
+                            else current_url
+                        )
+                        updated = source.model_copy(
+                            update={
+                                "canonical_url": final_url,
+                                "manufacturer_domain": _host(final_url),
+                                "retrieval_status": RetrievalStatus.SUCCESS,
+                                "http_status": status,
+                                "content_type": content_type,
+                                "content_hash": hashlib.sha256(raw_body).hexdigest(),
+                                "etag": response.headers.get("ETag"),
+                                "last_modified": response.headers.get("Last-Modified"),
+                                "fetched_at": datetime.now(UTC),
+                            }
+                        )
+                        result = FetchResult(
+                            source=updated,
+                            body=raw_body,
+                            cache_status=CacheStatus.MISS,
+                            latency_ms=round((time.monotonic() - started) * 1000),
+                            bytes_read=len(raw_body),
+                        )
+                        self.cache.put(result)
+                        self.circuit_breaker.record_success(target_host)
+                        return result
+
+                except (
+                    TimeoutError,
+                    aiohttp.ServerTimeoutError,
+                    aiohttp.ClientConnectionError,
+                ):
+                    self.circuit_breaker.record_failure(target_host, "timeout")
+                    return FetchResult(
+                        source=source.model_copy(
+                            update={"retrieval_status": RetrievalStatus.TIMEOUT}
+                        ),
+                        cache_status=CacheStatus.INVALID,
+                        error="transient_fetch_failure",
+                    )
+                except ValueError as error:
+                    retrieval_status = (
+                        RetrievalStatus.TOO_LARGE
+                        if str(error) == "content_too_large"
+                        else RetrievalStatus.FAILED
+                    )
+                    return FetchResult(
+                        source=source.model_copy(
+                            update={"retrieval_status": retrieval_status}
+                        ),
+                        cache_status=CacheStatus.INVALID,
+                        error=str(error),
+                    )
+                except Exception as exc:
+                    exc_name = type(exc).__name__
+                    self.circuit_breaker.record_failure(target_host, f"error_{exc_name}")
+                    return FetchResult(
+                        source=source.model_copy(
+                            update={"retrieval_status": RetrievalStatus.FAILED}
+                        ),
+                        cache_status=CacheStatus.INVALID,
+                        error=f"fetch_error_{exc_name}",
+                    )
+
+            return FetchResult(
+                source=source.model_copy(update={"retrieval_status": RetrievalStatus.FAILED}),
+                cache_status=CacheStatus.INVALID,
+                error="redirect_limit_exceeded",
+            )
+
+    def fetch(self, source: SourceRecord, refresh: bool = False) -> FetchResult:
+        """Synchronous wrapper for fetch_async."""
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop is not None and loop.is_running():
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(asyncio.run, self.fetch_async(source, refresh=refresh))
+                return future.result()
+        else:
+            return asyncio.run(self.fetch_async(source, refresh=refresh))
+
+    def close(self) -> None:
+        """Synchronously close client session."""
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop is not None and loop.is_running():
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                executor.submit(asyncio.run, self.close_async()).result()
+        else:
+            asyncio.run(self.close_async())
 
 
 class SourceParser(Protocol):
