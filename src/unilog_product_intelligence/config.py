@@ -6,7 +6,7 @@ from typing import Final
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-GEMINI_MODEL: Final[str] = "gemini-3.5-flash-lite"
+GEMINI_MODEL: Final[str] = "gemini-2.5-flash"
 
 
 class Settings(BaseSettings):

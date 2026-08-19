@@ -76,7 +76,7 @@ class EvidenceGroundedEnrichmentAgent:
         evidence: Iterable[EvidenceReference],
         source_context: VerifiedProductSourceContext | None = None,
         *,
-        model_version: str = "gemini-3.5-flash-lite",
+        model_version: str = "gemini-2.5-flash",
         schema_version: str = "phase6-v1",
     ) -> tuple[EnrichmentCandidate, ...]:
         selected = tuple(

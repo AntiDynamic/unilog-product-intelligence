@@ -1,0 +1,91 @@
+﻿row_number,mpn,manufacturer,brand,mfr_url,attribute_count,non_empty_fields,total_fields,fill_rate_pct,has_short_desc,has_long_desc
+1,DCB518ASTS06G,Freud Inc (2435),Diablo,https://diablotools.com/products/DCB518ASTS06G,9,48,252,19.05,True,True
+2,3MABR-7100075678,Jam Industrial Supply LLC (JAMIN),3M,https://www.jamindustrialsupply.com/?s=3MABR-7100075678&post_type=product,4,26,252,10.32,True,True
+3,3MABR-7100045865,Jam Industrial Supply LLC (JAMIN),3M,,3,22,252,8.73,True,True
+4,3MABR-7100048736,Jam Industrial Supply LLC (JAMIN),3M,https://www.zoro.com/search?q=jam+industrial+supply+llc+3+bar+7100048736,5,31,252,12.3,True,True
+5,3MABR-7100075690,Jam Industrial Supply LLC (JAMIN),3M,,5,27,252,10.71,True,True
+6,3MABR-7100075692,Jam Industrial Supply LLC (JAMIN),3M,,3,22,252,8.73,True,True
+7,3MABR-7100145365,Jam Industrial Supply LLC (JAMIN),3M,,3,22,252,8.73,True,True
+8,5B-332-080,Mirka Abrasives Inc (MIRUS),Mirka,https://www.jamindustrialsupply.com/?s=5B-332-080&post_type=product,6,30,252,11.9,True,True
+9,5B-332-120,Mirka Abrasives Inc (MIRUS),Mirka,https://www.zoro.com/search?q=Mirka+Abrasives+Inc+5B-332-120,8,34,252,13.49,True,True
+10,9A-570-240,Mirka Abrasives Inc (MIRUS),Mirka,https://www.jamindustrialsupply.com/page/2?s=9A-570-240&post_type=product,4,25,252,9.92,True,True
+11,9A-570-320,Mirka Abrasives Inc (MIRUS),Mirka,https://www.zoro.com/search?q=Mirka+Abrasives+Inc+9A-570-320,5,27,252,10.71,True,True
+12,DBD090094101F,Freud Inc (2435),Diablo,https://diablotools.com/products/DBD090094101F,9,47,252,18.65,True,True
+13,DBDS12125A01F,Freud Inc (2435),Diablo,https://diablotools.com/products/DBDS12125A01F,8,40,252,15.87,True,True
+14,DBDS12125G01F,Freud Inc (2435),Diablo,https://diablotools.com/products/DBDS12125G01F,8,44,252,17.46,True,True
+15,DBDS14125A01F,Freud Inc (2435),Diablo,https://diablotools.com/products/DBDS14125A01F,8,45,252,17.86,True,True
+16,DBDS14125G01F,Freud Inc (2435),Diablo,https://diablotools.com/products/DBDS14125G01F,9,47,252,18.65,True,True
+17,49-94-0013,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/5-x-045-x-7-8-metal-cut-off-wheel-type-1/49-94-0013,10,55,252,21.83,True,True
+18,49-94-0029,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-1-2-x-1-8-x-5-8-dko-metal-cut-off-wheel-type-1/49-94-0029,12,59,252,23.41,True,True
+19,49-94-0033,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/7-x-1-16-x-7-8-metal-cut-off-wheel-type-1/49-94-0033,10,55,252,21.83,True,True
+20,49-94-0001,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-x-040-x-5-8-metal-cut-off-wheel-type-1/49-94-0001,10,62,252,24.6,True,True
+21,49-94-0039,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/7-x-1-8-x-5-8-dko-metal-cut-off-wheel-type-1/49-94-0039,12,68,252,26.98,True,True
+22,49-94-0043,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/9-x-3-32-x-7-8-metal-cut-off-wheel-type-1/49-94-0043,10,64,252,25.4,True,True
+23,49-94-0048,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/12-x-7-64-x-1-metal-cut-off-wheel-type-1/49-94-0048,9,59,252,23.41,True,True
+24,49-94-0053,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/12-x-1-8-x-1-metal-cut-off-wheel-type-1/49-94-0053,10,56,252,22.22,True,True
+25,49-94-0058,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/12-x-1-8-x-20mm-metal-cut-off-wheel-type-1/49-94-0058,10,54,252,21.43,True,True
+26,49-94-0063,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/14-x-7-64-x-1-metal-cut-off-wheel-type-1/49-94-0063,11,57,252,22.62,True,True
+27,49-94-0068,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/14-x-1-8-x-20mm-metal-cut-off-wheel-type-1/49-94-0068,10,64,252,25.4,True,True
+28,49-94-0073,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/14-x-1-8-x-1-metal-cut-off-wheel-type-1/49-94-0073,8,58,252,23.02,True,True
+29,49-94-0101,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-045-x-7-8-performance-metal-cut-off-wheel-type-1-10pk/49-94-0101,10,54,252,21.43,True,True
+30,49-94-0107,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-045-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0107,9,52,252,20.63,True,True
+31,49-94-0117,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/5-x-045-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0117,8,54,252,21.43,True,True
+32,49-94-0123,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-performance-metal-cut-off-wheel-type-1/49-94-0123,9,59,252,23.41,True,True
+33,49-94-0023,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-metal-cut-off-wheel-type-1/49-94-0023,11,66,252,26.19,True,True
+34,49-94-0121,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-performance-metal-cut-off-wheel-type-1/49-94-0121,11,69,252,27.38,True,True
+35,49-94-0127,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0127,10,60,252,23.81,True,True
+36,49-94-0137,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/7-x-3-32-x-7-8-performance-metal-cut-off-wheel-type-27/49-94-0137,12,70,252,27.78,True,True
+37,49-94-0160,Milwaukee Accessory (4031),Milwaukee,https://www.milwaukeetool.com/products/details/14-x-7-64-x-1-performance-metal-cut-off-wheel-type-1-stud-cutter/49-94-0160,9,57,252,22.62,True,True
+38,49-94-0223,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-x-045-x-7-8-ceramic-metal-cut-off-wheel-type-1/49-94-0223,10,55,252,21.83,True,True
+39,49-94-0445,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/10-x-3-32-x-5-8-performance-metal-cut-off-wheel-type-1/49-94-0445,11,61,252,24.21,True,True
+40,49-94-0803,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-7-8-dual-metal-cut-grind-wheel-type-27/49-94-0803,9,56,252,22.22,True,True
+41,49-94-0903,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-7-8-performance-dual-metal-cut-grind-wheel-type-27/49-94-0903,9,52,252,20.63,True,True
+42,49-94-0907,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-5-8-11-performance-dual-metal-cut-grind-wheel-type-27/49-94-0907,9,60,252,23.81,True,True
+43,49-94-0923,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-x-1-8-x-7-8-performance-dual-metal-cut-grind-wheel-type-27/49-94-0923,10,54,252,21.43,True,True
+44,49-94-1900,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-x-1-8-x-5-8-masonry-cut-off-wheel-type-1/49-94-1900,11,57,252,22.62,True,True
+45,49-94-1905,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-1-8-x-7-8-masonry-cut-off-wheel-type-1/49-94-1905,12,73,252,28.97,True,True
+46,49-94-1915,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-1-2-x-1-8-x-5-8-dko-masonry-cut-off-wheel-type-1/49-94-1915,10,55,252,21.83,True,True
+47,49-94-1920,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/7-x-1-8-x-5-8-dko-masonry-cut-off-wheel-type-1/49-94-1920,10,62,252,24.6,True,True
+48,49-94-1925,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/10-x-1-8-x-5-8-masonry-cut-off-wheel-type-1/49-94-1925,10,62,252,24.6,True,True
+49,49-94-1935,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/12-x-1-8-x-1-masonry-cut-off-wheel-type-1/49-94-1935,11,57,252,22.62,True,True
+50,49-94-1940,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/14-x-1-8-x-1-masonry-cut-off-wheel-type-1/49-94-1940,11,57,252,22.62,True,True
+51,49-94-0501,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-x-1-4-x-5-8-metal-grinding-wheel-type-27/49-94-0501,10,63,252,25.0,True,True
+52,49-94-0503,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-1-4-x-7-8-metal-grinding-wheel-type-27/49-94-0503,10,65,252,25.79,True,True
+53,49-94-0523,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/6-x-1-4-x-7-8-metal-grinding-wheel-type-27/49-94-0523,10,55,252,21.83,True,True
+54,49-94-1955,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/4-1-2-x-1-4-x-7-8-masonry-grinding-wheel-type-27/49-94-1955,10,65,252,25.79,True,True
+55,49-94-1965,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/7-x-1-4-x-7-8-masonry-grinding-wheel-type-27/49-94-1965,6,41,252,16.27,True,True
+56,49-94-0513,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/5-x-1-4-x-7-8-metal-grinding-wheel-type-27/49-94-0513,12,68,252,26.98,True,True
+57,49-94-0533,Milwaukee Accessory (4031),Milwaukee Tool,https://www.milwaukeetool.com/products/details/7-x-1-4-x-7-8-metal-grinding-wheel-type-27/49-94-0533,11,56,252,22.22,True,True
+58,DFBLBLOMFN01G,Freud Inc (2435),Diablo,https://diablotools.com/products/DFBLBLOMFN01G,7,38,252,15.08,True,True
+59,1700-1PK-BB40,3 M Co (5293),3M,https://www.jamindustrialsupply.com/page/2?s=1700-1PK-BB40&post_type=product,5,30,252,11.9,True,True
+60,ASH-40-40-04,Emseal Joint Systems Ltd (EMSJO),-- No Unilog Brand --,,5,31,252,12.3,True,True
+61,KDFM404KPS,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,4,26,252,10.32,True,True
+62,PDSH4816AF,Appliance Dealers Cooperative (APPDE),Frigidaire,https://www.jamindustrialsupply.com/page/2?s=PDSH4816AF&post_type=product,4,25,252,9.92,True,True
+63,PDT715SYVFS,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+64,LDPH5554D,Appliance Dealers Cooperative (APPDE),Unbranded,https://www.jamindustrialsupply.com/?s=LDPH5554D&post_type=product,5,27,252,10.71,True,True
+65,WDTS7024RZ,Appliance Dealers Cooperative (APPDE),Whirlpool,https://learnwhirlpool.com/smartsearchresults?searchtext=WDTS7024RZ,7,45,252,17.86,True,True
+66,PDD415PYYFS,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+67,KDTS424SBE,Appliance Dealers Cooperative (APPDE),KitchenAid,,5,29,252,11.51,True,True
+68,KDTS324SPS,Appliance Dealers Cooperative (APPDE),-- Unbranded --,,4,24,252,9.52,True,True
+69,KDPS624SJP,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,4,23,252,9.13,True,True
+70,KDTS624SBE,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+71,D519127,V & V Appliance Parts Inc (VVAPP),-- No Unilog Brand --,,3,25,252,9.92,True,True
+72,DF7004WE,Appliance Dealers Cooperative (APPDE),Speed Queen,,6,28,252,11.11,True,True
+73,DR7004BE,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,29,252,11.51,True,True
+74,DV2000WE,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,29,252,11.51,True,True
+75,DC5004WE,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+76,DC5004BE,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+77,WKE100HWA,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+78,FF7011WN,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,30,252,11.9,True,True
+79,PTD70GBPTDG,Appliance Dealers Cooperative (APPDE),GE,,4,24,252,9.52,True,True
+80,PTD70GBSTWS,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+81,DR5004WG,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+82,DR7004BG,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+83,DR7004WG,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,5,25,252,9.92,True,True
+84,DV2000WG,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+85,DC5004WG,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,0,15,252,5.95,True,True
+86,DC5004BG,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,3,21,252,8.33,True,True
+87,PTW705BSTWS,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,0,15,252,5.95,True,True
+88,MVWP586GW,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,0,15,252,5.95,True,True
+89,TV2000WN,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,0,15,252,5.95,True,True
+90,TC5003BN,Appliance Dealers Cooperative (APPDE),-- No Unilog Brand --,,0,15,252,5.95,True,True

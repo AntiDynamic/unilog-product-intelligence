@@ -159,8 +159,9 @@ class GeminiProvider(LLMProvider):
             raise GeminiProviderError(error) from error
         usage = getattr(response, "usage_metadata", None) or getattr(response, "usage", None)
         telemetry = _extract_tool_telemetry(getattr(response, "steps", None) or [])
+        raw_output = str(getattr(response, "output_text", ""))
         return LLMResponse(
-            output_text=str(getattr(response, "output_text", "")),
+            output_text=_strip_code_fences(raw_output),
             model=self.model,
             input_tokens=_usage(usage, "prompt_token_count") or _usage(usage, "input_tokens"),
             output_tokens=_usage(usage, "candidates_token_count") or _usage(usage, "output_tokens"),
@@ -298,3 +299,23 @@ def _retry_after_seconds(error: Exception) -> float | None:
 def _usage(usage: Any, name: str) -> int | None:
     value = getattr(usage, name, None) if usage else None
     return value if isinstance(value, int) else None
+
+
+def _strip_code_fences(text: str) -> str:
+    """Strip markdown code fences that Gemini 2.x adds around structured JSON output.
+
+    Gemini models sometimes wrap their JSON responses in ```json ... ``` or ``` ... ```
+    blocks even when application/json is the requested mime type.  This normalises the
+    output so downstream pydantic model_validate_json() calls always receive raw JSON.
+    """
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        # Drop the opening fence line (e.g. ```json or just ```)
+        first_newline = stripped.find("\n")
+        if first_newline != -1:
+            stripped = stripped[first_newline + 1 :]
+        # Drop the closing fence
+        if stripped.rstrip().endswith("```"):
+            stripped = stripped.rstrip()[:-3].rstrip()
+    return stripped
+

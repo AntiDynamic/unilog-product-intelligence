@@ -25,7 +25,7 @@ from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest, 
 
 
 class DTO(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="ignore")
 
 
 class EvidenceKind(StrEnum):
@@ -232,7 +232,7 @@ class ProductOrchestrator:
             if response is None:
                 response = self._provider.generate(
                     LLMRequest(
-                        task=task, input_text=prompt, response_schema=dto.model_json_schema()
+                        task=task, input_text=prompt, response_schema=None
                     )
                 )
                 self._cache[key] = response
