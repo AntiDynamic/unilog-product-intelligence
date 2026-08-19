@@ -155,28 +155,54 @@ class Phase65ResultDeliveryAdapter:
 
         # Resolve manufacturer: prefer resolved manufacturer if distributor-masked,
         # otherwise identity manufacturer (cleaned of account code suffixes),
-        # then enriched attribute, then raw fallback.
+        # then enriched attribute.
+        # CRITICAL: Distributor names must NEVER be published as MANUFACTURER_NAME.
         is_dist = getattr(phase65_result, "is_distributor_masked", False)
         res_mfg = _resolved_manufacturer(phase65_result)
-        mfg_name: str | None
-        if is_dist and res_mfg:
-            mfg_name = res_mfg
+
+        mfg_name: str | None = None
+        if is_dist:
+            if res_mfg and not _is_distributor_string(res_mfg):
+                mfg_name = res_mfg
+            else:
+                enriched_mfg = _attr_value(
+                    attr_by_name, "manufacturer", "manufacturer name"
+                )
+                if enriched_mfg and not _is_distributor_string(enriched_mfg):
+                    mfg_name = enriched_mfg
+                else:
+                    mfg_name = None
         else:
-            mfg_name = (
-                _ident(identity, "manufacturer")
-                or _attr_value(attr_by_name, "manufacturer", "manufacturer name")
-                or res_mfg
-            )
+            ident_mfg = _ident(identity, "manufacturer")
+            if ident_mfg and not _is_distributor_string(ident_mfg):
+                mfg_name = ident_mfg
+            elif res_mfg and not _is_distributor_string(res_mfg):
+                mfg_name = res_mfg
+            else:
+                enriched_mfg = _attr_value(
+                    attr_by_name, "manufacturer", "manufacturer name"
+                )
+                if enriched_mfg and not _is_distributor_string(enriched_mfg):
+                    mfg_name = enriched_mfg
+                else:
+                    mfg_name = None
+
         values["MANUFACTURER_NAME"] = _clean_name(mfg_name)
 
         # Resolve brand: prefer enriched attribute (e.g. from Diablo product page),
         # then non-placeholder identity brand, then resolved brand.
-        brand_name = (
-            _attr_value(attr_by_name, "brand", "brand name")
-            or _ident(identity, "brand")
-            or _resolved_brand(phase65_result)
-        )
-        values["BRAND_NAME"] = _clean_name(brand_name)
+        # CRITICAL: Distributor names must NEVER be published as BRAND_NAME.
+        brand_attr = _attr_value(attr_by_name, "brand", "brand name")
+        brand_ident = _ident(identity, "brand")
+        brand_res = _resolved_brand(phase65_result)
+
+        brand_candidate: str | None = None
+        for b in (brand_attr, brand_ident, brand_res):
+            if b and not _is_distributor_string(b) and b.casefold() not in _PLACEHOLDER_VALUES:
+                brand_candidate = b
+                break
+
+        values["BRAND_NAME"] = _clean_name(brand_candidate)
         values["TRADE_NAME"] = _ident(identity, "trade_name")
         values["MANUFACTURER_PART_NUMBER"] = (
             _attr_value(attr_by_name, "manufacturer part number", "mpn")
@@ -373,6 +399,52 @@ _PLACEHOLDER_VALUES = {
     "n/a",
     "null",
 }
+
+
+def _is_distributor_string(name: str | None) -> bool:
+    """Return True if name matches known distributor fragments or codes."""
+    if not name:
+        return False
+    lower = name.casefold()
+    dist_fragments = (
+        "supply",
+        "dealer",
+        "dealers",
+        "cooperative",
+        "co-op",
+        "coop",
+        "distributor",
+        "distribution",
+        "industrial",
+        "wholesale",
+        "warehouse",
+        "lumber",
+        "hardware",
+        "electric supply",
+        "electrical supply",
+        "plumbing supply",
+        "building supply",
+        "direct supply",
+        "janitor",
+        "maintenance",
+        "procurement",
+        "appliance dealers",
+        "builders firstsource",
+        "boise cascade",
+        "parksite",
+        "u s lumber",
+        "jam industrial",
+        "l & w supply",
+        "cameron ashley",
+        "grainger",
+        "ferguson",
+        "fastenal",
+        "orgill",
+        "true value",
+        "do it best",
+        "abc supply",
+    )
+    return any(f in lower for f in dist_fragments)
 
 
 def _ident(identity: Any, field: str) -> str | None:

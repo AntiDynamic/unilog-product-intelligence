@@ -187,12 +187,18 @@ _MPN_PREFIX_BRAND_MAP: dict[str, tuple[str, str]] = {
     "KDFE": ("kitchenaid", "KitchenAid"),
     "KRFF": ("kitchenaid", "KitchenAid"),
     "KFGG": ("kitchenaid", "KitchenAid"),
-    # GE Appliances
+    # GE Appliances & GE Profile
+    "PTD70": ("ge appliances", "GE Profile"),
+    "PTD": ("ge appliances", "GE Profile"),
+    "PFD": ("ge appliances", "GE Profile"),
+    "PFQ": ("ge appliances", "GE Profile"),
     "GDT": ("ge appliances", "GE"),
     "GDF": ("ge appliances", "GE"),
     "GDP": ("ge appliances", "GE"),
     "GTW": ("ge appliances", "GE"),
     "GFW": ("ge appliances", "GE"),
+    "GFD": ("ge appliances", "GE"),
+    "GUD": ("ge appliances", "GE"),
     "GSS": ("ge appliances", "GE"),
     # Rheem / Ruud water heaters and HVAC
     "XG40": ("rheem", "Rheem"),
@@ -209,7 +215,11 @@ _MPN_PREFIX_BRAND_MAP: dict[str, tuple[str, str]] = {
     "RF23": ("samsung", "Samsung"),
     "NE58": ("samsung", "Samsung"),
     "NE63": ("samsung", "Samsung"),
-    # LG appliances
+    # LG appliances (including WashTower WKE / WKEX / WKGX)
+    "WKE100": ("lg", "LG"),
+    "WKEX": ("lg", "LG"),
+    "WKGX": ("lg", "LG"),
+    "WKE": ("lg", "LG"),
     "LDT": ("lg", "LG"),
     "LDP": ("lg", "LG"),
     "LFXS": ("lg", "LG"),
@@ -218,6 +228,19 @@ _MPN_PREFIX_BRAND_MAP: dict[str, tuple[str, str]] = {
     "LRG": ("lg", "LG"),
     "WT7": ("lg", "LG"),
     "WM9": ("lg", "LG"),
+    "WM40": ("lg", "LG"),
+    "WM34": ("lg", "LG"),
+    "DLEX": ("lg", "LG"),
+    "DLGX": ("lg", "LG"),
+    # Speed Queen laundry
+    "FF7011": ("speed queen", "Speed Queen"),
+    "FF7": ("speed queen", "Speed Queen"),
+    "FF": ("speed queen", "Speed Queen"),
+    "TR7": ("speed queen", "Speed Queen"),
+    "TC5": ("speed queen", "Speed Queen"),
+    "DR7": ("speed queen", "Speed Queen"),
+    "DC5": ("speed queen", "Speed Queen"),
+    "DF7": ("speed queen", "Speed Queen"),
 }
 
 
@@ -239,6 +262,7 @@ def _match_mpn_prefix(mpn: str) -> tuple[str, str] | None:
 _DISTRIBUTOR_FRAGMENTS: tuple[str, ...] = (
     "supply",
     "dealer",
+    "dealers",
     "cooperative",
     "co-op",
     "coop",
@@ -257,6 +281,21 @@ _DISTRIBUTOR_FRAGMENTS: tuple[str, ...] = (
     "janitor",
     "maintenance",
     "procurement",
+    "appliance dealers",
+    "builders firstsource",
+    "boise cascade",
+    "parksite",
+    "u s lumber",
+    "jam industrial",
+    "l & w supply",
+    "cameron ashley",
+    "grainger",
+    "ferguson",
+    "fastenal",
+    "orgill",
+    "true value",
+    "do it best",
+    "abc supply",
 )
 
 
