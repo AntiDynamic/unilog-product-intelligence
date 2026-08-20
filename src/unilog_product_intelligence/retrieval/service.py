@@ -11,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from unilog_product_intelligence.application.product_truth import ProductTruthService
 from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
+from unilog_product_intelligence.domain.models import FeatureEvidence, StructuredSpec
 from unilog_product_intelligence.domain.source_context import VerifiedProductSourceContext
 from unilog_product_intelligence.domain.truth import (
     AssessmentMetadata,
@@ -319,10 +320,21 @@ class ManufacturerIntelligenceService:
                 source_context=job.verified_source_context,
                 evidence=tuple(evidence_references(product)),
                 structured_facts=tuple(
-                    {"attribute": s.attribute, "raw_value": s.raw_value, "unit": s.unit}
+                    StructuredSpec(
+                        attribute=s.attribute,
+                        raw_value=s.raw_value,
+                        unit=s.unit,
+                        # evidence_id is not yet assigned at extraction time;
+                        # will be wired in a future pass when EvidenceReference IDs
+                        # are available during HTML extraction.
+                        evidence_id=None,
+                    )
                     for s in html_data.specifications
                 ),
-                features=tuple((html_data.features or [])[:20]),
+                features=tuple(
+                    FeatureEvidence(name=feature)
+                    for feature in (html_data.features or [])[:20]
+                ),
                 document_urls=tuple(html_data.document_urls),
                 image_urls=tuple(_raw_images),
                 source_authority=_source_authority,

@@ -22,6 +22,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
 from unilog_product_intelligence.domain.truth import AssetType, ProductTruth
 
 
@@ -540,7 +541,7 @@ def _extract_source_urls(
     # 1. Prefer ProductEvidencePacket if present on Phase65Result
     packet = getattr(result, "evidence_packet", None)
     source_ctx = None
-    if packet is not None and type(packet).__name__ == "ProductEvidencePacket":
+    if isinstance(packet, ProductEvidencePacket):
         raw_pkt_url = getattr(packet, "canonical_product_url", None)
         if isinstance(raw_pkt_url, str) and raw_pkt_url.strip():
             mfr_url = raw_pkt_url.strip()

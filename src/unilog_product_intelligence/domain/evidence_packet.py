@@ -6,10 +6,25 @@ through Phase65Pipeline → EnrichmentService → Phase65ResultDeliveryAdapter.
 
 Design principles:
   - frozen=True  — value object, never mutated after construction
-  - Holds only plain-serialisable types (str, float, tuple, dict) so it can be safely
-    shared across threads without locking.
+  - All nested fields use immutable domain models (StructuredSpec, FeatureEvidence) or
+    plain scalars (str, float) — never bare dict[str, Any] or list.
   - Never contains raw HTML.  Only structured, bounded representations.
   - EvidenceConflict is imported lazily from domain.conflicts to avoid circular imports.
+
+Immutability guarantee
+----------------------
+  frozen=True protects Pydantic model fields from re-assignment.
+  tuple (never list) protects collection fields from append/pop mutation.
+  StructuredSpec and FeatureEvidence are themselves frozen=True models, so nested
+  objects are also immutable.  This enforces the invariant:
+
+    Phase 5 creates packet
+          ↓
+    Phase 6 receives exact same truth
+          ↓
+    Delivery receives exact same truth
+
+  No stage can quietly mutate the packet.
 """
 
 from __future__ import annotations
@@ -18,6 +33,7 @@ from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from unilog_product_intelligence.domain.models import FeatureEvidence, StructuredSpec
 from unilog_product_intelligence.domain.truth import SourceAuthority
 
 if TYPE_CHECKING:
@@ -26,7 +42,7 @@ if TYPE_CHECKING:
 
 
 class ProductEvidencePacket(BaseModel):
-    """Bounded, immutable evidence value object produced by Phase 5.
+    """Bounded, deeply immutable evidence value object produced by Phase 5.
 
     Carries everything enrichment and delivery need from the verified manufacturer source:
     identity, evidence references, structured facts, features, and asset URLs.
@@ -70,11 +86,14 @@ class ProductEvidencePacket(BaseModel):
 
     # ── Structured knowledge from the primary source page ─────────────────────
     # Direct spec key-value pairs extracted by HtmlProductEvidenceExtractor.
-    # Each dict has keys: attribute (str), raw_value (str), unit (str | None).
-    structured_facts: tuple[dict[str, Any], ...] = ()
+    # Each StructuredSpec has: attribute (str), raw_value (str), unit (str | None),
+    # evidence_id (str | None).  Replaces bare dict[str, Any] for deep immutability.
+    structured_facts: tuple[StructuredSpec, ...] = ()
 
     # Feature/bullet list from the manufacturer page (ordered, bounded to 20).
-    features: tuple[str, ...] = ()
+    # Each FeatureEvidence has: name (str), value (str | None), evidence_ids (tuple[str,...]).
+    # Replaces bare tuple[str, ...] so each feature can cite its evidence.
+    features: tuple[FeatureEvidence, ...] = ()
 
     # ── Asset URLs discovered from the primary source ─────────────────────────
     # Document URLs (PDFs, spec sheets, manuals, etc.) ranked by relevance.

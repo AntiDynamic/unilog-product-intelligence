@@ -185,20 +185,11 @@ class Phase65Pipeline:
         evidence_pkt = (
             manufacturer_job.evidence_packet if manufacturer_job is not None else None
         )
-        enrich_kwargs: dict[str, Any] = {"source_context": source_ctx}
-        try:
-            import inspect
-            sig = inspect.signature(self.enrichment.enrich)
-            if "evidence_packet" in sig.parameters or any(
-                p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
-            ):
-                enrich_kwargs["evidence_packet"] = evidence_pkt
-        except Exception:
-            enrich_kwargs["evidence_packet"] = evidence_pkt
-
-        enrichment_result = self.enrichment.enrich(product, **enrich_kwargs)
-
-
+        enrichment_result = self.enrichment.enrich(
+            product,
+            source_context=source_ctx,
+            evidence_packet=evidence_pkt,
+        )
         status = (
             Phase65Status.ENRICHED
             if enrichment_result.status.value == "ENRICHED"

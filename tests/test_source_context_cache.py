@@ -158,6 +158,7 @@ def test_phase65_always_forwards_source_context() -> None:
             *,
             refresh: bool = False,
             source_context: VerifiedProductSourceContext | None = None,
+            evidence_packet: object | None = None,
         ) -> EnrichmentResult:
             received_source_context.append(source_context)
             return EnrichmentResult(
@@ -249,6 +250,7 @@ def test_no_silent_typeerror_fallback() -> None:
             *,
             refresh: bool = False,
             source_context: VerifiedProductSourceContext | None = None,
+            evidence_packet: object | None = None,
         ) -> EnrichmentResult:
             calls.append("enrich_called")
             # Intentionally raise internal TypeError
