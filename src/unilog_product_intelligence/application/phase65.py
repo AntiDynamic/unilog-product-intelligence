@@ -17,6 +17,10 @@ from unilog_product_intelligence.application.scale import FailureCategory, class
 from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
 from unilog_product_intelligence.domain.truth import ProductTruth
 from unilog_product_intelligence.enrichment.agent import evidence_references
+from unilog_product_intelligence.enrichment.inference_budget import (
+    InferenceBudget,
+    InferenceBudgetExceeded,
+)
 from unilog_product_intelligence.enrichment.models import EnrichmentResult
 from unilog_product_intelligence.enrichment.service import EnrichmentService
 from unilog_product_intelligence.retrieval.agents import DiscoveryResult, ManufacturerDiscoveryAgent
@@ -81,7 +85,18 @@ class Phase65Pipeline:
         self.enrichment = enrichment
         self.source_binding = source_binding
 
-    def run(self, product: ProductTruth, *, refresh: bool = False) -> Phase65Result:
+    def run(
+        self,
+        product: ProductTruth,
+        *,
+        refresh: bool = False,
+        budget: InferenceBudget | None = None,
+    ) -> Phase65Result:
+        if budget is not None:
+            try:
+                budget.consume(phase="phase4", calls=1)
+            except InferenceBudgetExceeded:
+                pass
         product, phase4_job = self.orchestrator.run(product)
         phase4_failed = phase4_job.state == JobState.FAILED
 
@@ -109,6 +124,8 @@ class Phase65Pipeline:
                 )
                 brand = _extract_brand(product) or resolved.brand
             try:
+                if budget is not None:
+                    budget.consume(phase="discovery", calls=1)
                 discovery_result = self.discovery.discover(
                     manufacturer_id=manufacturer_name,
                     manufacturer_name=manufacturer_name,
@@ -116,6 +133,10 @@ class Phase65Pipeline:
                     description=str(product.raw_value("Part_Desc") or ""),
                     brand=brand,
                 )
+            except InferenceBudgetExceeded as budget_err:
+                phase5_error = str(budget_err)
+                discovery_result = DiscoveryResult(unresolved_reason=phase5_error)
+                blocker = "INFERENCE_BUDGET_EXCEEDED"
             except Exception as error:
                 phase5_error = _safe_failure_detail(error)
                 provider = getattr(self.discovery, "provider", None)

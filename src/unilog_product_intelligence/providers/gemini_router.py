@@ -12,19 +12,41 @@ from unilog_product_intelligence.providers.gemini import (
     GeminiProviderError,
 )
 
+# Explicit status code matrix for routing decisions
+NON_RETRYABLE_STATUS_CODES: frozenset[int] = frozenset({400, 401, 403, 404, 422})
+RETRYABLE_STATUS_CODES: frozenset[int] = frozenset({408, 429, 500, 502, 503, 504})
+RETRYABLE_PROVIDER_CODES: frozenset[str] = frozenset({
+    "RESOURCE_EXHAUSTED",
+    "UNAVAILABLE",
+    "DEADLINE_EXCEEDED",
+    "INTERNAL",
+})
 
-def _is_model_specific_error(error: Exception) -> bool:
-    """Return True for errors where a fallback model might succeed.
 
-    Fail-fast errors (auth, billing/spend limits) return False.
-    Rate limits (429), model not found (404), and transient server errors (5xx) return True.
+def should_fallback(error: Exception) -> bool:
+    """Return True if an error is transient/recoverable via a fallback model.
+
+    Fail-fast errors (auth, bad request, unprocessable entity, spend limit) return False.
+    Rate limits (429), timeouts (408), and transient server errors (5xx) return True.
     """
     status_code = getattr(error, "status_code", None)
-    if status_code in {401, 403}:
-        # Auth failure — never route to fallback (same credentials will fail)
-        return False
-
     normalized_status = int(status_code) if str(status_code).isdigit() else None
+
+    # Check error message if status_code is not directly on exception
+    if normalized_status is None:
+        err_msg = str(error)
+        for code in NON_RETRYABLE_STATUS_CODES:
+            if f"{code}" in err_msg and ("status" in err_msg.casefold() or "error" in err_msg.casefold() or f" {code} " in f" {err_msg} "):
+                normalized_status = code
+                break
+        if normalized_status is None:
+            for code in RETRYABLE_STATUS_CODES:
+                if f"{code}" in err_msg and ("status" in err_msg.casefold() or "error" in err_msg.casefold() or f" {code} " in f" {err_msg} "):
+                    normalized_status = code
+                    break
+
+    if normalized_status in NON_RETRYABLE_STATUS_CODES:
+        return False
 
     if normalized_status == 429:
         category = classify_429(error)
@@ -34,14 +56,22 @@ def _is_model_specific_error(error: Exception) -> bool:
         # RATE_LIMIT, PROJECT_QUOTA, CAPACITY, SEARCH_LIMIT can fallback
         return True
 
-    if normalized_status in {404, 408, 500, 502, 503, 504}:
+    if normalized_status in RETRYABLE_STATUS_CODES:
         return True
 
-    provider_code = getattr(error, "provider_code", None)
-    if provider_code in {"RESOURCE_EXHAUSTED", "UNAVAILABLE", "DEADLINE_EXCEEDED"}:
+    provider_code = getattr(error, "provider_code", None) or getattr(error, "code", None)
+    if provider_code and str(provider_code).upper() in RETRYABLE_PROVIDER_CODES:
+        return True
+
+    err_str = str(error).upper()
+    if any(code in err_str for code in RETRYABLE_PROVIDER_CODES):
         return True
 
     return False
+
+
+# Backward-compatibility alias
+_is_model_specific_error = should_fallback
 
 
 class GeminiRouter(LLMProvider):
@@ -51,9 +81,9 @@ class GeminiRouter(LLMProvider):
     discovery agent, enrichment agent) require no code changes.
 
     Routing Policy:
-      - Primary call fails with 429 (rate/quota), 404 (model unavailable), or 5xx
+      - Primary call fails with 429 (rate/quota), 408 (timeout), or 5xx
         → seamlessly falls back to the configured fallback provider.
-      - 401/403 (auth) and spend limits fail fast without masked fallbacks.
+      - 400, 401, 403, 404, 422, and spend limits fail fast without masked fallbacks.
       - Conflict escalation: generate_with_strong_model() routes specifically to
         a higher-reasoning model (e.g. Gemini Pro).
     """
@@ -86,7 +116,7 @@ class GeminiRouter(LLMProvider):
         try:
             return self.primary.generate(request)
         except Exception as error:
-            if self.fallback is not None and _is_model_specific_error(error):
+            if self.fallback is not None and should_fallback(error):
                 return self.fallback.generate(request)
             raise
 
@@ -98,7 +128,7 @@ class GeminiRouter(LLMProvider):
                 return self.primary.generate_with_tools(request, tools)
             return self.primary.generate(request)
         except Exception as error:
-            if self.fallback is not None and _is_model_specific_error(error):
+            if self.fallback is not None and should_fallback(error):
                 if hasattr(self.fallback, "generate_with_tools"):
                     return self.fallback.generate_with_tools(request, tools)
                 return self.fallback.generate(request)
@@ -110,4 +140,10 @@ class GeminiRouter(LLMProvider):
         return target.generate(request)
 
 
-__all__ = ["GeminiRouter", "_is_model_specific_error"]
+__all__ = [
+    "GeminiRouter",
+    "NON_RETRYABLE_STATUS_CODES",
+    "RETRYABLE_STATUS_CODES",
+    "_is_model_specific_error",
+    "should_fallback",
+]

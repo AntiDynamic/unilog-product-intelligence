@@ -8,7 +8,13 @@ import pytest
 
 from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest, LLMResponse
 from unilog_product_intelligence.providers.gemini import GeminiProviderError
-from unilog_product_intelligence.providers.gemini_router import GeminiRouter, _is_model_specific_error
+from unilog_product_intelligence.providers.gemini_router import (
+    GeminiRouter,
+    NON_RETRYABLE_STATUS_CODES,
+    RETRYABLE_STATUS_CODES,
+    _is_model_specific_error,
+    should_fallback,
+)
 
 
 class MockLLMProvider(LLMProvider):
@@ -100,23 +106,23 @@ def test_gemini_router_generate_with_strong_model() -> None:
     assert primary.call_count == 0
 
 
-def test_is_model_specific_error_classification() -> None:
-    e429 = RuntimeError("429")
-    setattr(e429, "status_code", 429)
-    assert _is_model_specific_error(e429) is True
+def test_should_fallback_matrix() -> None:
+    # Non-retryable
+    for code in (400, 401, 403, 404, 422):
+        err = RuntimeError(f"Error {code}")
+        setattr(err, "status_code", code)
+        assert should_fallback(err) is False
+        assert _is_model_specific_error(err) is False
 
-    e404 = RuntimeError("404")
-    setattr(e404, "status_code", 404)
-    assert _is_model_specific_error(e404) is True
+    # Retryable
+    for code in (408, 429, 500, 502, 503, 504):
+        err = RuntimeError(f"Error {code}")
+        setattr(err, "status_code", code)
+        assert should_fallback(err) is True
+        assert _is_model_specific_error(err) is True
 
-    e503 = RuntimeError("503")
-    setattr(e503, "status_code", 503)
-    assert _is_model_specific_error(e503) is True
-
-    e401 = RuntimeError("401")
-    setattr(e401, "status_code", 401)
-    assert _is_model_specific_error(e401) is False
-
-    e403 = RuntimeError("403")
-    setattr(e403, "status_code", 403)
-    assert _is_model_specific_error(e403) is False
+    # Provider codes
+    for pcode in ("RESOURCE_EXHAUSTED", "UNAVAILABLE", "DEADLINE_EXCEEDED"):
+        err = RuntimeError(f"Error: {pcode}")
+        setattr(err, "provider_code", pcode)
+        assert should_fallback(err) is True

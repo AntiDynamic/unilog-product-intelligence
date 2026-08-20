@@ -1,6 +1,7 @@
 from .agent import EvidenceGroundedEnrichmentAgent
 from .conflicts import ConflictEngine
 from .evidence_validator import EvidenceConstraintValidator, EvidenceValidationResult
+from .inference_budget import InferenceBudget, InferenceBudgetExceeded
 from .schemas import AttributeProposal, GeminiAttributeCandidate, GeminiEnrichmentResponse
 from .descriptions import (
 
@@ -79,6 +80,8 @@ __all__ = [
     "GuidelineAssessmentStatus",
     "GeminiAttributeCandidate",
     "GeminiEnrichmentResponse",
+    "InferenceBudget",
+    "InferenceBudgetExceeded",
     "LovAttributeRule",
     "ManufacturerBrandIndex",
     "ManufacturerBrandRecord",
