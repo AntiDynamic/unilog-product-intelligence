@@ -8,6 +8,7 @@ from .gemini import (
     GeminiProvider,
     GeminiProviderError,
 )
+from .gemini_router import GeminiRouter
 from .local import LocalProvider
 
 __all__ = [
@@ -16,9 +17,11 @@ __all__ = [
     "GeminiConfigurationError",
     "GeminiProvider",
     "GeminiProviderError",
+    "GeminiRouter",
     "LLMProvider",
     "LLMRequest",
     "LLMResponse",
     "LocalProvider",
     "build_provider",
 ]
+

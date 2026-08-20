@@ -1,7 +1,7 @@
-"""Evidence-grounded product enrichment (Phase 6)."""
-
 from .agent import EvidenceGroundedEnrichmentAgent
+from .conflicts import ConflictEngine
 from .descriptions import (
+
     FORBIDDEN_SUPERLATIVES,
     DescriptionAgent,
     DescriptionCandidateEnvelope,
@@ -50,7 +50,9 @@ __all__ = [
     "AttributePlanner",
     "AttributeSchema",
     "CategoryLovPack",
+    "ConflictEngine",
     "DescriptionAgent",
+
     "DescriptionCandidateEnvelope",
     "DescriptionContext",
     "DescriptionLimits",

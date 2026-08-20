@@ -60,5 +60,7 @@ Fittings_LOV.xlsx
 Reference_Documents_Summary.xlsx
 delivery_*.csv
 delivery_*.json
+outputs/
 scratch/
+
 

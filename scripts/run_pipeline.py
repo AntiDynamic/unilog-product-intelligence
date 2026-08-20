@@ -72,6 +72,7 @@ from unilog_product_intelligence.providers.gemini import (  # noqa: E402
     GeminiConcurrencyLimiter,
     GeminiConfigurationError,
 )
+from unilog_product_intelligence.providers.gemini_router import GeminiRouter  # noqa: E402
 from unilog_product_intelligence.retrieval.agents import (  # noqa: E402
     DiscoveryResult,
     ManufacturerDiscoveryAgent,
@@ -91,6 +92,9 @@ from unilog_product_intelligence.retrieval.core import (  # noqa: E402
     _host,
     _same_or_subdomain,
 )
+from unilog_product_intelligence.retrieval.manufacturer_registry import (  # noqa: E402
+    ManufacturerRegistry,
+)
 from unilog_product_intelligence.retrieval.service import (
     ManufacturerIntelligenceService,  # noqa: E402
 )
@@ -98,6 +102,7 @@ from unilog_product_intelligence.retrieval.source_discovery import (  # noqa: E4
     ProductSourceDiscoveryService,
     _get_retrieval_profile,
 )
+
 
 # ── Default paths relative to project root ────────────────────────────────────
 _DEFAULT_INPUT = _ROOT / "Unihack_ Sample Dataset - Input.csv"
@@ -250,13 +255,15 @@ def _build_pipeline(
         # Enrich verified_domains from the static catalog — the discovery LLM may
         # return companion domains (e.g. learnwhirlpool.com) as CANDIDATE rather
         # than VERIFIED, but they are authoritative per our catalog.
-        catalog_profile = _get_retrieval_profile(
+        registry = ManufacturerRegistry()
+        catalog_profile = registry.get_profile_by_domain(
             tuple(c.domain for c in verified_candidates + candidate_candidates)
         )
         if catalog_profile is not None:
             all_verified = frozenset(profile_base_domains) | frozenset(catalog_profile.domains)
         else:
             all_verified = frozenset(profile_base_domains)
+
 
         profile = ManufacturerProfile(
             manufacturer_id=mfg_name or "unknown",
@@ -838,7 +845,11 @@ def main() -> None:
 
     try:
         provider = build_provider(exec_mode, settings=settings, limiter=limiter)
+        if exec_mode == ExecutionMode.LIVE_GEMINI:
+            provider = GeminiRouter(primary=provider, limiter=limiter)
     except GeminiConfigurationError as err:
+
+
         print(f"\nERROR: {err}\n", file=sys.stderr)
         print(
             "To run in LIVE_GEMINI mode, ensure GEMINI_API_KEY is set in your environment or .env file.",

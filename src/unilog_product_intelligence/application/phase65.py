@@ -14,6 +14,7 @@ from unilog_product_intelligence.agents.orchestration import (
 )
 from unilog_product_intelligence.application.brand_resolver import BrandManufacturerResolver
 from unilog_product_intelligence.application.scale import FailureCategory, classify_429
+from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
 from unilog_product_intelligence.domain.truth import ProductTruth
 from unilog_product_intelligence.enrichment.agent import evidence_references
 from unilog_product_intelligence.enrichment.models import EnrichmentResult
@@ -22,6 +23,7 @@ from unilog_product_intelligence.retrieval.agents import DiscoveryResult, Manufa
 from unilog_product_intelligence.retrieval.core import (
     ManufacturerProfile,
     Phase5FailureReason,
+    SourceDecision,
     SourceRecord,
 )
 from unilog_product_intelligence.retrieval.service import (
@@ -47,6 +49,7 @@ class Phase65Result(BaseModel):
     discovery: DiscoveryResult | None = None
     manufacturer_job: ManufacturerJob | None = None
     enrichment: EnrichmentResult | None = None
+    evidence_packet: ProductEvidencePacket | None = None
     status: Phase65Status
     blocker: str | None = None
     phase5_error: str | None = None
@@ -129,8 +132,14 @@ class Phase65Pipeline:
                     blocker = "SOURCE_NOT_FOUND"
                 else:
                     binding = self.source_binding(product, discovery_result)
+                    provider = getattr(self.discovery, "provider", None)
+                    live_search_enabled = bool(getattr(provider, "supports_live_web_search", False))
+                    binding_is_secondary = (
+                        binding is not None
+                        and binding[0].decision == SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE
+                    )
                     if (
-                        binding is None
+                        (binding is None or binding_is_secondary or live_search_enabled)
                         and not discovery_result.search_requested
                         and hasattr(self.discovery, "search_fallback")
                     ):
@@ -143,8 +152,15 @@ class Phase65Pipeline:
                             existing_result=discovery_result,
                         )
                         if fallback_result.search_result_urls:
-                            binding = self.source_binding(product, fallback_result)
-                            discovery_result = fallback_result
+                            fallback_binding = self.source_binding(product, fallback_result)
+                            if fallback_binding is not None:
+                                fallback_is_secondary = (
+                                    fallback_binding[0].decision
+                                    == SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE
+                                )
+                                if binding is None or not fallback_is_secondary:
+                                    binding = fallback_binding
+                                    discovery_result = fallback_result
 
                     if binding is None:
                         blocker = "SOURCE_NOT_FOUND"
@@ -166,7 +182,23 @@ class Phase65Pipeline:
         source_ctx = (
             manufacturer_job.verified_source_context if manufacturer_job is not None else None
         )
-        enrichment_result = self.enrichment.enrich(product, source_context=source_ctx)
+        evidence_pkt = (
+            manufacturer_job.evidence_packet if manufacturer_job is not None else None
+        )
+        enrich_kwargs: dict[str, Any] = {"source_context": source_ctx}
+        try:
+            import inspect
+            sig = inspect.signature(self.enrichment.enrich)
+            if "evidence_packet" in sig.parameters or any(
+                p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+            ):
+                enrich_kwargs["evidence_packet"] = evidence_pkt
+        except Exception:
+            enrich_kwargs["evidence_packet"] = evidence_pkt
+
+        enrichment_result = self.enrichment.enrich(product, **enrich_kwargs)
+
+
         status = (
             Phase65Status.ENRICHED
             if enrichment_result.status.value == "ENRICHED"
@@ -182,6 +214,7 @@ class Phase65Pipeline:
             discovery=discovery_result,
             manufacturer_job=manufacturer_job,
             enrichment=enrichment_result,
+            evidence_packet=evidence_pkt,
             status=status,
             blocker=blocker or enrichment_result.error,
             phase5_error=phase5_error,

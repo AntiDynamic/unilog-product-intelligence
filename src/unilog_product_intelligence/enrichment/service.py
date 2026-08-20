@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from unilog_product_intelligence.application.product_truth import ProductTruthService
+from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
 from unilog_product_intelligence.domain.source_context import VerifiedProductSourceContext
 from unilog_product_intelligence.domain.truth import (
     AssessmentMetadata,
@@ -66,17 +67,25 @@ class EnrichmentService:
         self,
         product: ProductTruth,
         source_context: VerifiedProductSourceContext | None = None,
+        evidence_packet: ProductEvidencePacket | None = None,
     ) -> EnrichmentResult:
         status = EnrichmentStatus.PLANNING_ATTRIBUTES
         plans = self.planner.plan(product)
         metrics = EnrichmentMetrics(products=1, planned_attributes=len(plans))
         product = self._register_plans(product, plans)
-        references = evidence_references(product)
+        if evidence_packet is not None and evidence_packet.evidence:
+            references = evidence_packet.evidence
+        else:
+            references = evidence_references(product)
+        effective_context = source_context or (
+            evidence_packet.source_context if evidence_packet is not None else None
+        )
         status = EnrichmentStatus.ENRICHING
         try:
             candidates = self.agent.enrich(
-                product, plans, references, source_context=source_context
+                product, plans, references, source_context=effective_context
             )
+
         except Exception as error:
             return EnrichmentResult(
                 product_id=product.product_id,
@@ -85,7 +94,7 @@ class EnrichmentService:
                 attribute_plans=plans,
                 reference_availability=self.planner.reference_pack.availability,
                 product_truth=product,
-                error=type(error).__name__,
+                error=f"{type(error).__name__}:{str(error)[:240]}",
                 metrics=metrics,
             )
         run = self.agent.last_run

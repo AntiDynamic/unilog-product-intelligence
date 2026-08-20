@@ -537,18 +537,40 @@ def _extract_source_urls(
     mfr_url: str | None = None
     candidate_urls: list[str] = []
 
-    # 1. Primary MFR URL from verified source context or job
-    job = getattr(result, "manufacturer_job", None)
-    source_ctx = getattr(job, "verified_source_context", None) if job else None
-    if source_ctx and getattr(source_ctx, "canonical_product_url", None):
-        mfr_url = source_ctx.canonical_product_url
+    # 1. Prefer ProductEvidencePacket if present on Phase65Result
+    packet = getattr(result, "evidence_packet", None)
+    source_ctx = None
+    if packet is not None and type(packet).__name__ == "ProductEvidencePacket":
+        raw_pkt_url = getattr(packet, "canonical_product_url", None)
+        if isinstance(raw_pkt_url, str) and raw_pkt_url.strip():
+            mfr_url = raw_pkt_url.strip()
+        source_ctx = getattr(packet, "source_context", None)
+        if not mfr_url and source_ctx:
+            raw_ctx_url = getattr(source_ctx, "canonical_product_url", None)
+            if isinstance(raw_ctx_url, str) and raw_ctx_url.strip():
+                mfr_url = raw_ctx_url.strip()
+        doc_urls = getattr(packet, "document_urls", None)
+        if isinstance(doc_urls, (list, tuple)):
+            for doc_url in doc_urls:
+                if isinstance(doc_url, str) and doc_url.strip() and doc_url.strip() != mfr_url:
+                    candidate_urls.append(doc_url.strip())
+    else:
+        # Fallback to legacy manufacturer_job / verified_source_context
+        job = getattr(result, "manufacturer_job", None)
+        source_ctx = getattr(job, "verified_source_context", None) if job else None
+        if source_ctx:
+            raw_ctx_url = getattr(source_ctx, "canonical_product_url", None)
+            if isinstance(raw_ctx_url, str) and raw_ctx_url.strip():
+                mfr_url = raw_ctx_url.strip()
 
-    if job and not mfr_url:
-        ctx_urls = getattr(job, "url_context_urls", ()) or ()
-        for url in ctx_urls:
-            if url:
-                mfr_url = url
-                break
+        if job and not mfr_url:
+            ctx_urls = getattr(job, "url_context_urls", ()) or ()
+            if isinstance(ctx_urls, (list, tuple)):
+                for url in ctx_urls:
+                    if isinstance(url, str) and url.strip():
+                        mfr_url = url.strip()
+                        break
+
 
     # 2. ProductTruth sources
     for source in product.sources:
@@ -560,11 +582,12 @@ def _extract_source_urls(
         elif url != mfr_url:
             candidate_urls.append(url)
 
-    # 3. Document URLs from verified source context
+    # 3. Document URLs from verified source context (if not already captured from packet)
     if source_ctx and getattr(source_ctx, "document_urls", None):
         for doc_url in source_ctx.document_urls:
             if doc_url and doc_url != mfr_url:
                 candidate_urls.append(doc_url)
+
 
     # 4. Digital assets documents
     image_types = {

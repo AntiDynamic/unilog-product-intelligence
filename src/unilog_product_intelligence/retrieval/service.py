@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import StrEnum
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from unilog_product_intelligence.application.product_truth import ProductTruthService
+from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
 from unilog_product_intelligence.domain.source_context import VerifiedProductSourceContext
 from unilog_product_intelligence.domain.truth import (
     AssessmentMetadata,
@@ -102,6 +104,9 @@ class ManufacturerJob(BaseModel):
     asset_discovery_error: str | None = None
     assets_discovered_count: int = 0
     verified_source_context: VerifiedProductSourceContext | None = None
+    evidence_packet: ProductEvidencePacket | None = None
+
+
 
 
 class ManufacturerIntelligenceService:
@@ -297,8 +302,35 @@ class ManufacturerIntelligenceService:
             except Exception as exc:
                 job.asset_discovery_status = "failed"
                 job.asset_discovery_error = f"{type(exc).__name__}: {exc}"
+
+            # Build ProductEvidencePacket — single source-of-truth for Phase 6 & Delivery.
+            _source_authority = SourceAuthority.SECONDARY if is_secondary else SourceAuthority.AUTHORITATIVE
+            # Collect image URLs: prefer gallery images, fall back to primary image.
+            _raw_images = (
+                html_data.gallery_images
+                or ([html_data.primary_image_url] if html_data.primary_image_url else [])
+            )
+            job.evidence_packet = ProductEvidencePacket(
+                product_id=product.product_id,
+                mpn=mpn_val or None,
+                manufacturer=profile.canonical_name,
+                brand=brand_val or None,
+                canonical_product_url=fetched.source.canonical_url,
+                source_context=job.verified_source_context,
+                evidence=tuple(evidence_references(product)),
+                structured_facts=tuple(
+                    {"attribute": s.attribute, "raw_value": s.raw_value, "unit": s.unit}
+                    for s in html_data.specifications
+                ),
+                features=tuple((html_data.features or [])[:20]),
+                document_urls=tuple(html_data.document_urls),
+                image_urls=tuple(_raw_images),
+                source_authority=_source_authority,
+                identity_score=job.identity_score,
+            )
             job.state = ManufacturerJobState.COMPLETED
             return product, job
+
         except (RuntimeError, ValueError) as error:
             job.state = ManufacturerJobState.FAILED
             job.error = type(error).__name__

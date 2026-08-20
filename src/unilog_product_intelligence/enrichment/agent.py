@@ -31,6 +31,44 @@ from .models import (
 from .reference import separate_value_and_uom
 
 
+def _parse_candidate_envelope(raw_output: str) -> CandidateResponseEnvelope:
+    """Parse Gemini JSON while accepting harmless wrappers around the contract."""
+    text = raw_output.strip()
+    if text.startswith("```"):
+        text = text.strip("`")
+        if text.casefold().startswith("json"):
+            text = text[4:].lstrip()
+    try:
+        payload: object = json.loads(text)
+    except json.JSONDecodeError:
+        decoder = json.JSONDecoder()
+        start = text.find("{")
+        if start < 0:
+            raise
+        payload, _ = decoder.raw_decode(text[start:])
+    if isinstance(payload, list):
+        payload = {"candidates": payload}
+    if not isinstance(payload, dict):
+        raise ValueError("enrichment response must be an object or candidate list")
+    candidates = payload.get("candidates")
+    if candidates is None:
+        candidates = payload.get("attributes", payload.get("results", []))
+    if not isinstance(candidates, list):
+        candidates = []
+    normalized: list[object] = []
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        item = dict(candidate)
+        if "attribute" not in item:
+            item["attribute"] = item.get("attribute_id") or item.get("name") or ""
+        if "evidence_id" not in item and isinstance(item.get("evidence"), dict):
+            item["evidence_id"] = item["evidence"].get("evidence_id") or item["evidence"].get("id")
+        normalized.append(item)
+    return CandidateResponseEnvelope.model_validate(
+        {"candidates": normalized, "unresolved_attributes": payload.get("unresolved_attributes", [])}
+    )
+
 class EnrichmentAgentError(RuntimeError):
     """A provider or structured-output failure that is safe to report."""
 
@@ -118,7 +156,7 @@ class EvidenceGroundedEnrichmentAgent:
                 LLMRequest(
                     task="evidence_grounded_enrichment",
                     input_text=prompt,
-                    response_schema=None,
+                    response_schema=CandidateResponseEnvelope.model_json_schema(),
                     metadata={
                         "prompt_version": self.prompt_version,
                         "schema_version": schema_version,
@@ -126,7 +164,7 @@ class EvidenceGroundedEnrichmentAgent:
                 )
             )
             run.response = response
-            envelope = CandidateResponseEnvelope.model_validate_json(response.output_text)
+            envelope = _parse_candidate_envelope(response.output_text)
             by_name = {plan.attribute_name.casefold(): plan for plan in selected}
             by_id = {plan.attribute_id: plan for plan in selected}
             allowed_evidence = {item.evidence_id: item for item in evidence_items}
@@ -179,11 +217,11 @@ class EvidenceGroundedEnrichmentAgent:
             run.completed_at = datetime.now(UTC)
             return result
         except (ValidationError, ValueError, TypeError) as error:
-            run.error = type(error).__name__
+            run.error = f"{type(error).__name__}:{str(error)[:240]}"
             run.completed_at = datetime.now(UTC)
-            raise EnrichmentAgentError("malformed enrichment response") from error
+            raise EnrichmentAgentError(f"malformed enrichment response: {str(error)[:180]}; payload={response.output_text[:300]!r}") from error
         except Exception as error:
-            run.error = type(error).__name__
+            run.error = f"{type(error).__name__}:{str(error)[:240]}"
             run.completed_at = datetime.now(UTC)
             raise EnrichmentAgentError("enrichment provider failed") from error
 
@@ -218,12 +256,12 @@ class EvidenceGroundedEnrichmentAgent:
                 LLMRequest(
                     task="evidence_grounded_enrichment_repair",
                     input_text=prompt,
-                    response_schema=None,
+                    response_schema=CandidateResponseEnvelope.model_json_schema(),
                     metadata={"prompt_version": "repair/v1"},
                 )
             )
             run.response = response
-            envelope = CandidateResponseEnvelope.model_validate_json(response.output_text)
+            envelope = _parse_candidate_envelope(response.output_text)
             item = next(iter(envelope.candidates), None)
             if item is None or item.evidence_id not in {ref.evidence_id for ref in evidence_items}:
                 run.completed_at = datetime.now(UTC)
@@ -252,7 +290,7 @@ class EvidenceGroundedEnrichmentAgent:
             run.completed_at = datetime.now(UTC)
             return None
         except Exception as error:
-            run.error = type(error).__name__
+            run.error = f"{type(error).__name__}:{str(error)[:240]}"
             run.completed_at = datetime.now(UTC)
             return None
 

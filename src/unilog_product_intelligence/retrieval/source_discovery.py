@@ -537,8 +537,9 @@ class GenericManufacturerRetrievalStrategy:
         profile: ManufacturerProfile,
     ) -> list[str]:
         urls: list[str] = []
-        for hyp in hypotheses:
-            urls.extend(self.url_strategy.direct_product_paths(domain, hyp.value))
+        # Try manufacturer-specific routes first. The caller bounds the list,
+        # so appending these after generic guesses can otherwise prevent exact
+        # support/product URLs from ever being fetched.
         if self.profile:
             for tmpl in self.profile.direct_path_templates:
                 for hyp in hypotheses:
@@ -546,6 +547,8 @@ class GenericManufacturerRetrievalStrategy:
                         urls.append(tmpl.format(mpn=hyp.value, domain=domain))
                     except KeyError:
                         urls.append(tmpl.format(mpn=hyp.value))
+        for hyp in hypotheses:
+            urls.extend(self.url_strategy.direct_product_paths(domain, hyp.value))
         return urls
 
     def search_urls(

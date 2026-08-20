@@ -377,3 +377,33 @@ def test_10_wdts_prefix_domain_resolution() -> None:
         d.domain for d in domains if d.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
     ]
     assert "whirlpool.com" in verified or "learnwhirlpool.com" in verified
+
+
+def test_manufacturer_specific_direct_route_precedes_generic_bound() -> None:
+    """A bounded direct probe must test the official Frigidaire route first."""
+    product = _make_product(mpn="PDSH4816AF", mfg="Frigidaire", brand="Frigidaire")
+    official_url = "https://www.frigidaire.com/en/p/owner-center/product-support/PDSH4816AF"
+    html = b"""
+    <html>
+      <head><title>Frigidaire PDSH4816AF Product Support</title></head>
+      <body><h1>Model Number: PDSH4816AF</h1></body>
+    </html>
+    """
+    fetcher = MockFetcher({official_url: html})
+    service = ProductSourceDiscoveryService(
+        fetcher=fetcher,
+        max_direct_candidates_per_domain=1,
+        max_hypotheses=1,
+        max_search_templates_per_domain=0,
+        max_sitemap_paths_per_domain=0,
+    )
+    profile = ManufacturerProfile(
+        manufacturer_id="frigidaire",
+        canonical_name="Frigidaire",
+        verified_domains=("frigidaire.com",),
+    )
+
+    candidates = service.discover(product, profile)
+
+    assert candidates
+    assert candidates[0].url == official_url

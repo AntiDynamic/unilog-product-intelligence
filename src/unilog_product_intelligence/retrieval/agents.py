@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import cast
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from unilog_product_intelligence.application.scale import FailureCategory, classify_429
 from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest, LLMResponse
@@ -189,7 +189,17 @@ class ManufacturerDiscoveryAgent:
                 deterministic_candidates_tried=len(deterministic),
             )
 
-        result = DiscoveryResult.model_validate_json(response.output_text)
+        # Gemini may complete a tool-only search with an empty textual body while still
+        # returning usable search telemetry. Treat that as a successful search step and
+        # preserve the deterministic candidates instead of failing the whole product.
+        raw_output = response.output_text.strip()
+        if raw_output:
+            try:
+                result = DiscoveryResult.model_validate_json(raw_output)
+            except (ValidationError, ValueError):
+                result = DiscoveryResult()
+        else:
+            result = DiscoveryResult()
         seen = {c.domain.casefold() for c in deterministic}
         candidates = list(deterministic)
         candidates.extend(c for c in result.candidates if c.domain.casefold() not in seen)
