@@ -1,5 +1,7 @@
 from .agent import EvidenceGroundedEnrichmentAgent
 from .conflicts import ConflictEngine
+from .evidence_validator import EvidenceConstraintValidator, EvidenceValidationResult
+from .schemas import AttributeProposal, GeminiAttributeCandidate, GeminiEnrichmentResponse
 from .descriptions import (
 
     FORBIDDEN_SUPERLATIVES,
@@ -48,6 +50,7 @@ from .validation import ValidationPipeline
 __all__ = [
     "AttributePlan",
     "AttributePlanner",
+    "AttributeProposal",
     "AttributeSchema",
     "CategoryLovPack",
     "ConflictEngine",
@@ -61,7 +64,9 @@ __all__ = [
     "DescriptionValidator",
     "DeterministicDescriptionBuilder",
     "EnrichmentCandidate",
+    "EvidenceConstraintValidator",
     "EvidenceGroundedEnrichmentAgent",
+    "EvidenceValidationResult",
     "EnrichmentResult",
     "EnrichmentPersistence",
     "EnrichmentService",
@@ -72,6 +77,8 @@ __all__ = [
     "FractionDecimalMap",
     "GlobalLovIndex",
     "GuidelineAssessmentStatus",
+    "GeminiAttributeCandidate",
+    "GeminiEnrichmentResponse",
     "LovAttributeRule",
     "ManufacturerBrandIndex",
     "ManufacturerBrandRecord",
