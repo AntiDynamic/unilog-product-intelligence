@@ -1,10 +1,6 @@
 from .agent import EvidenceGroundedEnrichmentAgent
 from .conflicts import ConflictEngine
-from .evidence_validator import EvidenceConstraintValidator, EvidenceValidationResult
-from .inference_budget import InferenceBudget, InferenceBudgetExceeded
-from .schemas import AttributeProposal, GeminiAttributeCandidate, GeminiEnrichmentResponse
 from .descriptions import (
-
     FORBIDDEN_SUPERLATIVES,
     DescriptionAgent,
     DescriptionCandidateEnvelope,
@@ -16,6 +12,8 @@ from .descriptions import (
     DeterministicDescriptionBuilder,
     GuidelineAssessmentStatus,
 )
+from .evidence_validator import EvidenceConstraintValidator, EvidenceValidationResult
+from .inference_budget import InferenceBudget, InferenceBudgetExceeded
 from .models import (
     AttributePlan,
     AttributeSchema,
@@ -45,6 +43,7 @@ from .reference import (
     UomStandardMap,
     separate_value_and_uom,
 )
+from .schemas import AttributeProposal, GeminiAttributeCandidate, GeminiEnrichmentResponse
 from .service import EnrichmentService
 from .validation import ValidationPipeline
 
@@ -56,7 +55,6 @@ __all__ = [
     "CategoryLovPack",
     "ConflictEngine",
     "DescriptionAgent",
-
     "DescriptionCandidateEnvelope",
     "DescriptionContext",
     "DescriptionLimits",

@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import time
 import pytest
 
 from unilog_product_intelligence.domain.truth import SourceAuthority
 from unilog_product_intelligence.retrieval.manufacturer_registry import (
     ManufacturerRegistry,
     RegistryTrustError,
-    VerifiedRoute,
 )
 
 
@@ -75,7 +73,6 @@ def test_record_verified_route_static_profile_immune() -> None:
 
 def test_verified_route_ttl_expiry() -> None:
     registry = ManufacturerRegistry()
-    now = 1000.0
 
     # Route valid for 60 seconds
     route = registry.record_verified_route(

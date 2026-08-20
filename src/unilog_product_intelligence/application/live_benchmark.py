@@ -298,9 +298,7 @@ class LiveBenchmarkRunner:
             if disc.search_result_urls:
                 candidates_generated.extend(disc.search_result_urls)
 
-            candidates = source_disc.discover(
-                p, profile, candidate_urls=disc.search_result_urls
-            )
+            candidates = source_disc.discover(p, profile, candidate_urls=disc.search_result_urls)
             if not candidates:
                 return None
             best = candidates[0]
@@ -382,9 +380,7 @@ class LiveBenchmarkRunner:
 
         matched_mpn = best_candidate_match.matched_mpn if best_candidate_match else False
         matched_brand = best_candidate_match.matched_brand if best_candidate_match else False
-        matched_mfg = (
-            best_candidate_match.matched_manufacturer if best_candidate_match else False
-        )
+        matched_mfg = best_candidate_match.matched_manufacturer if best_candidate_match else False
         score = best_candidate_match.identity_score if best_candidate_match else 0.0
 
         verification_trace = LiveVerificationTrace(
@@ -395,11 +391,7 @@ class LiveBenchmarkRunner:
             matched_brand=matched_brand,
             matched_manufacturer=matched_mfg,
             identity_classification=(
-                "STRONG_MATCH"
-                if score >= 0.7
-                else "POSSIBLE_MATCH"
-                if score >= 0.6
-                else "MISMATCH"
+                "STRONG_MATCH" if score >= 0.7 else "POSSIBLE_MATCH" if score >= 0.6 else "MISMATCH"
             ),
         )
 
@@ -725,18 +717,9 @@ class LiveBenchmarkReporter:
                 f"| 15 | Maximum HTTP Requests / Product | "
                 f"`{o.get('maximum_http_requests_per_product', 0)}` | LIVE |"
             ),
-            (
-                f"| 16 | Average Latency | "
-                f"`{o.get('average_latency_ms', 0.0):.1f} ms` | LIVE |"
-            ),
-            (
-                f"| 17 | Median Latency | "
-                f"`{o.get('median_latency_ms', 0)} ms` | LIVE |"
-            ),
-            (
-                f"| 18 | Maximum Latency | "
-                f"`{o.get('maximum_latency_ms', 0)} ms` | LIVE |"
-            ),
+            (f"| 16 | Average Latency | `{o.get('average_latency_ms', 0.0):.1f} ms` | LIVE |"),
+            (f"| 17 | Median Latency | `{o.get('median_latency_ms', 0)} ms` | LIVE |"),
+            (f"| 18 | Maximum Latency | `{o.get('maximum_latency_ms', 0)} ms` | LIVE |"),
             (
                 f"| 19 | Duplicate Retrieval Rate | "
                 f"`{o.get('duplicate_retrieval_rate', 0.0) * 100:.2f}%` | LIVE |"
@@ -749,10 +732,7 @@ class LiveBenchmarkReporter:
                 f"| 21 | REVIEW_REQUIRED Rate | "
                 f"`{o.get('review_required_rate', 0.0) * 100:.2f}%` | LIVE |"
             ),
-            (
-                f"| 22 | READY (Enriched) Rate | "
-                f"`{o.get('ready_rate', 0.0) * 100:.2f}%` | LIVE |"
-            ),
+            (f"| 22 | READY (Enriched) Rate | `{o.get('ready_rate', 0.0) * 100:.2f}%` | LIVE |"),
             "",
             "---",
             "",
@@ -770,122 +750,126 @@ class LiveBenchmarkReporter:
                 f"`{m['review_required_rate'] * 100:.1f}%` |"
             )
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 4. Row 2 End-to-End Deep Dive",
-            "",
-            "**Input Row 2:**",
-            "- **MPN:** `DCB518ASTS06G`",
-            "- **Part_Manuf:** `Freud Inc (2435)`",
-            "- **Description:** `DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc`",
-            "- **Raw Brands:** `-- Unbranded --` / `-- No DIB Brand --`",
-            "",
-            "**Autonomous Resolution Flow:**",
-            "- **Manufacturer Key Normalization:** `Freud Inc (2435)` -> `freud inc`",
-            "- **Domain Catalog Resolution:** `diablotools.com`, `freudtools.com`",
-            "- **Candidate Strategy:** Direct path `https://diablotools.com/products/DCB518ASTS06G`",
-            "- **Live HTTP Retrieval:** `HTTP 200 OK` (149,256 bytes from live `diablotools.com`)",
-            "- **Identity Match:** MPN matched (`DCB518ASTS06G`), Brand matched (`Diablo`)",
-            "- **Evidence Grounding:** Extracted authoritative MPN & specifications from live DOM",
-            f"- **Final Verdict:** `{row2_trace.final.status if row2_trace else 'READY'}`",
-            "",
-            "---",
-            "",
-            "## 5. Offline Harness vs Live Benchmark Comparison",
-            "",
-            "| Evaluation Dimension | Offline Harness | Live Benchmark | Explanation |",
-            "|---|---|---|---|",
-            "| **Execution Environment** | Mocked fixtures | Live Internet Sockets | Real web |",
-            (
-                f"| **HTTP Requests Generated** | `0` (Mocked) | "
-                f"`{sum(t.final.total_http_requests for t in self.traces)}` (Live) | Real network |"
-            ),
-            (
-                f"| **Domain Resolution Rate** | `6.7%` | "
-                f"`{o.get('domain_resolution_rate', 0.0) * 100:.1f}%` | Live sample |"
-            ),
-            (
-                f"| **Authoritative Source Rate** | `0.0%` (No live web) | "
-                f"`{o.get('authoritative_source_discovery_rate', 0.0) * 100:.1f}%` | Live web |"
-            ),
-            "| **Hallucination Rate** | `0.0%` | `0.0%` | Both strictly fail-closed |",
-            (
-                f"| **Average Pipeline Latency** | `61.4 ms` | "
-                f"`{o.get('average_latency_ms', 0.0):.1f} ms` | Network socket I/O |"
-            ),
-            "",
-            "---",
-            "",
-            "## 6. Root Cause Failure Analysis (10 Core Architectural Questions)",
-            "",
-            "| Root Cause Category | Count | Operational Impact |",
-            "|---|---|---|",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 4. Row 2 End-to-End Deep Dive",
+                "",
+                "**Input Row 2:**",
+                "- **MPN:** `DCB518ASTS06G`",
+                "- **Part_Manuf:** `Freud Inc (2435)`",
+                '- **Description:** `DCB518ASTS06G Diablo 1/2"x18" - Sanding Belt 6pc`',
+                "- **Raw Brands:** `-- Unbranded --` / `-- No DIB Brand --`",
+                "",
+                "**Autonomous Resolution Flow:**",
+                "- **Manufacturer Key Normalization:** `Freud Inc (2435)` -> `freud inc`",
+                "- **Domain Catalog Resolution:** `diablotools.com`, `freudtools.com`",
+                "- **Candidate Strategy:** Direct path `https://diablotools.com/products/DCB518ASTS06G`",
+                "- **Live HTTP Retrieval:** `HTTP 200 OK` (149,256 bytes from live `diablotools.com`)",
+                "- **Identity Match:** MPN matched (`DCB518ASTS06G`), Brand matched (`Diablo`)",
+                "- **Evidence Grounding:** Extracted authoritative MPN & specifications from live DOM",
+                f"- **Final Verdict:** `{row2_trace.final.status if row2_trace else 'READY'}`",
+                "",
+                "---",
+                "",
+                "## 5. Offline Harness vs Live Benchmark Comparison",
+                "",
+                "| Evaluation Dimension | Offline Harness | Live Benchmark | Explanation |",
+                "|---|---|---|---|",
+                "| **Execution Environment** | Mocked fixtures | Live Internet Sockets | Real web |",
+                (
+                    f"| **HTTP Requests Generated** | `0` (Mocked) | "
+                    f"`{sum(t.final.total_http_requests for t in self.traces)}` (Live) | Real network |"
+                ),
+                (
+                    f"| **Domain Resolution Rate** | `6.7%` | "
+                    f"`{o.get('domain_resolution_rate', 0.0) * 100:.1f}%` | Live sample |"
+                ),
+                (
+                    f"| **Authoritative Source Rate** | `0.0%` (No live web) | "
+                    f"`{o.get('authoritative_source_discovery_rate', 0.0) * 100:.1f}%` | Live web |"
+                ),
+                "| **Hallucination Rate** | `0.0%` | `0.0%` | Both strictly fail-closed |",
+                (
+                    f"| **Average Pipeline Latency** | `61.4 ms` | "
+                    f"`{o.get('average_latency_ms', 0.0):.1f} ms` | Network socket I/O |"
+                ),
+                "",
+                "---",
+                "",
+                "## 6. Root Cause Failure Analysis (10 Core Architectural Questions)",
+                "",
+                "| Root Cause Category | Count | Operational Impact |",
+                "|---|---|---|",
+            ]
+        )
 
         for cause, count in sorted(rc.items(), key=lambda x: -x[1]):
             lines.append(f"| `{cause}` | {count} | Evaluated across challenge sample |")
 
-        lines.extend([
-            "",
-            "### Architectural Findings:",
-            "",
-            "1. **What is the biggest current bottleneck?**",
-            "   - Distributor contamination in `Part_Manuf` combined with unparsed brand tokens.",
-            "",
-            "2. **Is manufacturer resolution the bottleneck?**",
-            "   - Yes. When `Part_Manuf` contains distributor names or code suffixes,",
-            "     exact catalog resolution requires brand extraction.",
-            "",
-            "3. **Is brand extraction the bottleneck?**",
-            "   - Partially. 55.4% of rows lack structured brand fields, but brand tokens",
-            "     are embedded in `Part_Desc` (e.g. `3M`, `Diablo`, `Milw`, `HIOLIT`, `TREX`).",
-            "",
-            "4. **Is domain catalog coverage the bottleneck?**",
-            "   - Yes for uncommon manufacturers (e.g. `United Window & Door`, `Bow Products`).",
-            "",
-            "5. **Is URL discovery the bottleneck?**",
-            "   - For known catalogs (`diablotools.com`), direct path `/products/{mpn}` works.",
-            "     For others, site-search or sitemap parsing is needed.",
-            "",
-            "6. **Is live website access the bottleneck?**",
-            "   - Minor. Live sites respond with 200 OK or 404 cleanly; timeouts are bounded.",
-            "",
-            "7. **Is identity verification the bottleneck?**",
-            "   - No. `ProductIdentityMatcher` with whole-token MPN matching successfully",
-            "     filters out non-matching pages with zero false positives.",
-            "",
-            "8. **Is evidence extraction the bottleneck?**",
-            "   - No. When a product HTML page is fetched, evidence extraction reliably grounds.",
-            "",
-            "9. **Is enrichment the bottleneck?**",
-            "   - No. Phase 6 correctly validates candidates and enforces 0% hallucination.",
-            "",
-            "10. **How often does Gemini actually become necessary?**",
-            "    - Gemini is only needed when both `Part_Manuf` and `Part_Desc` fail to map",
-            "      to a known domain catalog.",
-            "",
-            "---",
-            "",
-            "## 7. Security & Correctness Rule Enforcement",
-            "",
-            "- **Rule 1 (Distributor Protection):** Verified. Distributors rejected as sources.",
-            "- **Rule 2 (Marketplace Protection):** Verified. Amazon, eBay, Grainger rejected.",
-            "- **Rule 3 (MPN Substring Protection):** Verified. Whole-token regex protected.",
-            "- **Rule 4 (Redirect Safety):** Verified. Cross-domain redirects blocked.",
-            "- **Rule 5 (Fail-Closed Evidence):** Verified. Zero ungrounded values produced.",
-            "",
-            "---",
-            "",
-            "## 8. Final Readiness Verdict",
-            "",
-            "### Verdict: `PROMISING BUT RETRIEVAL-LIMITED`",
-            "",
-            "- **Strengths:** Mathematically sound architecture, strict security boundaries,",
-            "  zero hallucinations (0.0% invention rate), and proven end-to-end live retrieval.",
-            "- **Limitations:** Retrieval success across the broader dataset is constrained",
-            "  by distributor names in `Part_Manuf`, unparsed brands, and catalog breadth.",
-        ])
+        lines.extend(
+            [
+                "",
+                "### Architectural Findings:",
+                "",
+                "1. **What is the biggest current bottleneck?**",
+                "   - Distributor contamination in `Part_Manuf` combined with unparsed brand tokens.",
+                "",
+                "2. **Is manufacturer resolution the bottleneck?**",
+                "   - Yes. When `Part_Manuf` contains distributor names or code suffixes,",
+                "     exact catalog resolution requires brand extraction.",
+                "",
+                "3. **Is brand extraction the bottleneck?**",
+                "   - Partially. 55.4% of rows lack structured brand fields, but brand tokens",
+                "     are embedded in `Part_Desc` (e.g. `3M`, `Diablo`, `Milw`, `HIOLIT`, `TREX`).",
+                "",
+                "4. **Is domain catalog coverage the bottleneck?**",
+                "   - Yes for uncommon manufacturers (e.g. `United Window & Door`, `Bow Products`).",
+                "",
+                "5. **Is URL discovery the bottleneck?**",
+                "   - For known catalogs (`diablotools.com`), direct path `/products/{mpn}` works.",
+                "     For others, site-search or sitemap parsing is needed.",
+                "",
+                "6. **Is live website access the bottleneck?**",
+                "   - Minor. Live sites respond with 200 OK or 404 cleanly; timeouts are bounded.",
+                "",
+                "7. **Is identity verification the bottleneck?**",
+                "   - No. `ProductIdentityMatcher` with whole-token MPN matching successfully",
+                "     filters out non-matching pages with zero false positives.",
+                "",
+                "8. **Is evidence extraction the bottleneck?**",
+                "   - No. When a product HTML page is fetched, evidence extraction reliably grounds.",
+                "",
+                "9. **Is enrichment the bottleneck?**",
+                "   - No. Phase 6 correctly validates candidates and enforces 0% hallucination.",
+                "",
+                "10. **How often does Gemini actually become necessary?**",
+                "    - Gemini is only needed when both `Part_Manuf` and `Part_Desc` fail to map",
+                "      to a known domain catalog.",
+                "",
+                "---",
+                "",
+                "## 7. Security & Correctness Rule Enforcement",
+                "",
+                "- **Rule 1 (Distributor Protection):** Verified. Distributors rejected as sources.",
+                "- **Rule 2 (Marketplace Protection):** Verified. Amazon, eBay, Grainger rejected.",
+                "- **Rule 3 (MPN Substring Protection):** Verified. Whole-token regex protected.",
+                "- **Rule 4 (Redirect Safety):** Verified. Cross-domain redirects blocked.",
+                "- **Rule 5 (Fail-Closed Evidence):** Verified. Zero ungrounded values produced.",
+                "",
+                "---",
+                "",
+                "## 8. Final Readiness Verdict",
+                "",
+                "### Verdict: `PROMISING BUT RETRIEVAL-LIMITED`",
+                "",
+                "- **Strengths:** Mathematically sound architecture, strict security boundaries,",
+                "  zero hallucinations (0.0% invention rate), and proven end-to-end live retrieval.",
+                "- **Limitations:** Retrieval success across the broader dataset is constrained",
+                "  by distributor names in `Part_Manuf`, unparsed brands, and catalog breadth.",
+            ]
+        )
 
         return "\n".join(lines)

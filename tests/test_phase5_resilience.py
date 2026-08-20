@@ -209,7 +209,6 @@ def test_domain_resolver_returns_verified_cache_hit() -> None:
     assert candidates[0].status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
 
 
-
 # ──────────────────────────────────────────────────────────────────────────────
 # 2. Known manufacturer domain from expanded catalog
 # ──────────────────────────────────────────────────────────────────────────────
@@ -527,9 +526,7 @@ def test_service_recover_attempts_alternate_candidates_on_fetch_failure() -> Non
         failure_reason=Phase5FailureReason.SOURCE_FETCH_FAILED,
     )
 
-    _, recovery_job = service.recover(
-        product, profile, failed_job, candidate_urls=(alt_url,)
-    )
+    _, recovery_job = service.recover(product, profile, failed_job, candidate_urls=(alt_url,))
 
     # Recovery either finds the alternate source or reports PRODUCT_SOURCE_NOT_FOUND —
     # in both cases, the job must NOT still carry SOURCE_FETCH_FAILED.
@@ -582,9 +579,7 @@ def test_source_policy_rejects_distributor_url_as_non_authoritative() -> None:
         product_id="p-1",
     )
     verifier = SourceVerifier(policy)
-    result = verifier.verify_source(
-        distributor_source, profile, product_terms=("ABC123", "Acme")
-    )
+    result = verifier.verify_source(distributor_source, profile, product_terms=("ABC123", "Acme"))
 
     assert result.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE
 
@@ -618,6 +613,7 @@ def test_brand_passed_from_product_truth_to_discovery_resolves_distributor_manuf
     class FakeOrch:
         def run(self, p):
             from unilog_product_intelligence.agents.orchestration import JobState, ProductJob
+
             p = ProductTruthService().add_classification(p, {})
             return p, ProductJob(
                 job_id=f"job-{p.product_id}",
@@ -628,6 +624,7 @@ def test_brand_passed_from_product_truth_to_discovery_resolves_distributor_manuf
     class FakeEnrich:
         def enrich(self, p, *args: object, **kwargs: object):
             from unilog_product_intelligence.enrichment.models import PublicationState
+
             return EnrichmentResult(
                 product_id=p.product_id,
                 status=EnrichmentStatus.ENRICHED,
@@ -678,6 +675,7 @@ def test_brand_passed_from_product_truth_to_discovery_resolves_distributor_manuf
                 EvidenceExtractionResult,
                 EvidenceStatus,
             )
+
             return EvidenceExtractionResult(
                 candidates=[
                     EvidenceCandidate(
@@ -736,10 +734,14 @@ def test_site_search_fetches_search_page_and_extracts_product_link() -> None:
         b"<p>Manufacturer: Freud Inc / Diablo</p></body></html>"
     )
 
-    fetcher = _fetcher(_FakeHttpPool({
-        search_url: search_html,
-        product_url: product_html,
-    }))
+    fetcher = _fetcher(
+        _FakeHttpPool(
+            {
+                search_url: search_html,
+                product_url: product_html,
+            }
+        )
+    )
 
     service = ProductSourceDiscoveryService(fetcher)
     product = _product(mpn="DCB518ASTS06G", manufacturer="Freud Inc", brand="Diablo")
@@ -784,10 +786,14 @@ def test_sitemap_xml_parsing_finds_matching_product_url() -> None:
         b"<body><h1>Acme ABC123 Industrial Part</h1><p>Acme Corp Part ABC123</p></body></html>"
     )
 
-    fetcher = _fetcher(_FakeHttpPool({
-        sitemap_url: sitemap_xml,
-        product_url: product_html,
-    }))
+    fetcher = _fetcher(
+        _FakeHttpPool(
+            {
+                sitemap_url: sitemap_xml,
+                product_url: product_html,
+            }
+        )
+    )
 
     service = ProductSourceDiscoveryService(fetcher)
     product = _product(mpn="ABC123", manufacturer="Acme Corp")
@@ -829,11 +835,15 @@ def test_sitemap_index_traversal_finds_product_in_child_sitemap() -> None:
         b"<body><h1>Acme ABC123</h1><p>MPN: ABC123 Acme</p></body></html>"
     )
 
-    fetcher = _fetcher(_FakeHttpPool({
-        index_url: index_xml,
-        child_sitemap_url: child_sitemap_xml,
-        product_url: product_html,
-    }))
+    fetcher = _fetcher(
+        _FakeHttpPool(
+            {
+                index_url: index_xml,
+                child_sitemap_url: child_sitemap_xml,
+                product_url: product_html,
+            }
+        )
+    )
 
     service = ProductSourceDiscoveryService(fetcher)
     product = _product(mpn="ABC123", manufacturer="Acme")
@@ -907,6 +917,7 @@ def test_pipeline_recovers_when_primary_source_404s() -> None:
     class FakeOrch:
         def run(self, p):
             from unilog_product_intelligence.agents.orchestration import JobState, ProductJob
+
             p = ProductTruthService().add_classification(p, {})
             return p, ProductJob(
                 job_id=f"job-{p.product_id}",
@@ -917,6 +928,7 @@ def test_pipeline_recovers_when_primary_source_404s() -> None:
     class FakeEnrich:
         def enrich(self, p, *args: object, **kwargs: object):
             from unilog_product_intelligence.enrichment.models import PublicationState
+
             return EnrichmentResult(
                 product_id=p.product_id,
                 status=EnrichmentStatus.ENRICHED,
@@ -935,6 +947,7 @@ def test_pipeline_recovers_when_primary_source_404s() -> None:
                 EvidenceExtractionResult,
                 EvidenceStatus,
             )
+
             return EvidenceExtractionResult(
                 candidates=[
                     EvidenceCandidate(
@@ -1036,6 +1049,7 @@ def test_row_2_real_vertical_slice() -> None:
     class FakeOrch:
         def run(self, p):
             from unilog_product_intelligence.agents.orchestration import JobState, ProductJob
+
             p = ProductTruthService().add_classification(p, {})
             return p, ProductJob(
                 job_id=f"job-{p.product_id}",
@@ -1046,6 +1060,7 @@ def test_row_2_real_vertical_slice() -> None:
     class FakeEnrich:
         def enrich(self, p, *args: object, **kwargs: object):
             from unilog_product_intelligence.enrichment.models import PublicationState
+
             return EnrichmentResult(
                 product_id=p.product_id,
                 status=EnrichmentStatus.ENRICHED,
@@ -1064,6 +1079,7 @@ def test_row_2_real_vertical_slice() -> None:
                 EvidenceExtractionResult,
                 EvidenceStatus,
             )
+
             return EvidenceExtractionResult(
                 candidates=[
                     EvidenceCandidate(
@@ -1148,6 +1164,7 @@ def test_row_2_real_vertical_slice() -> None:
 
 def test_unknown_manufacturer_no_brand_falls_back_to_gemini() -> None:
     """An unknown manufacturer with no matching catalog or brand triggers Gemini search tools."""
+
     class FakeGeminiProvider(LLMProvider):
         def __init__(self):
             self.tool_calls_made = 0
@@ -1220,17 +1237,22 @@ def test_search_page_with_no_links_returns_empty_candidates() -> None:
 
 def test_redirect_to_external_domain_rejected() -> None:
     """Fetcher refuses to follow redirect to an external unauthorized domain."""
+
     class FakeRedirectResponse:
         def __init__(self, code, headers):
             self.status = code
             self.code = code
             self.headers = headers
+
         def read(self, amt=None):
             return b""
+
         def close(self):
             pass
+
         def __enter__(self):
             return self
+
         def __exit__(self, *args):
             self.close()
 
@@ -1279,8 +1301,7 @@ def test_candidate_domain_not_placed_in_verified_domains() -> None:
     )
 
     verified_candidates = [
-        c for c in disc.candidates
-        if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+        c for c in disc.candidates if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
     ]
     assert verified_candidates == []
 
@@ -1316,9 +1337,13 @@ def test_recovery_cannot_promote_unverified_candidate_source() -> None:
     """Recovery enforces source verification and refuses unverified candidate domains."""
     from unilog_product_intelligence.retrieval.service import ManufacturerJob, ManufacturerJobState
 
-    fetcher = _fetcher(_FakeHttpPool({
-        "https://unverified.example.com/product/ABC123": b"<html><body>ABC123 Acme</body></html>"
-    }))
+    fetcher = _fetcher(
+        _FakeHttpPool(
+            {
+                "https://unverified.example.com/product/ABC123": b"<html><body>ABC123 Acme</body></html>"
+            }
+        )
+    )
     service = ManufacturerIntelligenceService(fetcher=fetcher)
     product = _product(mpn="ABC123", manufacturer="Acme Corp")
     profile = _profile(verified_domains=("verified.example.com",))
@@ -1418,6 +1443,3 @@ def test_gemini_candidate_cannot_bypass_policy() -> None:
     # SourcePolicy must reject this domain
     policy = SourcePolicy()
     assert policy.allowed_domain("https://unverified.example/product/123", profile) is False
-
-
-

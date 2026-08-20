@@ -38,7 +38,7 @@ from unilog_product_intelligence.domain.truth import SourceAuthority
 
 if TYPE_CHECKING:
     # Imported only for type annotations — real import lives in domain.conflicts
-    from unilog_product_intelligence.domain.conflicts import EvidenceConflict
+    pass
 
 
 class ProductEvidencePacket(BaseModel):

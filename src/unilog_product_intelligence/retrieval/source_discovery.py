@@ -450,7 +450,14 @@ class MirkaRetrievalStrategy:
         # Include product family keywords from Part_Desc
         desc = str(product.raw_value("Part_Desc") or "").casefold()
         mirka_kws = (
-            "hiolit", "abranet", "abralon", "iridium", "galaxy", "mirlon", "gold", "polarstar"
+            "hiolit",
+            "abranet",
+            "abralon",
+            "iridium",
+            "galaxy",
+            "mirlon",
+            "gold",
+            "polarstar",
         )
         for kw in mirka_kws:
             if kw in desc:
@@ -491,9 +498,10 @@ class AuthorizedDistributorFallbackStrategy:
     )
 
     def generate_urls(self, product: ProductTruth, hypotheses: list[MpnHypothesis]) -> list[str]:
-        mfg = _product_value(product, "manufacturer") or str(
-            product.raw_value("Part_Manuf") or ""
-        ).strip()
+        mfg = (
+            _product_value(product, "manufacturer")
+            or str(product.raw_value("Part_Manuf") or "").strip()
+        )
         clean_mfg = re.sub(r"\s*\([^)]*\)", "", mfg).strip()
 
         urls: list[str] = []
@@ -655,9 +663,10 @@ class ProductSourceDiscoveryService:
         profile: ManufacturerProfile,
         candidate_urls: Iterable[str] = (),
     ) -> list[ProductSourceCandidate]:
-        raw_mpn = _product_value(product, "manufacturer_part_number") or str(
-            product.raw_value("Mfg_Part_Num") or ""
-        ).strip()
+        raw_mpn = (
+            _product_value(product, "manufacturer_part_number")
+            or str(product.raw_value("Mfg_Part_Num") or "").strip()
+        )
         normalizer = MpnNormalizer()
         mfg_hint = (
             f"{profile.canonical_name or profile.manufacturer_id} "
@@ -1208,18 +1217,23 @@ class ProductIdentityMatcher:
         structured_text = " ".join(_structured_values(structured_meta))
         full_text = " ".join((title, body_text, structured_text))
 
-        raw_mpn = _product_value(product, "manufacturer_part_number") or str(
-            product.raw_value("Mfg_Part_Num") or ""
-        ).strip()
-        manufacturer = _product_value(product, "manufacturer") or str(
-            product.raw_value("Part_Manuf") or ""
-        ).strip()
-        brand = _first_product_value(product, ("brand", "product_family")) or str(
-            product.raw_value("Unilog_Brand")
-            or product.raw_value("E1_Brand")
-            or product.raw_value("DIB_Brand")
-            or ""
-        ).strip()
+        raw_mpn = (
+            _product_value(product, "manufacturer_part_number")
+            or str(product.raw_value("Mfg_Part_Num") or "").strip()
+        )
+        manufacturer = (
+            _product_value(product, "manufacturer")
+            or str(product.raw_value("Part_Manuf") or "").strip()
+        )
+        brand = (
+            _first_product_value(product, ("brand", "product_family"))
+            or str(
+                product.raw_value("Unilog_Brand")
+                or product.raw_value("E1_Brand")
+                or product.raw_value("DIB_Brand")
+                or ""
+            ).strip()
+        )
 
         # Generate hypotheses with manufacturer and brand context
         normalizer = MpnNormalizer()
@@ -1315,10 +1329,7 @@ class ProductIdentityMatcher:
         }:
             # CASE 1 & CASE 2: RAW_EXACT or LOSSLESS_NORMALIZED
             has_context = (
-                matched_manufacturer
-                or matched_brand
-                or desc_overlap >= 0.15
-                or title_match
+                matched_manufacturer or matched_brand or desc_overlap >= 0.15 or title_match
             )
             if has_context and score >= 0.8:
                 classification = "EXACT_MATCH"
@@ -1492,9 +1503,7 @@ def _strategy_names_for(domains: tuple[str, ...], mpn: str | None) -> tuple[str,
     )
 
 
-def _parse_sitemap_xml(
-    body: bytes, max_entries: int = 5000
-) -> tuple[list[str], list[str]]:
+def _parse_sitemap_xml(body: bytes, max_entries: int = 5000) -> tuple[list[str], list[str]]:
     """Parse sitemap XML safely without external entity expansion."""
     product_locs: list[str] = []
     child_sitemaps: list[str] = []
@@ -1674,15 +1683,26 @@ def _identity_present(value: str | None, text: str) -> bool:
     if not wanted:
         return False
     token_keys = {
-        _identity_key(token)
-        for token in re.findall(r"[A-Za-z0-9][A-Za-z0-9._/-]*", text)
+        _identity_key(token) for token in re.findall(r"[A-Za-z0-9][A-Za-z0-9._/-]*", text)
     }
     if wanted in token_keys:
         return True
     words = [_identity_key(w) for w in value.split() if len(_identity_key(w)) >= 3]
     stopwords = {
-        "inc", "llc", "corp", "company", "co", "ltd", "tool", "tools",
-        "supply", "dealer", "accessory", "accessories", "industrial", "abrasives",
+        "inc",
+        "llc",
+        "corp",
+        "company",
+        "co",
+        "ltd",
+        "tool",
+        "tools",
+        "supply",
+        "dealer",
+        "accessory",
+        "accessories",
+        "industrial",
+        "abrasives",
     }
     meaningful = [w for w in words if w not in stopwords]
     return bool(meaningful and any(w in token_keys for w in meaningful))

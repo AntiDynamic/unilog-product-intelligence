@@ -440,7 +440,6 @@ class BrandManufacturerResolver:
         )
 
 
-
 # ── Internal helpers ──────────────────────────────────────────────────────────
 
 

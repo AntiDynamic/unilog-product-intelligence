@@ -134,9 +134,7 @@ def test_build_features_from_evidence_and_verified_attributes() -> None:
 def test_delivery_adapter_populates_item_features_up_to_20() -> None:
     """Test that Phase65ResultDeliveryAdapter populates ITEM_FEATURES_1..20 correctly."""
     product = _make_test_product()
-    sample_features = [
-        f"Feature bullet number {i}" for i in range(1, 8)
-    ]
+    sample_features = [f"Feature bullet number {i}" for i in range(1, 8)]
     product.descriptions = ProductDescriptions(
         short="DeWalt DW735X 13 in Planer",
         long="Technical long description for DeWalt DW735X.",
@@ -155,10 +153,7 @@ def test_delivery_adapter_populates_item_features_up_to_20() -> None:
     phase65_res.is_distributor_masked = False
 
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)

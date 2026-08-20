@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+
 import pytest
 from pydantic import ValidationError
 
@@ -115,10 +116,12 @@ def test_escalate_valid_selection() -> None:
     )
     packet = _make_packet_with_evidence("ev-page", "ev-pdf")
     router = MockRouter(
-        json.dumps({
-            "selected_evidence_id": "ev-pdf",
-            "reasoning": "PDF spec sheet takes precedence over marketing page",
-        })
+        json.dumps(
+            {
+                "selected_evidence_id": "ev-pdf",
+                "reasoning": "PDF spec sheet takes precedence over marketing page",
+            }
+        )
     )
 
     result = engine.escalate(conflict, packet, router)
@@ -144,10 +147,12 @@ def test_escalate_hallucinated_selection_falls_back() -> None:
     )
     packet = _make_packet_with_evidence("ev-page", "ev-pdf")
     router = MockRouter(
-        json.dumps({
-            "selected_evidence_id": "ev-UNSEEN",
-            "reasoning": "I made this up",
-        })
+        json.dumps(
+            {
+                "selected_evidence_id": "ev-UNSEEN",
+                "reasoning": "I made this up",
+            }
+        )
     )
 
     result = engine.escalate(conflict, packet, router)

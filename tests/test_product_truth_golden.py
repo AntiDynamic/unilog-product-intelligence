@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import pytest
-
 from tests.golden.golden_cases import GOLDEN_CASES, GoldenProductCase
+
 from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
 from unilog_product_intelligence.domain.models import StructuredSpec
 from unilog_product_intelligence.domain.provenance import FinalAttribute, ProvenanceKind

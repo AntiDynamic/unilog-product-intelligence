@@ -45,9 +45,7 @@ class InferenceBudget:
             return False
         if tokens > 0 and self.tokens_consumed + tokens > self.max_tokens:
             return False
-        if cost_usd > 0.0 and self.cost_consumed_usd + cost_usd > self.max_cost_usd:
-            return False
-        return True
+        return not (cost_usd > 0.0 and self.cost_consumed_usd + cost_usd > self.max_cost_usd)
 
     def consume(
         self,

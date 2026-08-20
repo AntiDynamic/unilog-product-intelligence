@@ -200,10 +200,7 @@ class ProductOrchestrator:
                 _audit(
                     product.product_id,
                     "product_understood",
-                    {
-                        "product_type": understanding.product_type
-                        or "unknown"
-                    },
+                    {"product_type": understanding.product_type or "unknown"},
                 )
             )
             job.state = JobState.CANDIDATES_ACCEPTED
@@ -231,9 +228,7 @@ class ProductOrchestrator:
             response = self._cache.get(key)
             if response is None:
                 response = self._provider.generate(
-                    LLMRequest(
-                        task=task, input_text=prompt, response_schema=None
-                    )
+                    LLMRequest(task=task, input_text=prompt, response_schema=None)
                 )
                 self._cache[key] = response
             parsed = dto.model_validate_json(response.output_text)

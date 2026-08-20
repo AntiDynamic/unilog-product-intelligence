@@ -2,16 +2,11 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock
-
 import pytest
 
 from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest, LLMResponse
-from unilog_product_intelligence.providers.gemini import GeminiProviderError
 from unilog_product_intelligence.providers.gemini_router import (
     GeminiRouter,
-    NON_RETRYABLE_STATUS_CODES,
-    RETRYABLE_STATUS_CODES,
     _is_model_specific_error,
     should_fallback,
 )
@@ -58,8 +53,8 @@ def test_gemini_router_fallback_on_429() -> None:
 
     # Simulate 429 rate limit
     err = RuntimeError("429 RESOURCE_EXHAUSTED: Rate limit exceeded")
-    setattr(err, "status_code", 429)
-    setattr(err, "code", "RESOURCE_EXHAUSTED")
+    err.status_code = 429
+    err.code = "RESOURCE_EXHAUSTED"
     primary.should_fail = err
 
     router = GeminiRouter(primary=primary, fallback=fallback)
@@ -77,7 +72,7 @@ def test_gemini_router_fail_fast_on_auth_401() -> None:
     fallback = MockLLMProvider("gemini-2.0-flash")
 
     err = RuntimeError("401 Unauthorized")
-    setattr(err, "status_code", 401)
+    err.status_code = 401
     primary.should_fail = err
 
     router = GeminiRouter(primary=primary, fallback=fallback)
@@ -110,19 +105,19 @@ def test_should_fallback_matrix() -> None:
     # Non-retryable
     for code in (400, 401, 403, 404, 422):
         err = RuntimeError(f"Error {code}")
-        setattr(err, "status_code", code)
+        err.status_code = code
         assert should_fallback(err) is False
         assert _is_model_specific_error(err) is False
 
     # Retryable
     for code in (408, 429, 500, 502, 503, 504):
         err = RuntimeError(f"Error {code}")
-        setattr(err, "status_code", code)
+        err.status_code = code
         assert should_fallback(err) is True
         assert _is_model_specific_error(err) is True
 
     # Provider codes
     for pcode in ("RESOURCE_EXHAUSTED", "UNAVAILABLE", "DEADLINE_EXCEEDED"):
         err = RuntimeError(f"Error: {pcode}")
-        setattr(err, "provider_code", pcode)
+        err.provider_code = pcode
         assert should_fallback(err) is True

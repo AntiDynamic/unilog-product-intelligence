@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from unilog_product_intelligence.domain.conflicts import ConflictResolution
-from unilog_product_intelligence.domain.truth import SourceAuthority
 from unilog_product_intelligence.enrichment.conflicts import ConflictEngine
 from unilog_product_intelligence.enrichment.models import EnrichmentCandidate, EvidenceReference
 

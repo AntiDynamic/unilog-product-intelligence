@@ -197,14 +197,16 @@ def test_no_hallucinated_attribute_repair() -> None:
     ctx = DescriptionContext.from_product(product)
 
     # Provider attempts to hallucinate an altered MPN and forbidden superlatives
-    bad_provider = MockDescriptionProvider({
-        "short_desc": "Milwaukee Tool 99-99-9999 Super Cut-Off Wheel",
-        "long_desc1": "The best in class cut-off wheel on earth.",
-        "mobile_desc": "Milwaukee 99-99-9999 Wheel",
-        "invoice_desc": "MILWAUKEE 99-99-9999 CUT-OFF WHEEL",
-        "retail_desc": "An unmatched wheel with magic cutting power.",
-        "features": ["Best in class performance"],
-    })
+    bad_provider = MockDescriptionProvider(
+        {
+            "short_desc": "Milwaukee Tool 99-99-9999 Super Cut-Off Wheel",
+            "long_desc1": "The best in class cut-off wheel on earth.",
+            "mobile_desc": "Milwaukee 99-99-9999 Wheel",
+            "invoice_desc": "MILWAUKEE 99-99-9999 CUT-OFF WHEEL",
+            "retail_desc": "An unmatched wheel with magic cutting power.",
+            "features": ["Best in class performance"],
+        }
+    )
 
     agent = DescriptionAgent(provider=bad_provider)
     descriptions, validations = agent.generate(ctx)

@@ -309,9 +309,14 @@ def evaluate(
         gen_mfr_url = gen_row.get("MFR URL") or ""
 
         # A. Identity Resolution Measurement
-        mfg_resolved = bool(gen_mfg and gen_mfg.strip() and not any(
-            d in gen_mfg for d in ("(JAMIN)", "(MIRUS)", "(APPDE)", "Supply", "Cooperative", "Dealer")
-        ))
+        mfg_resolved = bool(
+            gen_mfg
+            and gen_mfg.strip()
+            and not any(
+                d in gen_mfg
+                for d in ("(JAMIN)", "(MIRUS)", "(APPDE)", "Supply", "Cooperative", "Dealer")
+            )
+        )
         if mfg_resolved:
             mfg_resolved_count += 1
 
@@ -350,7 +355,9 @@ def evaluate(
             if brand_gt_match:
                 gt_brand_correct_count += 1
 
-            classpath_gt_match = bool(gen_classpath and gen_classpath.strip() == expected_classpath.strip())
+            classpath_gt_match = bool(
+                gen_classpath and gen_classpath.strip() == expected_classpath.strip()
+            )
             if classpath_gt_match:
                 gt_classpath_correct_count += 1
 
@@ -369,7 +376,9 @@ def evaluate(
         else:
             resolved_cands = resolver.resolve(input_manuf, input_manuf)
             cand_domains = [c.domain for c in resolved_cands]
-            ver_domains = [c.domain for c in resolved_cands if c.status.value == "verified_manufacturer_source"]
+            ver_domains = [
+                c.domain for c in resolved_cands if c.status.value == "verified_manufacturer_source"
+            ]
 
         has_domain_candidate = len(cand_domains) > 0
         has_verified_domain = len(ver_domains) > 0
@@ -388,9 +397,11 @@ def evaluate(
             candidate_source_count += 1
             url_host = _host(gen_mfr_url)
             # Verify source domain against verified manufacturer allowlist
-            if has_verified_domain and any(
-                url_host == vd or url_host.endswith("." + vd) for vd in ver_domains
-            ) and not policy.is_non_authoritative(url_host):
+            if (
+                has_verified_domain
+                and any(url_host == vd or url_host.endswith("." + vd) for vd in ver_domains)
+                and not policy.is_non_authoritative(url_host)
+            ):
                 is_verified_source = True
                 verified_source_count += 1
 
@@ -424,7 +435,11 @@ def evaluate(
             evidence_count = trace_obj.get("evidence_count", 0)
         else:
             # When evaluated from delivery CSV: evidence is present when authoritative source exists and produced enriched attributes/descriptions
-            evidence_count = attrs_populated + (1 if gen_row.get("SHORT_DESC") else 0) if is_verified_source else 0
+            evidence_count = (
+                attrs_populated + (1 if gen_row.get("SHORT_DESC") else 0)
+                if is_verified_source
+                else 0
+            )
 
         has_authoritative_evidence = is_verified_source and evidence_count > 0
         if has_authoritative_evidence:
@@ -436,17 +451,31 @@ def evaluate(
         non_empty_count = len(non_empty)
         non_empty_fields_per_product.append(non_empty_count)
 
-        core_identity_populated += sum(1 for f in CORE_IDENTITY_FIELDS if gen_row.get(f) and str(gen_row[f]).strip())
-        taxonomy_populated += sum(1 for f in TAXONOMY_FIELDS if gen_row.get(f) and str(gen_row[f]).strip())
-        description_populated += sum(1 for f in DESCRIPTION_FIELDS if gen_row.get(f) and str(gen_row[f]).strip())
-        features_populated += sum(1 for f in FEATURE_FIELDS if gen_row.get(f) and str(gen_row[f]).strip())
+        core_identity_populated += sum(
+            1 for f in CORE_IDENTITY_FIELDS if gen_row.get(f) and str(gen_row[f]).strip()
+        )
+        taxonomy_populated += sum(
+            1 for f in TAXONOMY_FIELDS if gen_row.get(f) and str(gen_row[f]).strip()
+        )
+        description_populated += sum(
+            1 for f in DESCRIPTION_FIELDS if gen_row.get(f) and str(gen_row[f]).strip()
+        )
+        features_populated += sum(
+            1 for f in FEATURE_FIELDS if gen_row.get(f) and str(gen_row[f]).strip()
+        )
         attributes_cells_populated += sum(
-            1 for idx in range(1, 51) for col in (f"ATTRIBUTE_LABEL {idx}", f"ATTRIBUTE_VALUE {idx}", f"ATTRIBUTE_UOM {idx}")
+            1
+            for idx in range(1, 51)
+            for col in (f"ATTRIBUTE_LABEL {idx}", f"ATTRIBUTE_VALUE {idx}", f"ATTRIBUTE_UOM {idx}")
             if gen_row.get(col) and str(gen_row[col]).strip()
         )
         urls_populated += sum(1 for f in URL_FIELDS if gen_row.get(f) and str(gen_row[f]).strip())
-        assets_populated += sum(1 for f in ASSET_FIELDS if gen_row.get(f) and str(gen_row[f]).strip())
-        commercial_populated += sum(1 for f in COMMERCIAL_FIELDS if gen_row.get(f) and str(gen_row[f]).strip())
+        assets_populated += sum(
+            1 for f in ASSET_FIELDS if gen_row.get(f) and str(gen_row[f]).strip()
+        )
+        commercial_populated += sum(
+            1 for f in COMMERCIAL_FIELDS if gen_row.get(f) and str(gen_row[f]).strip()
+        )
 
         # G. Status Classification
         if trace_obj.get("final_status"):
@@ -527,7 +556,9 @@ def evaluate(
         },
         "identity_metrics": {
             "manufacturer_resolved_count": mfg_resolved_count,
-            "manufacturer_resolved_rate_pct": round(mfg_resolved_count / max(1, total_rows) * 100, 2),
+            "manufacturer_resolved_rate_pct": round(
+                mfg_resolved_count / max(1, total_rows) * 100, 2
+            ),
             "manufacturer_ground_truth_accuracy_pct": (
                 round(gt_mfg_correct_count / gt_available_count * 100, 2)
                 if gt_available_count > 0
@@ -550,8 +581,14 @@ def evaluate(
         },
         "taxonomy_metrics": {
             "classpath_generated_count": classpath_generated_count,
-            "classpath_generated_rate_pct": round(classpath_generated_count / max(1, total_rows) * 100, 2),
-            "average_classpath_depth": round(total_classpath_depth / max(1, classpath_generated_count), 2) if classpath_generated_count else 0.0,
+            "classpath_generated_rate_pct": round(
+                classpath_generated_count / max(1, total_rows) * 100, 2
+            ),
+            "average_classpath_depth": round(
+                total_classpath_depth / max(1, classpath_generated_count), 2
+            )
+            if classpath_generated_count
+            else 0.0,
             "classpath_ground_truth_accuracy_pct": (
                 round(gt_classpath_correct_count / gt_available_count * 100, 2)
                 if gt_available_count > 0
@@ -560,22 +597,34 @@ def evaluate(
         },
         "retrieval_metrics": {
             "domain_candidate_count": domain_candidate_count,
-            "domain_candidate_rate_pct": round(domain_candidate_count / max(1, total_rows) * 100, 2),
+            "domain_candidate_rate_pct": round(
+                domain_candidate_count / max(1, total_rows) * 100, 2
+            ),
             "verified_domain_count": verified_domain_count,
             "verified_domain_rate_pct": round(verified_domain_count / max(1, total_rows) * 100, 2),
             "candidate_source_found_count": candidate_source_count,
-            "candidate_source_rate_pct": round(candidate_source_count / max(1, total_rows) * 100, 2),
+            "candidate_source_rate_pct": round(
+                candidate_source_count / max(1, total_rows) * 100, 2
+            ),
             "verified_source_found_count": verified_source_count,
             "verified_source_rate_pct": round(verified_source_count / max(1, total_rows) * 100, 2),
             "source_fetch_success_count": source_fetch_success_count,
-            "source_fetch_success_rate_pct": round(source_fetch_success_count / max(1, total_rows) * 100, 2),
+            "source_fetch_success_rate_pct": round(
+                source_fetch_success_count / max(1, total_rows) * 100, 2
+            ),
             "exact_product_verified_count": exact_product_verified_count,
-            "exact_product_verified_rate_pct": round(exact_product_verified_count / max(1, total_rows) * 100, 2),
-            "authoritative_source_rate_pct": round(verified_source_count / max(1, total_rows) * 100, 2),
+            "exact_product_verified_rate_pct": round(
+                exact_product_verified_count / max(1, total_rows) * 100, 2
+            ),
+            "authoritative_source_rate_pct": round(
+                verified_source_count / max(1, total_rows) * 100, 2
+            ),
         },
         "evidence_metrics": {
             "products_with_authoritative_evidence": products_with_authoritative_evidence,
-            "products_with_evidence_rate_pct": round(products_with_authoritative_evidence / max(1, total_rows) * 100, 2),
+            "products_with_evidence_rate_pct": round(
+                products_with_authoritative_evidence / max(1, total_rows) * 100, 2
+            ),
             "evidence_items_total": total_evidence_items,
             "average_evidence_items_per_enriched_product": round(
                 total_evidence_items / max(1, status_counts.get("ENRICHED", 1)), 2
@@ -585,7 +634,9 @@ def evaluate(
         },
         "enrichment_metrics": {
             "attributes_populated_in_delivery": total_attributes_populated,
-            "average_attributes_per_product": round(total_attributes_populated / max(1, total_rows), 2),
+            "average_attributes_per_product": round(
+                total_attributes_populated / max(1, total_rows), 2
+            ),
             "products_with_attributes": products_with_attributes_count,
         },
         "delivery_completeness": {
@@ -707,20 +758,24 @@ def _build_markdown_report(report: dict[str, Any], traces: list[dict[str, Any]])
         "",
     ]
     for reason, count in ft.items():
-        lines.append(f"- `{reason}`: {count} products ({count / report['benchmark_sample_size'] * 100:.1f}%)")
+        lines.append(
+            f"- `{reason}`: {count} products ({count / report['benchmark_sample_size'] * 100:.1f}%)"
+        )
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## Ground Truth Availability Notice",
-        "",
-        f"- Ground Truth Reference Records in File: **{report['ground_truth']['ground_truth_reference_rows_in_file']}**",
-        f"- Ground Truth Matches in 50-Row Sample: **{report['ground_truth']['ground_truth_records_available']}**",
-        "> [!NOTE]",
-        "> When ground truth reference rows are not available for a given product row, accuracy metrics are reported as `null`/uncalculated rather than fabricated.",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Ground Truth Availability Notice",
+            "",
+            f"- Ground Truth Reference Records in File: **{report['ground_truth']['ground_truth_reference_rows_in_file']}**",
+            f"- Ground Truth Matches in 50-Row Sample: **{report['ground_truth']['ground_truth_records_available']}**",
+            "> [!NOTE]",
+            "> When ground truth reference rows are not available for a given product row, accuracy metrics are reported as `null`/uncalculated rather than fabricated.",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -728,15 +783,23 @@ def _build_markdown_report(report: dict[str, Any], traces: list[dict[str, Any]])
 def main() -> None:
     import argparse
 
-    parser = argparse.ArgumentParser(description="Evaluate UNILOG delivery CSV against schema and ground truth")
+    parser = argparse.ArgumentParser(
+        description="Evaluate UNILOG delivery CSV against schema and ground truth"
+    )
     parser.add_argument("--input", default=str(INPUT_PATH), help="Path to input CSV")
     parser.add_argument("--output", default=str(OUTPUT_PATH), help="Path to generated delivery CSV")
-    parser.add_argument("--expected", default=str(EXPECTED_PATH), help="Path to expected delivery CSV")
+    parser.add_argument(
+        "--expected", default=str(EXPECTED_PATH), help="Path to expected delivery CSV"
+    )
     parser.add_argument("--schema", default=str(SCHEMA_PATH), help="Path to schema JSON")
     parser.add_argument("--traces", default=str(TRACES_PATH), help="Path to traces JSON")
-    parser.add_argument("--report-json", default=str(EVAL_JSON_PATH), help="Path to output eval JSON")
+    parser.add_argument(
+        "--report-json", default=str(EVAL_JSON_PATH), help="Path to output eval JSON"
+    )
     parser.add_argument("--report-md", default=str(EVAL_MD_PATH), help="Path to output eval MD")
-    parser.add_argument("--report-rows", default=str(ROW_COMP_PATH), help="Path to output row traces JSON")
+    parser.add_argument(
+        "--report-rows", default=str(ROW_COMP_PATH), help="Path to output row traces JSON"
+    )
     args = parser.parse_args()
 
     evaluate(

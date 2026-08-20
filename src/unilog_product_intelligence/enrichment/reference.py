@@ -127,7 +127,8 @@ def load_uom_master(path: Path) -> UomStandardMap:
                         if (
                             "approved" in name
                             or "standard uom" in name
-                            or name in {
+                            or name
+                            in {
                                 "uom",
                                 "approved uom",
                                 "abbreviation",
@@ -171,14 +172,10 @@ def load_uom_master(path: Path) -> UomStandardMap:
                     else None
                 )
                 cap_form = (
-                    _clean_str(row[cap_col])
-                    if cap_col is not None and cap_col < len(row)
-                    else None
+                    _clean_str(row[cap_col]) if cap_col is not None and cap_col < len(row) else None
                 )
                 ex_val = (
-                    _clean_str(row[ex_col])
-                    if ex_col is not None and ex_col < len(row)
-                    else None
+                    _clean_str(row[ex_col]) if ex_col is not None and ex_col < len(row) else None
                 )
                 rule_val = (
                     _clean_str(row[rule_col])
@@ -646,9 +643,7 @@ class GlobalLovIndex:
         cat_key = category_or_classpath.strip().casefold()
         if cat_key in self.rules_by_leaf:
             return tuple(self.rules_by_leaf[cat_key])
-        return tuple(
-            rule for (leaf, _), rule in self.rules_by_leaf_attr.items() if leaf == cat_key
-        )
+        return tuple(rule for (leaf, _), rule in self.rules_by_leaf_attr.items() if leaf == cat_key)
 
 
 @dataclass(frozen=True)
@@ -763,17 +758,17 @@ def _parse_lov_rows(rows: Sequence[Sequence[Any]]) -> list[LovAttributeRule]:
             continue
 
         is_filt = (
-            True if raw_filt.casefold() in {"y", "yes", "true", "1"}
-            else False if raw_filt.casefold() in {"n", "no", "false", "0"}
+            True
+            if raw_filt.casefold() in {"y", "yes", "true", "1"}
+            else False
+            if raw_filt.casefold() in {"n", "no", "false", "0"}
             else None
         )
 
         group_key = (current_cp, current_leaf, current_attr)
         if group_key not in grouped_data:
             grouped_data[group_key] = {
-                "classpath": tuple(
-                    s.strip() for s in re.split(r"[>/|]", current_cp) if s.strip()
-                ),
+                "classpath": tuple(s.strip() for s in re.split(r"[>/|]", current_cp) if s.strip()),
                 "leaf_node": current_leaf or None,
                 "attribute_label": current_attr,
                 "values": set(),
@@ -946,10 +941,7 @@ class ReferencePack:
             return bool(self.global_lov and self.global_lov.rules)
         if ref_type == ReferenceType.CATEGORY_LOV:
             return bool(self.category_lovs)
-        return any(
-            OFFICIAL_REFERENCE_MANIFEST.get(fname) == ref_type
-            for fname in self.files
-        )
+        return any(OFFICIAL_REFERENCE_MANIFEST.get(fname) == ref_type for fname in self.files)
 
     @classmethod
     def discover(cls, roots: Iterable[str | Path]) -> ReferencePack:
@@ -1001,9 +993,7 @@ class ReferencePack:
             elif ref_type == ReferenceType.GLOBAL_LOV:
                 global_lov_index = load_global_lov(path)
                 if global_lov_index.rules:
-                    status_map[ReferenceType.GLOBAL_LOV] = (
-                        ReferenceAvailability.REFERENCE_AVAILABLE
-                    )
+                    status_map[ReferenceType.GLOBAL_LOV] = ReferenceAvailability.REFERENCE_AVAILABLE
             elif ref_type == ReferenceType.CATEGORY_LOV:
                 cat_pack = load_category_lov(path)
                 if cat_pack.attribute_rules:
@@ -1039,15 +1029,13 @@ class ReferencePack:
     @property
     def uom_available(self) -> bool:
         return (
-            self.status.get(ReferenceType.UOM_STANDARD)
-            == ReferenceAvailability.REFERENCE_AVAILABLE
+            self.status.get(ReferenceType.UOM_STANDARD) == ReferenceAvailability.REFERENCE_AVAILABLE
         )
 
     @property
     def lov_available(self) -> bool:
         return (
-            self.status.get(ReferenceType.GLOBAL_LOV)
-            == ReferenceAvailability.REFERENCE_AVAILABLE
+            self.status.get(ReferenceType.GLOBAL_LOV) == ReferenceAvailability.REFERENCE_AVAILABLE
             or self.status.get(ReferenceType.CATEGORY_LOV)
             == ReferenceAvailability.REFERENCE_AVAILABLE
         )
@@ -1253,9 +1241,7 @@ class ReferencePack:
                 cat_key = category.strip().casefold()
                 cp_rules = self.global_lov.rules_by_classpath.get(cp_key, [])
                 exact_rules = [
-                    r
-                    for r in cp_rules
-                    if r.leaf_node and r.leaf_node.strip().casefold() == cat_key
+                    r for r in cp_rules if r.leaf_node and r.leaf_node.strip().casefold() == cat_key
                 ]
                 if exact_rules:
                     return tuple(exact_rules), "GLOBAL_LOV"

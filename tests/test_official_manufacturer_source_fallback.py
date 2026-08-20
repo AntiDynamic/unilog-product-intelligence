@@ -158,13 +158,16 @@ def test_3_direct_and_support_failed_sitemap_available() -> None:
       <body><h1>PDSH4816AF</h1></body>
     </html>
     """
-    fetcher = MockFetcher({
-        sitemap_url: sitemap_xml,
-        matched_product_url: matched_html,
-    }, {
-        sitemap_url: "text/xml",
-        matched_product_url: "text/html",
-    })
+    fetcher = MockFetcher(
+        {
+            sitemap_url: sitemap_xml,
+            matched_product_url: matched_html,
+        },
+        {
+            sitemap_url: "text/xml",
+            matched_product_url: "text/html",
+        },
+    )
     service = ProductSourceDiscoveryService(fetcher=fetcher)
     profile = ManufacturerProfile(
         manufacturer_id="frigidaire",
@@ -185,9 +188,7 @@ def test_4_document_fallback_pdf() -> None:
     product = _make_product(mpn="WDTS7024RZ", mfg="Whirlpool", brand="Whirlpool")
     pdf_url = "https://learnwhirlpool.com/docs/WDTS7024RZ_spec_sheet.pdf"
 
-    stream_content = (
-        b"BT /F1 12 Tf (Whirlpool WDTS7024RZ Spec Sheet) Tj (Voltage: 120V) Tj ET"
-    )
+    stream_content = b"BT /F1 12 Tf (Whirlpool WDTS7024RZ Spec Sheet) Tj (Voltage: 120V) Tj ET"
     compressed = zlib.compress(stream_content)
     pdf_body = (
         b"%PDF-1.4\n1 0 obj\n<< /Length "
@@ -223,11 +224,7 @@ def test_5_unrelated_manufacturer_pdf_rejected() -> None:
 
     stream_content = b"BT /F1 12 Tf (Whirlpool WDT730PAHZ Dishwasher Spec Sheet) Tj ET"
     compressed = zlib.compress(stream_content)
-    pdf_body = (
-        b"%PDF-1.4\nstream\n"
-        + compressed
-        + b"\nendstream\n%%EOF"
-    )
+    pdf_body = b"%PDF-1.4\nstream\n" + compressed + b"\nendstream\n%%EOF"
 
     fetcher = MockFetcher(
         {unrelated_pdf_url: pdf_body},

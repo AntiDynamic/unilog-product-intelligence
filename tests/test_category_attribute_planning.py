@@ -100,56 +100,66 @@ def test_global_lov_category_resolution(tmp_path: Path) -> None:
     lov_path = tmp_path / "Unicat_Lov_v1_0_Updated_With_Remarks.xlsx"
     wb = Workbook()
     ws = wb.active
-    ws.append([
-        "Classpath",
-        "Leaf Node",
-        "Attribute Label",
-        "Attribute Values",
-        "Filtering Y/N",
-        "Guidelines",
-        "Remarks",
-        "UOM",
-    ])
-    ws.append([
-        "Plumbing > Fittings > Couplings",
-        "Couplings",
-        "Fitting Type",
-        "Rigid Coupling\nFlexible Coupling\nCompression Coupling",
-        "Y",
-        "Required fitting type",
-        "Required",
-        None,
-    ])
-    ws.append([
-        "Plumbing > Fittings > Couplings",
-        "Couplings",
-        "Connection Type",
-        "NPT x NPT\nPush-Fit\nSweat",
-        "Y",
-        "Connection standard",
-        None,
-        None,
-    ])
-    ws.append([
-        "Plumbing > Fittings > Couplings",
-        "Couplings",
-        "Material",
-        "Brass\nBronze\nCopper\nPVC\nStainless Steel",
-        "Y",
-        "Body material",
-        None,
-        None,
-    ])
-    ws.append([
-        "Plumbing > Fittings > Couplings",
-        "Couplings",
-        "Size",
-        "1/2\n3/4\n1\n2",
-        "N",
-        "Nominal size",
-        None,
-        "IN",
-    ])
+    ws.append(
+        [
+            "Classpath",
+            "Leaf Node",
+            "Attribute Label",
+            "Attribute Values",
+            "Filtering Y/N",
+            "Guidelines",
+            "Remarks",
+            "UOM",
+        ]
+    )
+    ws.append(
+        [
+            "Plumbing > Fittings > Couplings",
+            "Couplings",
+            "Fitting Type",
+            "Rigid Coupling\nFlexible Coupling\nCompression Coupling",
+            "Y",
+            "Required fitting type",
+            "Required",
+            None,
+        ]
+    )
+    ws.append(
+        [
+            "Plumbing > Fittings > Couplings",
+            "Couplings",
+            "Connection Type",
+            "NPT x NPT\nPush-Fit\nSweat",
+            "Y",
+            "Connection standard",
+            None,
+            None,
+        ]
+    )
+    ws.append(
+        [
+            "Plumbing > Fittings > Couplings",
+            "Couplings",
+            "Material",
+            "Brass\nBronze\nCopper\nPVC\nStainless Steel",
+            "Y",
+            "Body material",
+            None,
+            None,
+        ]
+    )
+    ws.append(
+        [
+            "Plumbing > Fittings > Couplings",
+            "Couplings",
+            "Size",
+            "1/2\n3/4\n1\n2",
+            "N",
+            "Nominal size",
+            None,
+            "IN",
+        ]
+    )
     wb.save(lov_path)
     wb.close()
 
@@ -178,29 +188,37 @@ def test_attribute_name_collision(tmp_path: Path) -> None:
     lov_path = tmp_path / "Unicat_Lov_v1_0_Updated_With_Remarks.xlsx"
     wb = Workbook()
     ws = wb.active
-    ws.append([
-        "Classpath", "Leaf Node", "Attribute Label", "Attribute Values", "Filtering Y/N", "UOM"
-    ])
-    ws.append([
-        "Plumbing > Fittings", "Fittings", "Material",
-        "Brass\nBronze\nCopper\nPVC\nStainless Steel", "Y", None,
-    ])
-    ws.append([
-        "Fasteners > Bolts", "Hex Bolts", "Material",
-        "Grade 5 Steel\nGrade 8 Steel\nTitanium\nZinc Plated", "Y", None,
-    ])
+    ws.append(
+        ["Classpath", "Leaf Node", "Attribute Label", "Attribute Values", "Filtering Y/N", "UOM"]
+    )
+    ws.append(
+        [
+            "Plumbing > Fittings",
+            "Fittings",
+            "Material",
+            "Brass\nBronze\nCopper\nPVC\nStainless Steel",
+            "Y",
+            None,
+        ]
+    )
+    ws.append(
+        [
+            "Fasteners > Bolts",
+            "Hex Bolts",
+            "Material",
+            "Grade 5 Steel\nGrade 8 Steel\nTitanium\nZinc Plated",
+            "Y",
+            None,
+        ]
+    )
     wb.save(lov_path)
     wb.close()
 
     pack = ReferencePack.discover([tmp_path])
     planner = AttributePlanner(reference_pack=pack)
 
-    fitting_prod = _make_test_product(
-        category="Fittings", classpath=("Plumbing", "Fittings")
-    )
-    bolt_prod = _make_test_product(
-        category="Hex Bolts", classpath=("Fasteners", "Hex Bolts")
-    )
+    fitting_prod = _make_test_product(category="Fittings", classpath=("Plumbing", "Fittings"))
+    bolt_prod = _make_test_product(category="Hex Bolts", classpath=("Fasteners", "Hex Bolts"))
 
     fitting_plans = {p.attribute_name: p for p in planner.plan(fitting_prod)}
     bolt_plans = {p.attribute_name: p for p in planner.plan(bolt_prod)}
@@ -209,10 +227,17 @@ def test_attribute_name_collision(tmp_path: Path) -> None:
     assert "Material" in bolt_plans
 
     assert set(fitting_plans["Material"].allowed_values) == {
-        "Brass", "Bronze", "Copper", "PVC", "Stainless Steel"
+        "Brass",
+        "Bronze",
+        "Copper",
+        "PVC",
+        "Stainless Steel",
     }
     assert set(bolt_plans["Material"].allowed_values) == {
-        "Grade 5 Steel", "Grade 8 Steel", "Titanium", "Zinc Plated"
+        "Grade 5 Steel",
+        "Grade 8 Steel",
+        "Titanium",
+        "Zinc Plated",
     }
     assert "Titanium" not in fitting_plans["Material"].allowed_values
     assert "Brass" not in bolt_plans["Material"].allowed_values
@@ -239,16 +264,20 @@ def test_category_lov_overrides_global(tmp_path: Path) -> None:
     wb_cat = Workbook()
     ws_cat = wb_cat.active
     ws_cat.append(["Attribute Label", "Attribute Values", "UOM"])
-    ws_cat.append([
-        "Faucet Type",
-        "Centerset Faucet\nWidespread Faucet\nSingle Hole Faucet\nWall Mount Faucet",
-        None,
-    ])
-    ws_cat.append([
-        "Finish",
-        "Polished Chrome\nBrushed Nickel\nMatte Black\nOil Rubbed Bronze",
-        None,
-    ])
+    ws_cat.append(
+        [
+            "Faucet Type",
+            "Centerset Faucet\nWidespread Faucet\nSingle Hole Faucet\nWall Mount Faucet",
+            None,
+        ]
+    )
+    ws_cat.append(
+        [
+            "Finish",
+            "Polished Chrome\nBrushed Nickel\nMatte Black\nOil Rubbed Bronze",
+            None,
+        ]
+    )
     ws_cat.append(["Flow Rate", "1.2\n1.5\n1.8\n2.2", "GPM"])
     wb_cat.save(category_lov_path)
     wb_cat.close()
@@ -276,32 +305,37 @@ def test_required_vs_optional_ordering(tmp_path: Path) -> None:
     lov_path = tmp_path / "Unicat_Lov_v1_0_Updated_With_Remarks.xlsx"
     wb = Workbook()
     ws = wb.active
-    ws.append([
-        "Classpath", "Leaf Node", "Attribute Label", "Attribute Values", "Filtering Y/N", "Remarks"
-    ])
-    ws.append([
-        "Abrasives > Cut-Off Wheels",
-        "Cut-Off Wheels",
-        "Wheel Diameter",
-        "4-1/2\n6\n14",
-        "Y",
-        "Required",
-    ])
-    ws.append([
-        "Abrasives > Cut-Off Wheels", "Cut-Off Wheels", "Arbor Size", "5/8-11\n7/8", "Y", None
-    ])
-    ws.append([
-        "Abrasives > Cut-Off Wheels", "Cut-Off Wheels", "Max RPM", "8500\n13300", "N", None
-    ])
+    ws.append(
+        [
+            "Classpath",
+            "Leaf Node",
+            "Attribute Label",
+            "Attribute Values",
+            "Filtering Y/N",
+            "Remarks",
+        ]
+    )
+    ws.append(
+        [
+            "Abrasives > Cut-Off Wheels",
+            "Cut-Off Wheels",
+            "Wheel Diameter",
+            "4-1/2\n6\n14",
+            "Y",
+            "Required",
+        ]
+    )
+    ws.append(
+        ["Abrasives > Cut-Off Wheels", "Cut-Off Wheels", "Arbor Size", "5/8-11\n7/8", "Y", None]
+    )
+    ws.append(["Abrasives > Cut-Off Wheels", "Cut-Off Wheels", "Max RPM", "8500\n13300", "N", None])
     wb.save(lov_path)
     wb.close()
 
     pack = ReferencePack.discover([tmp_path])
     planner = AttributePlanner(reference_pack=pack)
 
-    prod = _make_test_product(
-        category="Cut-Off Wheels", classpath=("Abrasives", "Cut-Off Wheels")
-    )
+    prod = _make_test_product(category="Cut-Off Wheels", classpath=("Abrasives", "Cut-Off Wheels"))
     plans = planner.plan(prod)
 
     assert len(plans) == 3
@@ -371,13 +405,15 @@ def test_plan_determinism(tmp_path: Path) -> None:
     ws = wb.active
     ws.append(["Classpath", "Leaf Node", "Attribute Label", "Attribute Values", "Filtering Y/N"])
     ws.append(["Plumbing > Valves", "Valves", "Valve Type", "Ball\nCheck\nGate\nGlobe", "Y"])
-    ws.append([
-        "Plumbing > Valves",
-        "Valves",
-        "Material",
-        "Brass\nBronze\nCast Iron\nStainless Steel",
-        "Y",
-    ])
+    ws.append(
+        [
+            "Plumbing > Valves",
+            "Valves",
+            "Material",
+            "Brass\nBronze\nCast Iron\nStainless Steel",
+            "Y",
+        ]
+    )
     ws.append(["Plumbing > Valves", "Valves", "Connection", "NPT\nFlanged\nSolder", "Y"])
     wb.save(lov_path)
     wb.close()
@@ -472,28 +508,30 @@ def test_unplanned_attribute_rejected_by_agent_and_validator() -> None:
     plans = planner.plan(prod)
 
     # Provider outputs one planned attribute and one unplanned attribute
-    provider = MockEnrichmentProvider([
-        {
-            "attribute": "material",
-            "value": "Brass",
-            "raw_value": "Brass",
-            "normalized_value": "Brass",
-            "evidence_id": "ev-1",
-            "evidence_text": "Material: Brass",
-            "status": "DIRECT",
-            "reason": "Directly stated.",
-        },
-        {
-            "attribute": "unplanned_secret_attr",
-            "value": "Secret",
-            "raw_value": "Secret",
-            "normalized_value": "Secret",
-            "evidence_id": "ev-1",
-            "evidence_text": "Secret info",
-            "status": "DIRECT",
-            "reason": "Unplanned.",
-        },
-    ])
+    provider = MockEnrichmentProvider(
+        [
+            {
+                "attribute": "material",
+                "value": "Brass",
+                "raw_value": "Brass",
+                "normalized_value": "Brass",
+                "evidence_id": "ev-1",
+                "evidence_text": "Material: Brass",
+                "status": "DIRECT",
+                "reason": "Directly stated.",
+            },
+            {
+                "attribute": "unplanned_secret_attr",
+                "value": "Secret",
+                "raw_value": "Secret",
+                "normalized_value": "Secret",
+                "evidence_id": "ev-1",
+                "evidence_text": "Secret info",
+                "status": "DIRECT",
+                "reason": "Unplanned.",
+            },
+        ]
+    )
 
     agent = EvidenceGroundedEnrichmentAgent(provider)
     candidates = agent.enrich(prod, plans, evidence_references(prod))
@@ -535,8 +573,7 @@ def test_evidence_required_for_publishable_candidate() -> None:
 
     assert validated[0].status == FinalAttributeStatus.REJECTED
     assert any(
-        v.validator == "evidence" and v.severity == ValidationSeverity.BLOCKING
-        for v in validations
+        v.validator == "evidence" and v.severity == ValidationSeverity.BLOCKING for v in validations
     )
     pub_state = ValidationPipeline().publication_state(plans, validated, validations, reviews)
     assert pub_state == PublicationState.BLOCKED

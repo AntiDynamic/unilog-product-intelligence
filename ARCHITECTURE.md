@@ -108,3 +108,58 @@ validation, conflict, and human-review payloads. `ReferencePack` reports
 `REFERENCE_AVAILABLE`/`REFERENCE_UNAVAILABLE` explicitly; missing official vocabularies are never
 fabricated. Publication is a deterministic `READY`, `REVIEW_REQUIRED`, or `BLOCKED` decision.
 Commerce descriptions remain deferred to Phase 7.
+
+## Hardened Evidence Architecture (Phase 6.5)
+
+The hardened evidence architecture enforces strict evidence invariants, guarantees deep immutability across phase boundaries, prevents AI hallucination, and provides end-to-end truth auditing.
+
+### Core Architectural Principle
+
+> **Gemini is a proposal and reasoning component, never an authoritative source.**
+> It selects and reasons between existing evidence records — it does not create evidence or override source authority.
+
+```text
+Phase 5 (ManufacturerIntelligenceService)
+       ↓  Assembles deeply immutable packet
+ProductEvidencePacket (frozen=True, StructuredSpec, FeatureEvidence)
+       ↓
+EvidenceConstraintValidator (rejects ungrounded / hallucinated proposals)
+       ↓
+ConflictEngine (authority ranking: AUTHORITATIVE > HIGH > SECONDARY > UNKNOWN)
+       ↓  (Equal authority: escalates via GeminiRouter strong model)
+ConflictEscalationResult (pinned to valid packet evidence IDs)
+       ↓
+TruthAudit & FinalAttribute Provenance (audits all grounded attributes & invariants)
+       ↓
+Phase65ResultDeliveryAdapter (projects verified truth into official 252-column delivery)
+```
+
+### Components and Contracts
+
+1. **Deeply Immutable `ProductEvidencePacket`** (`domain/evidence_packet.py`, `domain/models.py`)
+   - `frozen=True` and `extra="forbid"`.
+   - Uses domain value types (`StructuredSpec`, `FeatureEvidence`, `DiscoveredAsset`) with tuple collections (no mutable dicts or lists).
+   - Single source of truth flowing from Phase 5 through Phase 6 to Delivery.
+
+2. **`EvidenceConstraintValidator`** (`enrichment/evidence_validator.py`, `enrichment/schemas.py`)
+   - Validates all `AttributeProposal` items returned by Gemini.
+   - Enforces that every proposal cites non-empty `evidence_ids` that exist in `packet.evidence`.
+   - Rejects ungrounded or hallucinated proposals before they can touch `ProductTruth`.
+
+3. **Evidence-Aware `ConflictEngine` & Escalation** (`enrichment/conflicts.py`, `domain/conflict_escalation.py`)
+   - Strictly higher source authority automatically wins (`AUTHORITATIVE_SOURCE_WINS`).
+   - Equal top-authority disagreements (e.g. OEM HTML vs OEM PDF) are escalated to strong reasoning models via `ConflictEngine.escalate()`.
+   - `ConflictEscalationResult` validates that the selected evidence ID belongs to the packet. If the model hallucinates an ID, it safely falls back to `REVIEW_REQUIRED`.
+
+4. **`GeminiRouter` & `InferenceBudget`** (`providers/gemini_router.py`, `enrichment/inference_budget.py`)
+   - Explicit retry matrix: `NON_RETRYABLE_STATUS_CODES` (400, 401, 403, 404, 422, SPEND_LIMIT) fail fast; `RETRYABLE_STATUS_CODES` (408, 429, 5xx, RESOURCE_EXHAUSTED) route to fallback.
+   - `InferenceBudget` bounds LLM calls, token usage, and cost per product run.
+
+5. **`ManufacturerRegistry` Trust Model** (`retrieval/manufacturer_registry.py`)
+   - Thread-safe registry storing audited static profiles and `VerifiedRoute` instances.
+   - Requires valid `evidence_id` and `{mpn}` placeholder for all learned routes.
+   - Supports TTL-based expiration and automatic route pruning. Audited static profiles can never be overridden.
+
+6. **`TruthAudit` & Field Provenance** (`validation/truth_audit.py`, `domain/provenance.py`)
+   - `FinalAttribute` tracks value, unit of measure, `ProvenanceKind`, `evidence_id`, `source_url`, and `source_authority`.
+   - `TruthAudit` validates all invariants on final pipeline execution and attaches audit summaries directly to row traces.

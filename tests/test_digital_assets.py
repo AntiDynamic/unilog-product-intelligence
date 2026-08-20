@@ -429,7 +429,10 @@ def test_delivery_adapter_maps_discovered_digital_assets() -> None:
     assert values["Actual Image (Yes/No)"] == "Yes"
     assert values["Alternate Image 1"] == "https://www.milwaukeetool.com/media/49-94-0013_alt1.jpg"
     assert values["Specification Sheet"] == "https://www.milwaukeetool.com/docs/spec_sheet.pdf"
-    assert values["Instruction/Installation Manual"] == "https://www.milwaukeetool.com/docs/installation_guide.pdf"
+    assert (
+        values["Instruction/Installation Manual"]
+        == "https://www.milwaukeetool.com/docs/installation_guide.pdf"
+    )
     assert values["Warranty Information"] == "https://www.milwaukeetool.com/docs/warranty.pdf"
     assert values["SDS"] == "https://www.milwaukeetool.com/docs/sds.pdf"
     assert values["Line Drawing"] == "https://www.milwaukeetool.com/cad/line_drawing.dwg"

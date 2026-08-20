@@ -506,9 +506,7 @@ def test_multi_domain_test_i_mpn_hypothesis_order() -> None:
         identity_eligible=True,
     )
 
-    ordered = _order_mpn_hypotheses_for_retrieval(
-        [h_exploratory, h_verified, h_lossless, h_raw]
-    )
+    ordered = _order_mpn_hypotheses_for_retrieval([h_exploratory, h_verified, h_lossless, h_raw])
 
     assert ordered[0].hypothesis_type == MpnHypothesisType.RAW
     assert ordered[1].hypothesis_type == MpnHypothesisType.LOSSLESS_NORMALIZED

@@ -97,64 +97,70 @@ KNOWN_MANUFACTURER_ASSET_HOSTS: dict[str, tuple[str, ...]] = {
     ),
 }
 
-DISALLOWED_THIRD_PARTY_DOMAINS: frozenset[str] = frozenset({
-    "amazon.com",
-    "amazon.co.uk",
-    "amazon.ca",
-    "grainger.com",
-    "ebay.com",
-    "walmart.com",
-    "homedepot.com",
-    "lowes.com",
-    "mscdirect.com",
-    "zoro.com",
-    "aliexpress.com",
-    "alibaba.com",
-    "target.com",
-    "wayfair.com",
-})
+DISALLOWED_THIRD_PARTY_DOMAINS: frozenset[str] = frozenset(
+    {
+        "amazon.com",
+        "amazon.co.uk",
+        "amazon.ca",
+        "grainger.com",
+        "ebay.com",
+        "walmart.com",
+        "homedepot.com",
+        "lowes.com",
+        "mscdirect.com",
+        "zoro.com",
+        "aliexpress.com",
+        "alibaba.com",
+        "target.com",
+        "wayfair.com",
+    }
+)
 
-IMAGE_EXCLUSION_KEYWORDS: frozenset[str] = frozenset({
-    "logo",
-    "icon",
-    "badge",
-    "sprite",
-    "arrow",
-    "cart",
-    "search",
-    "pixel",
-    "social",
-    "facebook",
-    "twitter",
-    "instagram",
-    "youtube",
-    "linkedin",
-    "spinner",
-    "loading",
-    "1x1",
-    "favicon",
-    "banner_ad",
-    "nav_",
-    "header_logo",
-    "footer_logo",
-    "payment",
-    "visa",
-    "mastercard",
-    "amex",
-    "paypal",
-})
+IMAGE_EXCLUSION_KEYWORDS: frozenset[str] = frozenset(
+    {
+        "logo",
+        "icon",
+        "badge",
+        "sprite",
+        "arrow",
+        "cart",
+        "search",
+        "pixel",
+        "social",
+        "facebook",
+        "twitter",
+        "instagram",
+        "youtube",
+        "linkedin",
+        "spinner",
+        "loading",
+        "1x1",
+        "favicon",
+        "banner_ad",
+        "nav_",
+        "header_logo",
+        "footer_logo",
+        "payment",
+        "visa",
+        "mastercard",
+        "amex",
+        "paypal",
+    }
+)
 
-DOC_EXTENSIONS: frozenset[str] = frozenset({
-    ".pdf",
-    ".doc",
-    ".docx",
-    ".dwg",
-    ".dxf",
-    ".step",
-    ".stp",
-    ".rtf",
-    ".txt",
-})
+DOC_EXTENSIONS: frozenset[str] = frozenset(
+    {
+        ".pdf",
+        ".doc",
+        ".docx",
+        ".dwg",
+        ".dxf",
+        ".step",
+        ".stp",
+        ".rtf",
+        ".txt",
+    }
+)
 
 
 def _clean_url(url: str) -> str:
@@ -286,25 +292,22 @@ class DocumentClassifier:
             return AssetType.USER_MANUAL
 
         # 5. CAD / Drawings
-        if (
-            any(
-                tok in text
-                for tok in [
-                    "cad",
-                    "dwg",
-                    "dxf",
-                    "step",
-                    "stp",
-                    "line drawing",
-                    "dimensional drawing",
-                    "engineering drawing",
-                    "blueprint",
-                    "diagram",
-                    "dimension",
-                ]
-            )
-            or filename.endswith((".dwg", ".dxf", ".step", ".stp"))
-        ):
+        if any(
+            tok in text
+            for tok in [
+                "cad",
+                "dwg",
+                "dxf",
+                "step",
+                "stp",
+                "line drawing",
+                "dimensional drawing",
+                "engineering drawing",
+                "blueprint",
+                "diagram",
+                "dimension",
+            ]
+        ) or filename.endswith((".dwg", ".dxf", ".step", ".stp")):
             return AssetType.CAD_DRAWING
 
         # 6. Catalog / Brochure
@@ -411,32 +414,38 @@ class _AssetHTMLParser(HTMLParser):
                 or attr_dict.get("data-highres")
             )
             if src:
-                self.images.append({
-                    "url": urljoin(self.base_url, src),
-                    "alt": attr_dict.get("alt", ""),
-                    "title": attr_dict.get("title", ""),
-                })
+                self.images.append(
+                    {
+                        "url": urljoin(self.base_url, src),
+                        "alt": attr_dict.get("alt", ""),
+                        "title": attr_dict.get("title", ""),
+                    }
+                )
 
         if tag == "source":
             srcset = attr_dict.get("srcset")
             if srcset:
                 first_src = srcset.split(",")[0].strip().split(" ")[0].strip()
                 if first_src:
-                    self.images.append({
-                        "url": urljoin(self.base_url, first_src),
-                        "alt": "",
-                        "title": "",
-                    })
+                    self.images.append(
+                        {
+                            "url": urljoin(self.base_url, first_src),
+                            "alt": "",
+                            "title": "",
+                        }
+                    )
 
         if tag == "meta":
             prop = attr_dict.get("property", "").casefold() or attr_dict.get("name", "").casefold()
             content = attr_dict.get("content", "")
             if prop in {"og:image", "twitter:image"} and content:
-                self.images.append({
-                    "url": urljoin(self.base_url, content),
-                    "alt": "og:image",
-                    "title": "OpenGraph Image",
-                })
+                self.images.append(
+                    {
+                        "url": urljoin(self.base_url, content),
+                        "alt": "og:image",
+                        "title": "OpenGraph Image",
+                    }
+                )
 
         if tag == "a":
             href = attr_dict.get("href")
@@ -466,11 +475,13 @@ class _AssetHTMLParser(HTMLParser):
             ):
                 self.documents.append(self._current_anchor)
             elif any(path.endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".webp"]):
-                self.images.append({
-                    "url": url,
-                    "alt": self._current_anchor.get("text", ""),
-                    "title": self._current_anchor.get("title", ""),
-                })
+                self.images.append(
+                    {
+                        "url": url,
+                        "alt": self._current_anchor.get("text", ""),
+                        "title": self._current_anchor.get("title", ""),
+                    }
+                )
             self._current_anchor = None
 
     def handle_data(self, data: str) -> None:
@@ -557,19 +568,23 @@ class DigitalAssetDiscoveryService:
         if isinstance(data, dict):
             img_val = data.get("image") or data.get("images")
             if isinstance(img_val, str):
-                images_out.append({
-                    "url": urljoin(base_url, img_val),
-                    "alt": "jsonld_image",
-                    "title": data.get("name", ""),
-                })
+                images_out.append(
+                    {
+                        "url": urljoin(base_url, img_val),
+                        "alt": "jsonld_image",
+                        "title": data.get("name", ""),
+                    }
+                )
             elif isinstance(img_val, list):
                 for item in img_val:
                     if isinstance(item, str):
-                        images_out.append({
-                            "url": urljoin(base_url, item),
-                            "alt": "jsonld_image",
-                            "title": data.get("name", ""),
-                        })
+                        images_out.append(
+                            {
+                                "url": urljoin(base_url, item),
+                                "alt": "jsonld_image",
+                                "title": data.get("name", ""),
+                            }
+                        )
             for v in data.values():
                 self._extract_jsonld_assets(v, base_url, images_out)
         elif isinstance(data, list):

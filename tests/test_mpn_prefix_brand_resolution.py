@@ -111,6 +111,7 @@ class TestDomainResolverApplianceCatalog:
 
     def _domains(self, mfg_key: str) -> tuple[str, ...]:
         from unilog_product_intelligence.retrieval.core import _manufacturer_key
+
         return self.dr._known_manufacturer_domains.get(_manufacturer_key(mfg_key), ())
 
     def test_frigidaire_in_catalog(self) -> None:
@@ -139,6 +140,7 @@ class TestDomainResolverApplianceCatalog:
 
     def test_domain_resolver_resolve_frigidaire(self) -> None:
         from unilog_product_intelligence.retrieval.core import SourceDecision
+
         candidates = self.dr.resolve("frigidaire", "frigidaire")
         assert len(candidates) > 0
         assert candidates[0].domain == "frigidaire.com"
@@ -146,6 +148,7 @@ class TestDomainResolverApplianceCatalog:
 
     def test_domain_resolver_resolve_whirlpool(self) -> None:
         from unilog_product_intelligence.retrieval.core import SourceDecision
+
         candidates = self.dr.resolve("whirlpool", "whirlpool")
         assert len(candidates) > 0
         assert candidates[0].domain == "whirlpool.com"

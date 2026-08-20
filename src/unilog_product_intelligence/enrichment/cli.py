@@ -288,17 +288,15 @@ def _vertical_payload(
         "sources": sources,
     }
 
+
 def _vertical_summary(results: list[dict[str, Any]]) -> dict[str, int]:
     return {
         "products": len(results),
         "attributes": sum(len(item["product"]) for item in results),
         "sources": sum(len(item["sources"]) for item in results),
-        "evidence": sum(
-            len(source["evidence"])
-            for item in results
-            for source in item["sources"]
-        ),
+        "evidence": sum(len(source["evidence"]) for item in results for source in item["sources"]),
     }
+
 
 def _vertical_markdown(item: dict[str, Any]) -> str:
     sources = item["sources"]
@@ -314,6 +312,7 @@ def _vertical_markdown(item: dict[str, Any]) -> str:
             "",
         ]
     )
+
 
 if __name__ == "__main__":
     phase6_main()

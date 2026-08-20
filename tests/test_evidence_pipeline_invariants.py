@@ -8,7 +8,6 @@ from pydantic import ValidationError
 from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
 from unilog_product_intelligence.domain.models import FeatureEvidence, StructuredSpec
 from unilog_product_intelligence.domain.provenance import FinalAttribute, ProvenanceKind
-from unilog_product_intelligence.domain.truth import SourceAuthority
 from unilog_product_intelligence.enrichment.models import EvidenceReference
 from unilog_product_intelligence.validation.truth_audit import TruthAudit
 

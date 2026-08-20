@@ -137,8 +137,9 @@ def test_product_source_discovery_requires_exact_identity_match() -> None:
     )
     assert match.classification in {"WEAK_MATCH", "MISMATCH"}
 
+
 class RedirectResponse:
-    def __init__(self, status, headers=None, body=b''):
+    def __init__(self, status, headers=None, body=b""):
         self.status = status
         self.headers = headers or {}
         self._body = body
@@ -171,8 +172,8 @@ def test_fetcher_follows_only_safe_same_domain_redirects() -> None:
     def opener(request, timeout):
         calls.append(request.full_url)
         if len(calls) == 1:
-            return RedirectResponse(302, {'Location': '/products/ABC123'})
-        return RedirectResponse(200, {'Content-Type': 'text/html'}, b'<main>ABC123</main>')
+            return RedirectResponse(302, {"Location": "/products/ABC123"})
+        return RedirectResponse(200, {"Content-Type": "text/html"}, b"<main>ABC123</main>")
 
     fetcher = SourceFetcher(resolver=resolver)
     fetcher.opener = opener
@@ -180,14 +181,14 @@ def test_fetcher_follows_only_safe_same_domain_redirects() -> None:
     result = fetcher.fetch(_source())
 
     assert result.source.retrieval_status is RetrievalStatus.SUCCESS
-    assert result.body == b'<main>ABC123</main>'
-    assert calls == ['https://acme.com/products/ABC123', 'https://acme.com/products/ABC123']
+    assert result.body == b"<main>ABC123</main>"
+    assert calls == ["https://acme.com/products/ABC123", "https://acme.com/products/ABC123"]
     assert resolver.urls == calls
 
 
 def test_fetcher_rejects_external_redirect() -> None:
     def opener(request, timeout):
-        return RedirectResponse(302, {'Location': 'https://evil.example/product'})
+        return RedirectResponse(302, {"Location": "https://evil.example/product"})
 
     fetcher = SourceFetcher(resolver=AllowResolver())
     fetcher.opener = opener
@@ -195,4 +196,4 @@ def test_fetcher_rejects_external_redirect() -> None:
     result = fetcher.fetch(_source())
 
     assert result.source.retrieval_status is RetrievalStatus.FAILED
-    assert result.error == 'redirect_external_domain'
+    assert result.error == "redirect_external_domain"

@@ -148,9 +148,8 @@ class MpnNormalizer:
             stripped = match_prefix.group(1).strip()
             if len(stripped) >= 3:
                 prefix = cleaned_raw[: match_prefix.start(1)].rstrip("-_").upper()
-                is_known_prefix = (
-                    (prefix.startswith("3M") and is_3m_manufacturer)
-                    or (is_3m_manufacturer and re.match(r"^\d{8,10}$", stripped))
+                is_known_prefix = (prefix.startswith("3M") and is_3m_manufacturer) or (
+                    is_3m_manufacturer and re.match(r"^\d{8,10}$", stripped)
                 )
 
                 if is_known_prefix:

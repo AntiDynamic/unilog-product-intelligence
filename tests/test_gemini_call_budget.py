@@ -274,10 +274,7 @@ def test_attribute_quality_and_schema_remains_unchanged() -> None:
     from pathlib import Path
 
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)

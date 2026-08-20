@@ -64,7 +64,6 @@ from unilog_product_intelligence.enrichment.reference import (  # noqa: E402
     ReferenceType,
 )
 from unilog_product_intelligence.enrichment.service import EnrichmentService  # noqa: E402
-from unilog_product_intelligence.validation.truth_audit import TruthAudit  # noqa: E402
 from unilog_product_intelligence.enrichment.validation import ValidationPipeline  # noqa: E402
 from unilog_product_intelligence.providers.factory import (  # noqa: E402
     ExecutionMode,
@@ -102,9 +101,8 @@ from unilog_product_intelligence.retrieval.service import (
 )
 from unilog_product_intelligence.retrieval.source_discovery import (  # noqa: E402
     ProductSourceDiscoveryService,
-    _get_retrieval_profile,
 )
-
+from unilog_product_intelligence.validation.truth_audit import TruthAudit  # noqa: E402
 
 # ── Default paths relative to project root ────────────────────────────────────
 _DEFAULT_INPUT = _ROOT / "Unihack_ Sample Dataset - Input.csv"
@@ -241,14 +239,10 @@ def _build_pipeline(
         )
         # Separate verified candidates vs unverified candidate domains
         verified_candidates = tuple(
-            c
-            for c in disc.candidates
-            if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+            c for c in disc.candidates if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
         )
         candidate_candidates = tuple(
-            c
-            for c in disc.candidates
-            if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
+            c for c in disc.candidates if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
         )
         if not verified_candidates and not candidate_candidates:
             return None
@@ -266,16 +260,13 @@ def _build_pipeline(
         else:
             all_verified = frozenset(profile_base_domains)
 
-
         profile = ManufacturerProfile(
             manufacturer_id=mfg_name or "unknown",
             canonical_name=mfg_name or "unknown",
             verified_domains=tuple(all_verified),
             candidate_domains=tuple(c.domain for c in candidate_candidates),
         )
-        candidates = source_disc.discover(
-            product, profile, candidate_urls=disc.search_result_urls
-        )
+        candidates = source_disc.discover(product, profile, candidate_urls=disc.search_result_urls)
         if not candidates:
             return None
         best = candidates[0]
@@ -291,18 +282,24 @@ def _build_pipeline(
             canonical_url=best.url,
             original_url=best.url,
             source_kind=SourceKind.DISTRIBUTOR_PRODUCT_PAGE if is_secondary else best.source_kind,
-            decision=SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE if is_secondary else SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+            decision=SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE
+            if is_secondary
+            else SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
             manufacturer_id=profile.manufacturer_id,
             manufacturer_domain=best_domain,
             verified_domains=profile.verified_domains if not is_secondary else (),
             product_id=product.product_id,
         )
         if is_secondary:
-            verified_source = SourceVerifier(SourcePolicy()).verify_secondary_source(candidate_source, profile)
+            verified_source = SourceVerifier(SourcePolicy()).verify_secondary_source(
+                candidate_source, profile
+            )
             if verified_source.decision != SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE:
                 return None
         else:
-            verified_source = SourceVerifier(SourcePolicy()).verify_source(candidate_source, profile)
+            verified_source = SourceVerifier(SourcePolicy()).verify_source(
+                candidate_source, profile
+            )
             if verified_source.decision != SourceDecision.VERIFIED_MANUFACTURER_SOURCE:
                 return None
 
@@ -339,9 +336,7 @@ def _build_row_trace(
     # Phase 4 Telemetry
     p4_runs = result.phase4_job.runs if result.phase4_job else []
     p4_model = (
-        p4_runs[0].model
-        if p4_runs and p4_runs[0].model
-        else (provider_model if p4_runs else None)
+        p4_runs[0].model if p4_runs and p4_runs[0].model else (provider_model if p4_runs else None)
     )
     p4_calls = len(p4_runs)
     p4_input_tokens = (
@@ -372,9 +367,7 @@ def _build_row_trace(
     p4_request_ids = [r.request_id for r in p4_runs if r.request_id]
     p4_error = next((r.error for r in p4_runs if r.error), None)
     p4_status = (
-        "FAILED"
-        if result.phase4_job and result.phase4_job.state.value == "failed"
-        else "COMPLETED"
+        "FAILED" if result.phase4_job and result.phase4_job.state.value == "failed" else "COMPLETED"
     )
 
     # Phase 5 Telemetry
@@ -404,26 +397,18 @@ def _build_row_trace(
     enrich = result.enrichment
     p6_calls = enrich.metrics.agent_calls if enrich else 0
     p6_input_tokens = (
-        enrich.metrics.input_tokens
-        if (enrich and enrich.metrics.input_tokens > 0)
-        else None
+        enrich.metrics.input_tokens if (enrich and enrich.metrics.input_tokens > 0) else None
     )
     p6_output_tokens = (
-        enrich.metrics.output_tokens
-        if (enrich and enrich.metrics.output_tokens > 0)
-        else None
+        enrich.metrics.output_tokens if (enrich and enrich.metrics.output_tokens > 0) else None
     )
     p6_cached_tokens = (
-        enrich.metrics.cached_tokens
-        if (enrich and enrich.metrics.cached_tokens > 0)
-        else None
+        enrich.metrics.cached_tokens if (enrich and enrich.metrics.cached_tokens > 0) else None
     )
     p6_latency_ms = None
     p6_error = enrich.error if enrich else None
     p6_status = enrich.status.value if enrich else "UNKNOWN"
-    p6_publication_state = (
-        enrich.publication_state.value if enrich else "REVIEW_REQUIRED"
-    )
+    p6_publication_state = enrich.publication_state.value if enrich else "REVIEW_REQUIRED"
 
     p6_candidates = enrich.candidates if enrich else ()
     p6_planned = len(enrich.attribute_plans) if enrich else 0
@@ -470,10 +455,7 @@ def _build_row_trace(
         },
         "resolved_manufacturer": (
             str(result.product_truth.identity.manufacturer.normalized_value or "")
-            if (
-                result.product_truth.identity
-                and result.product_truth.identity.manufacturer
-            )
+            if (result.product_truth.identity and result.product_truth.identity.manufacturer)
             else ""
         ),
         "resolved_brand": (
@@ -517,37 +499,25 @@ def _build_row_trace(
                     if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
                 ]
             ),
-            "product_source_found": bool(
-                [s.uri for s in result.product_truth.sources if s.uri]
-            ),
+            "product_source_found": bool([s.uri for s in result.product_truth.sources if s.uri]),
             "product_source_verified": bool(
                 result.manufacturer_job
                 and result.manufacturer_job.source_is_product_verified
                 and not result.manufacturer_job.secondary_source_used
             ),
             "secondary_source_used": bool(
-                result.manufacturer_job
-                and result.manufacturer_job.secondary_source_used
+                result.manufacturer_job and result.manufacturer_job.secondary_source_used
             ),
             "source_authority": (
                 "SECONDARY"
-                if (
-                    result.manufacturer_job
-                    and result.manufacturer_job.secondary_source_used
-                )
+                if (result.manufacturer_job and result.manufacturer_job.secondary_source_used)
                 else "MANUFACTURER"
-                if (
-                    result.manufacturer_job
-                    and result.manufacturer_job.source_is_product_verified
-                )
+                if (result.manufacturer_job and result.manufacturer_job.source_is_product_verified)
                 else "UNKNOWN"
             ),
             "selected_source_url": (
                 result.manufacturer_job.verified_source_context.canonical_product_url
-                if (
-                    result.manufacturer_job
-                    and result.manufacturer_job.verified_source_context
-                )
+                if (result.manufacturer_job and result.manufacturer_job.verified_source_context)
                 else (
                     [s.uri for s in result.product_truth.sources if s.uri][0]
                     if [s.uri for s in result.product_truth.sources if s.uri]
@@ -556,25 +526,16 @@ def _build_row_trace(
             ),
             "documents": list(
                 result.manufacturer_job.verified_source_context.document_urls
-                if (
-                    result.manufacturer_job
-                    and result.manufacturer_job.verified_source_context
-                )
+                if (result.manufacturer_job and result.manufacturer_job.verified_source_context)
                 else ()
             ),
             "retrieval_strategies_attempted": list(
-                result.discovery.retrieval_strategies_attempted
-                if result.discovery
-                else ()
+                result.discovery.retrieval_strategies_attempted if result.discovery else ()
             ),
-            "candidate_urls": list(
-                result.discovery.search_result_urls if result.discovery else ()
-            ),
+            "candidate_urls": list(result.discovery.search_result_urls if result.discovery else ()),
             "fetched_urls": [s.uri for s in result.product_truth.sources if s.uri],
             "source_decision": (
-                result.manufacturer_job.state.value
-                if result.manufacturer_job
-                else "none"
+                result.manufacturer_job.state.value if result.manufacturer_job else "none"
             ),
             "source_status": (
                 "success"
@@ -591,32 +552,24 @@ def _build_row_trace(
             ),
             "identity_score": (
                 result.manufacturer_job.identity_score
-                if result.manufacturer_job
-                and result.manufacturer_job.identity_score is not None
+                if result.manufacturer_job and result.manufacturer_job.identity_score is not None
                 else (
                     1.0
                     if any(
-                        s.authority
-                        in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
+                        s.authority in {SourceAuthority.HIGH, SourceAuthority.AUTHORITATIVE}
                         for s in result.product_truth.sources
                     )
                     else 0.0
                 )
             ),
             "mpn_match_type": (
-                result.manufacturer_job.mpn_match_type
-                if result.manufacturer_job
-                else None
+                result.manufacturer_job.mpn_match_type if result.manufacturer_job else None
             ),
             "raw_mpn_match": (
-                result.manufacturer_job.raw_mpn_match
-                if result.manufacturer_job
-                else None
+                result.manufacturer_job.raw_mpn_match if result.manufacturer_job else None
             ),
             "transformed_mpn_match": (
-                result.manufacturer_job.transformed_mpn_match
-                if result.manufacturer_job
-                else None
+                result.manufacturer_job.transformed_mpn_match if result.manufacturer_job else None
             ),
             "identity_rejection_reason": (
                 result.manufacturer_job.identity_rejection_reason
@@ -639,9 +592,7 @@ def _build_row_trace(
             "evidence_count": len(result.product_truth.evidence),
             "digital_asset_count": len(result.product_truth.digital_assets),
             "asset_discovery_status": (
-                result.manufacturer_job.asset_discovery_status
-                if result.manufacturer_job
-                else None
+                result.manufacturer_job.asset_discovery_status if result.manufacturer_job else None
             ),
             "search_requested": p5_search_requested,
             "search_tool_calls": p5_search_tool_calls,
@@ -743,9 +694,7 @@ def _process_row_job(
             source_type=SourceType.SUPPLIED_INPUT,
             authority=SourceAuthority.HIGH,
         )
-        product = truth_service.create_from_raw_input(
-            f"row-{row_num}", row.raw_values, source
-        )
+        product = truth_service.create_from_raw_input(f"row-{row_num}", row.raw_values, source)
         result = pipeline.run(product)
         delivery = adapter.to_record(result)
         delivery_row = delivery.as_row()
@@ -855,8 +804,6 @@ def main() -> None:
         if exec_mode == ExecutionMode.LIVE_GEMINI:
             provider = GeminiRouter(primary=provider, limiter=limiter)
     except GeminiConfigurationError as err:
-
-
         print(f"\nERROR: {err}\n", file=sys.stderr)
         print(
             "To run in LIVE_GEMINI mode, ensure GEMINI_API_KEY is set in your environment or .env file.",
@@ -897,21 +844,11 @@ def main() -> None:
 
     uom_count = len(ref_pack.uom_standards.records) if ref_pack.uom_standards else 0
     dec_frac_count = (
-        len(ref_pack.decimal_fractions.fraction_to_decimal)
-        if ref_pack.decimal_fractions
-        else 0
+        len(ref_pack.decimal_fractions.fraction_to_decimal) if ref_pack.decimal_fractions else 0
     )
-    brand_count = (
-        len(ref_pack.manufacturer_brands.records)
-        if ref_pack.manufacturer_brands
-        else 0
-    )
+    brand_count = len(ref_pack.manufacturer_brands.records) if ref_pack.manufacturer_brands else 0
     global_lov_count = len(ref_pack.global_lov.rules) if ref_pack.global_lov else 0
-    cat_lovs = (
-        ", ".join(ref_pack.category_lovs.keys())
-        if ref_pack.category_lovs
-        else "NONE"
-    )
+    cat_lovs = ", ".join(ref_pack.category_lovs.keys()) if ref_pack.category_lovs else "NONE"
 
     print("=" * 65)
     print("REFERENCE PACK STATUS")
@@ -961,9 +898,7 @@ def main() -> None:
         per_host_concurrency=settings.retrieval_per_host_concurrency,
         circuit_breaker=circuit_breaker,
     )
-    source_disc = ProductSourceDiscoveryService(
-        fetcher=fetcher, circuit_breaker=circuit_breaker
-    )
+    source_disc = ProductSourceDiscoveryService(fetcher=fetcher, circuit_breaker=circuit_breaker)
     pipeline = _build_pipeline(
         provider,
         truth_service,
@@ -1070,16 +1005,12 @@ def main() -> None:
                     else:
                         st_key = res.status_label.lower().replace(" ", "_")
                         stats[st_key] = stats.get(st_key, 0) + 1
-                        blocker_str = (
-                            f" [{res.blocker_label}]" if res.blocker_label else ""
-                        )
+                        blocker_str = f" [{res.blocker_label}]" if res.blocker_label else ""
                         label = (
                             f"[{res.idx:4d}/{total}] Row {res.row_num:4d} | "
                             f"MPN={res.mpn[:30]:<30} | Manuf={res.manuf[:28]:<28}"
                         )
-                        print(
-                            f"{label} | {res.status_label}{blocker_str} ({res.duration_ms}ms)"
-                        )
+                        print(f"{label} | {res.status_label}{blocker_str} ({res.duration_ms}ms)")
 
                     traces.append(res.trace)
                     next_write_idx += 1

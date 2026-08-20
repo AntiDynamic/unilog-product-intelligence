@@ -359,11 +359,11 @@ def test_3m_test_f_client_shell_json_discovery() -> None:
 
     # Search page containing JavaScript application state with product link
     shell_html = (
-        b'<!DOCTYPE html><html><head><title>Search Results</title>'
+        b"<!DOCTYPE html><html><head><title>Search Results</title>"
         b'<script type="application/json" id="__NEXT_DATA__">'
         b'{"props":{"pageProps":{"results":[{"title":"3M Cubitron II 775L",'
         b'"url":"https://www.3m.com/3M/en_US/p/d/b40065447","sku":"7100075678"}]}}}'
-        b"</script></head><body><div id=\"root\"></div></body></html>"
+        b'</script></head><body><div id="root"></div></body></html>'
     )
     product_html = (
         b"<html><head><title>3M Cubitron 775L</title></head>"

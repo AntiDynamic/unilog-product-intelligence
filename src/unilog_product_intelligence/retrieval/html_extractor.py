@@ -154,9 +154,7 @@ class _StructuredHTMLParser(HTMLParser):
         # Image extraction
         elif tag == "img":
             src = (
-                attr_dict.get("src")
-                or attr_dict.get("data-src")
-                or attr_dict.get("data-original")
+                attr_dict.get("src") or attr_dict.get("data-src") or attr_dict.get("data-original")
             )
             if src:
                 full_img = urljoin(self.base_url, src.strip())
@@ -303,9 +301,27 @@ class HtmlProductEvidenceExtractor:
 
     # Negative filters for junk labels
     IGNORE_LABELS = {
-        "cart", "checkout", "shipping", "reviews", "search", "menu", "login",
-        "account", "privacy", "terms", "cookie", "copyright", "home", "contact",
-        "share", "email", "print", "facebook", "twitter", "instagram", "youtube",
+        "cart",
+        "checkout",
+        "shipping",
+        "reviews",
+        "search",
+        "menu",
+        "login",
+        "account",
+        "privacy",
+        "terms",
+        "cookie",
+        "copyright",
+        "home",
+        "contact",
+        "share",
+        "email",
+        "print",
+        "facebook",
+        "twitter",
+        "instagram",
+        "youtube",
     }
 
     def extract(
@@ -555,9 +571,7 @@ class HtmlProductEvidenceExtractor:
                             name = str(prop.get("name") or "").strip()
                             val = str(prop.get("value") or "").strip()
                             if name and val:
-                                self._add_spec_pair(
-                                    name, val, data, location={"jsonld_prop": name}
-                                )
+                                self._add_spec_pair(name, val, data, location={"jsonld_prop": name})
 
     def _extract_meta(
         self,
@@ -576,9 +590,7 @@ class HtmlProductEvidenceExtractor:
             data.brand = meta["product:brand"].strip() or None
 
         og_img = (
-            meta.get("og:image")
-            or meta.get("og:image:secure_url")
-            or meta.get("twitter:image")
+            meta.get("og:image") or meta.get("og:image:secure_url") or meta.get("twitter:image")
         )
         if og_img and self._is_valid_product_image(og_img):
             full_og = urljoin(base_url, og_img.strip())
@@ -599,9 +611,7 @@ class HtmlProductEvidenceExtractor:
                     parts = row[0].split(":", 1)
                     label, val = parts[0].strip(), parts[1].strip()
                     if label and val:
-                        self._add_spec_pair(
-                            label, val, data, location={"source": "html_table_row"}
-                        )
+                        self._add_spec_pair(label, val, data, location={"source": "html_table_row"})
 
     def _extract_dl(self, dl_pairs: list[tuple[str, str]], data: ExtractedProductData) -> None:
         """Extract label/value pairs from definition lists."""
@@ -660,9 +670,22 @@ class HtmlProductEvidenceExtractor:
         if not any(u_lower.endswith(ext) or ext in u_lower for ext in valid_exts):
             return False
         reject_keywords = (
-            "logo", "icon", "badge", "sprite", "banner", "pixel", "tracking",
-            "social", "cart", "header", "footer", "favicon", "placeholder",
-            "arrow", "star-rating", "flag",
+            "logo",
+            "icon",
+            "badge",
+            "sprite",
+            "banner",
+            "pixel",
+            "tracking",
+            "social",
+            "cart",
+            "header",
+            "footer",
+            "favicon",
+            "placeholder",
+            "arrow",
+            "star-rating",
+            "flag",
         )
         return not any(rej in u_lower for rej in reject_keywords)
 

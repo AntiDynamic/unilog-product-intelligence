@@ -1106,8 +1106,7 @@ class AsyncSourceFetcher:
         # Check circuit breaker before opening connection
         if not self.circuit_breaker.is_available(target_host):
             reason = (
-                self.circuit_breaker.get_failure_reason(target_host)
-                or "domain_circuit_tripped"
+                self.circuit_breaker.get_failure_reason(target_host) or "domain_circuit_tripped"
             )
             return FetchResult(
                 source=source.model_copy(update={"retrieval_status": RetrievalStatus.BLOCKED}),
@@ -1220,9 +1219,7 @@ class AsyncSourceFetcher:
                             return FetchResult(
                                 source=source.model_copy(
                                     update={
-                                        "retrieval_status": (
-                                            RetrievalStatus.INVALID_CONTENT_TYPE
-                                        ),
+                                        "retrieval_status": (RetrievalStatus.INVALID_CONTENT_TYPE),
                                         "content_type": content_type,
                                     }
                                 ),
@@ -1231,9 +1228,7 @@ class AsyncSourceFetcher:
                             )
 
                         final_url = (
-                            canonicalize_url(str(response.url))
-                            if response.url
-                            else current_url
+                            canonicalize_url(str(response.url)) if response.url else current_url
                         )
                         updated = source.model_copy(
                             update={
@@ -1279,9 +1274,7 @@ class AsyncSourceFetcher:
                         else RetrievalStatus.FAILED
                     )
                     return FetchResult(
-                        source=source.model_copy(
-                            update={"retrieval_status": retrieval_status}
-                        ),
+                        source=source.model_copy(update={"retrieval_status": retrieval_status}),
                         cache_status=CacheStatus.INVALID,
                         error=str(error),
                     )
@@ -1311,6 +1304,7 @@ class AsyncSourceFetcher:
 
         if loop is not None and loop.is_running():
             import concurrent.futures
+
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                 future = executor.submit(asyncio.run, self.fetch_async(source, refresh=refresh))
                 return future.result()
@@ -1326,6 +1320,7 @@ class AsyncSourceFetcher:
 
         if loop is not None and loop.is_running():
             import concurrent.futures
+
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                 executor.submit(asyncio.run, self.close_async()).result()
         else:
@@ -1457,9 +1452,9 @@ class HtmlParser:
         for href, text, rel, content_type in parser.links:
             if not href or href.strip().startswith("#"):
                 continue
-            clean_href = re.sub(
-                r"(&quot;|&apos;|&amp;|[&\"',;:\)\s])+$", "", href
-            ).rstrip(".,;:)\"'")
+            clean_href = re.sub(r"(&quot;|&apos;|&amp;|[&\"',;:\)\s])+$", "", href).rstrip(
+                ".,;:)\"'"
+            )
             try:
                 full_url = canonicalize_url(urljoin(base_url, clean_href))
                 links.append(
@@ -1506,6 +1501,7 @@ class HtmlParser:
         from unilog_product_intelligence.retrieval.html_extractor import (
             HtmlProductEvidenceExtractor,
         )
+
         with suppress(Exception):
             extracted_cands = HtmlProductEvidenceExtractor().extract_evidence_candidates(
                 html_text, base_url, fetch.source.source_id
@@ -1563,6 +1559,7 @@ class PdfParser:
         document_id = "document-" + str(uuid4())
         try:
             from pypdf import PdfReader  # type: ignore[import-not-found]
+
             reader = PdfReader(BytesIO(fetch.body))
             chunks = [
                 DocumentChunk(
@@ -1576,6 +1573,7 @@ class PdfParser:
         except ImportError:
             # Standard library fallback stream decompression
             import zlib
+
             stream_pattern = re.compile(rb"stream[\r\n]+(.*?)[\r\n]+endstream", re.DOTALL)
             extracted_texts: list[str] = []
             for match in stream_pattern.finditer(fetch.body):

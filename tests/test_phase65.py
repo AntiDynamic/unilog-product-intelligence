@@ -358,7 +358,6 @@ def test_input_evidence_never_becomes_manufacturer_evidence():
     assert evidence_references(product) == ()
 
 
-
 def test_discovery_failure_preserves_sanitized_provider_detail():
     result = Phase65Pipeline(
         orchestrator=FakeOrchestrator(),
@@ -370,9 +369,7 @@ def test_discovery_failure_preserves_sanitized_provider_detail():
 
     assert result.status == Phase65Status.REVIEW_REQUIRED
     assert result.blocker == "GEMINI_PROVIDER_429"
-    assert result.phase5_error == (
-        "discovery_failed:ProviderQuotaError:429:too_many_requests"
-    )
+    assert result.phase5_error == ("discovery_failed:ProviderQuotaError:429:too_many_requests")
     assert result.discovery is not None
     assert result.discovery.unresolved_reason == result.phase5_error
     assert result.discovery.search_requested is True

@@ -19,10 +19,20 @@ from pydantic import BaseModel, ConfigDict
 # continue to work without modification.
 from unilog_product_intelligence.domain.truth import (
     ProductIdentity as ProductIdentity,  # noqa: F401
+)
+from unilog_product_intelligence.domain.truth import (
     ProductTruth as ProductTruth,  # noqa: F401
+)
+from unilog_product_intelligence.domain.truth import (
     Source as Source,  # noqa: F401
+)
+from unilog_product_intelligence.domain.truth import (
     SourceAuthority as SourceAuthority,  # noqa: F401
+)
+from unilog_product_intelligence.domain.truth import (
     SourceStatus as SourceStatus,  # noqa: F401
+)
+from unilog_product_intelligence.domain.truth import (
     SourceType as SourceType,  # noqa: F401
 )
 
@@ -39,7 +49,6 @@ __all__ = [
     "SourceStatus",
     "SourceType",
 ]
-
 
 
 class StructuredSpec(BaseModel):

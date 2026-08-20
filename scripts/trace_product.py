@@ -29,7 +29,6 @@ from unilog_product_intelligence.domain.truth import (
     Source,
     SourceAuthority,
     SourceType,
-    ProductTruth,
 )
 from unilog_product_intelligence.enrichment.agent import EvidenceGroundedEnrichmentAgent
 from unilog_product_intelligence.enrichment.planner import AttributePlanner
@@ -49,7 +48,6 @@ from unilog_product_intelligence.retrieval.core import (
     SourceDecision,
     SourceFetcher,
     SourceKind,
-    SourcePolicy,
     SourceRecord,
     SourceVerifier,
     _host,
@@ -63,15 +61,15 @@ _DEFAULT_SCHEMA = _ROOT / "docs" / "research" / "delivery-schema.json"
 
 
 def sep(title: str) -> None:
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"  {title}")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
 
 
 def main(mpn: str) -> None:
-    print(f"\n{'*'*80}")
+    print(f"\n{'*' * 80}")
     print(f"  FULL PIPELINE TRACE FOR MPN: {mpn}")
-    print(f"{'*'*80}\n")
+    print(f"{'*' * 80}\n")
 
     # ── Stage 0: Load input row ─────────────────────────────────────────────────
     sep("STAGE 0: INPUT ROW")
@@ -89,7 +87,9 @@ def main(mpn: str) -> None:
     sep("STAGE 0.5: PIPELINE WIRING (LIVE_DETERMINISTIC)")
     provider = build_provider(ExecutionMode.LIVE_DETERMINISTIC)
     print(f"  Provider:                   {type(provider).__name__}")
-    print(f"  supports_unified_pre_enr:   {getattr(provider, 'supports_unified_pre_enrichment', False)}")
+    print(
+        f"  supports_unified_pre_enr:   {getattr(provider, 'supports_unified_pre_enrichment', False)}"
+    )
 
     truth_service = ProductTruthService()
     source_obj = Source(
@@ -129,7 +129,7 @@ def main(mpn: str) -> None:
     product, phase4_job = orchestrator.run(product)
     print(f"  Phase 4 job state:          {phase4_job.state}")
     cls = product.classification
-    print(f"\n  CLASSIFICATION:")
+    print("\n  CLASSIFICATION:")
     print(f"    Dept:      {cls.department if cls else 'None'}")
     print(f"    Class:     {cls.class_name if cls else 'None'}")
     print(f"    Fine:      {cls.fine if cls else 'None'}")
@@ -140,7 +140,9 @@ def main(mpn: str) -> None:
         val = (best.normalized_value or best.raw_value) if best else "—"
         print(f"    {attr.canonical_name:<30} = {val!r}")
     if not product.attributes:
-        print("    -> NONE (DeterministicEvaluationProvider: no Gemini calls, no attribute extraction from raw text)")
+        print(
+            "    -> NONE (DeterministicEvaluationProvider: no Gemini calls, no attribute extraction from raw text)"
+        )
 
     # ── Stage 2: Brand Resolution ───────────────────────────────────────────────
     sep("STAGE 2: BRAND/MANUFACTURER RESOLUTION")
@@ -184,10 +186,14 @@ def main(mpn: str) -> None:
 
     if disc_result and disc_result.candidates:
         verified_candidates = tuple(
-            c for c in disc_result.candidates if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
+            c
+            for c in disc_result.candidates
+            if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
         )
         candidate_candidates = tuple(
-            c for c in disc_result.candidates if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
+            c
+            for c in disc_result.candidates
+            if c.status == SourceDecision.CANDIDATE_MANUFACTURER_SOURCE
         )
         print(f"  Verified domain candidates: {len(verified_candidates)}")
         print(f"  Candidate domain candidates:{len(candidate_candidates)}")
@@ -218,8 +224,12 @@ def main(mpn: str) -> None:
                 cand_rec = SourceRecord(
                     canonical_url=best.url,
                     original_url=best.url,
-                    source_kind=SourceKind.DISTRIBUTOR_PRODUCT_PAGE if is_secondary else best.source_kind,
-                    decision=SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE if is_secondary else SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
+                    source_kind=SourceKind.DISTRIBUTOR_PRODUCT_PAGE
+                    if is_secondary
+                    else best.source_kind,
+                    decision=SourceDecision.SECONDARY_DISTRIBUTOR_SOURCE
+                    if is_secondary
+                    else SourceDecision.CANDIDATE_MANUFACTURER_SOURCE,
                     manufacturer_id=prof.manufacturer_id,
                     manufacturer_domain=best_domain,
                     verified_domains=prof.verified_domains if not is_secondary else (),
@@ -243,12 +253,12 @@ def main(mpn: str) -> None:
                 print("  -> source_disc.discover() found 0 page candidates. Binding fails here.")
 
         if verified_source and prof:
-            print(f"\n  Running ManufacturerIntelligenceService.process()...")
+            print("\n  Running ManufacturerIntelligenceService.process()...")
             product, manufacturer_job = mfg_service.process(product, verified_source, prof)
             print(f"  ManufacturerJob state:      {manufacturer_job.state}")
             print(f"  ManufacturerJob error:      {manufacturer_job.error!r}")
             vsc = manufacturer_job.verified_source_context
-            print(f"\n  VerifiedProductSourceContext:")
+            print("\n  VerifiedProductSourceContext:")
             if vsc is None:
                 print("    -> None (fetch failed or product MPN not found on page)")
             else:
@@ -268,7 +278,9 @@ def main(mpn: str) -> None:
                     print(f"      {fact.get('attribute')}: {fact.get('raw_value')!r}")
                 print(f"    evidence_references ({len(vsc.evidence_references or [])}):")
                 for er in (vsc.evidence_references or [])[:5]:
-                    print(f"      [{er.evidence_id}] url={er.source_url!r} text={str(er.evidence_text)[:80]!r}")
+                    print(
+                        f"      [{er.evidence_id}] url={er.source_url!r} text={str(er.evidence_text)[:80]!r}"
+                    )
     else:
         print("  No candidates from discovery. Binding skipped.")
 
@@ -324,7 +336,7 @@ def main(mpn: str) -> None:
     row_out = dict(zip(record.headers, record.as_row()))
     populated = {k: v for k, v in row_out.items() if v is not None and v != ""}
     print(f"  Populated (non-empty):      {len(populated)} / 252")
-    print(f"\n  All populated delivery fields:")
+    print("\n  All populated delivery fields:")
     for k, v in populated.items():
         print(f"    {k:<35} = {str(v)[:100]!r}")
 
@@ -343,12 +355,18 @@ def main(mpn: str) -> None:
     if not disc_result or not disc_result.candidates:
         print("\n  *** PHASE 5: Domain UNRESOLVED — no known Whirlpool domain in DomainResolver.")
     elif not verified_source:
-        print("\n  *** PHASE 5: Domain resolved but no verified source page returned for this MPN URL.")
+        print(
+            "\n  *** PHASE 5: Domain resolved but no verified source page returned for this MPN URL."
+        )
     elif source_ctx is None:
-        print("\n  *** PHASE 5: Source bound but VerifiedSourceContext is None (fetch or verification failed).")
+        print(
+            "\n  *** PHASE 5: Source bound but VerifiedSourceContext is None (fetch or verification failed)."
+        )
     elif enrichment_result.metrics.enriched_attributes == 0:
         print("\n  *** PHASE 6: Source context present but 0 attributes enriched.")
-        print("      This means the deterministic spec extractor found no structured table on the page.")
+        print(
+            "      This means the deterministic spec extractor found no structured table on the page."
+        )
         print("      Gemini (live-gemini mode) is needed to extract attributes from HTML prose.")
     print("\n  Solution: run with GEMINI_API_KEY + --mode live-gemini to get full enrichment.\n")
 

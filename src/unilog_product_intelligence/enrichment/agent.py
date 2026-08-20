@@ -66,8 +66,12 @@ def _parse_candidate_envelope(raw_output: str) -> CandidateResponseEnvelope:
             item["evidence_id"] = item["evidence"].get("evidence_id") or item["evidence"].get("id")
         normalized.append(item)
     return CandidateResponseEnvelope.model_validate(
-        {"candidates": normalized, "unresolved_attributes": payload.get("unresolved_attributes", [])}
+        {
+            "candidates": normalized,
+            "unresolved_attributes": payload.get("unresolved_attributes", []),
+        }
     )
+
 
 class EnrichmentAgentError(RuntimeError):
     """A provider or structured-output failure that is safe to report."""
@@ -219,7 +223,9 @@ class EvidenceGroundedEnrichmentAgent:
         except (ValidationError, ValueError, TypeError) as error:
             run.error = f"{type(error).__name__}:{str(error)[:240]}"
             run.completed_at = datetime.now(UTC)
-            raise EnrichmentAgentError(f"malformed enrichment response: {str(error)[:180]}; payload={response.output_text[:300]!r}") from error
+            raise EnrichmentAgentError(
+                f"malformed enrichment response: {str(error)[:180]}; payload={response.output_text[:300]!r}"
+            ) from error
         except Exception as error:
             run.error = f"{type(error).__name__}:{str(error)[:240]}"
             run.completed_at = datetime.now(UTC)
@@ -342,9 +348,7 @@ def _prompt(
     b_id = product.identity.brand
     brand = (b_id.normalized_value if b_id else None) or ""
 
-    source_ctx_text = (
-        source_context.build_prompt_context() if source_context is not None else ""
-    )
+    source_ctx_text = source_context.build_prompt_context() if source_context is not None else ""
 
     prompt_parts = [
         "SYSTEM: Evidence-grounded enrichment v1. Extract ONLY attributes in the supplied plan.",

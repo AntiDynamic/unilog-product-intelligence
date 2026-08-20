@@ -54,13 +54,16 @@ class GeminiExecutionService(LLMProvider):
             if _is_429(error):
                 self.breaker.record_429(retry_after_seconds=_retry_after_seconds(error))
             raise
-        self.quota.commit(reservation, Usage(
-            input_tokens=response.input_tokens or 0,
-            output_tokens=response.output_tokens or 0,
-            cached_tokens=response.cached_tokens or 0,
-            search_queries=len(response.search_queries),
-            cost_usd=response.estimated_cost_usd or 0.0,
-        ))
+        self.quota.commit(
+            reservation,
+            Usage(
+                input_tokens=response.input_tokens or 0,
+                output_tokens=response.output_tokens or 0,
+                cached_tokens=response.cached_tokens or 0,
+                search_queries=len(response.search_queries),
+                cost_usd=response.estimated_cost_usd or 0.0,
+            ),
+        )
         self.breaker.record_success()
         return response
 

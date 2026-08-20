@@ -139,6 +139,7 @@ def _make_product(mpn: str, mfg: str, desc: str = "Test Product") -> ProductTrut
 
 def test_concurrent_fetching_and_global_concurrency() -> None:
     """Verify that multiple URLs are fetched concurrently and global concurrency is bounded."""
+
     async def _test() -> None:
         delay = 0.05
         fake_fetcher = MockAsyncSourceFetcher(default_delay=delay)
@@ -170,6 +171,7 @@ def test_concurrent_fetching_and_global_concurrency() -> None:
 
 def test_slow_timed_out_host_does_not_block_unrelated_hosts() -> None:
     """Verify a slow/blocked host does not prevent discovering candidates on healthy hosts."""
+
     async def _test() -> None:
         dead_host_url = "https://www.deadmaker.com/products/TEST-123"
         healthy_host_url = "https://www.healthymaker.com/products/TEST-123"
@@ -221,6 +223,7 @@ def test_slow_timed_out_host_does_not_block_unrelated_hosts() -> None:
 
 def test_early_stop_on_verified_manufacturer_match() -> None:
     """Verify discovery stops immediately when a verified manufacturer candidate matches."""
+
     async def _test() -> None:
         good_direct_url = "https://www.freudtools.com/products/D0724R"
         good_html = b"""
@@ -349,6 +352,7 @@ def test_sync_public_discover_wrapper_compatibility() -> None:
 
 def test_per_host_concurrency_limiting() -> None:
     """Verify that per-host concurrency is tracked and bounded."""
+
     async def _test() -> None:
         delay = 0.04
         fetcher = MockAsyncSourceFetcher(default_delay=delay)
@@ -367,4 +371,3 @@ def test_per_host_concurrency_limiting() -> None:
         assert fetcher.max_per_host_seen.get("www.3m.com", 0) >= 1
 
     asyncio.run(_test())
-

@@ -7,14 +7,13 @@ from typing import TYPE_CHECKING, Any
 from pydantic import BaseModel, ConfigDict, Field
 
 if TYPE_CHECKING:
-    from unilog_product_intelligence.enrichment.models import EvidenceReference
+    pass
 
 
 class VerifiedProductSourceContext(BaseModel):
     """Bounded, structured container for parsed source text, facts, and evidence references."""
 
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
-
 
     product_id: str
     manufacturer: str | None = None
@@ -24,16 +23,15 @@ class VerifiedProductSourceContext(BaseModel):
     canonical_product_url: str
     source_id: str
     source_authority: str  # e.g. "AUTHORITATIVE" or "SECONDARY"
-    source_type: str       # e.g. "MANUFACTURER_PAGE" or "AUTHORIZED_DISTRIBUTOR"
+    source_type: str  # e.g. "MANUFACTURER_PAGE" or "AUTHORIZED_DISTRIBUTOR"
 
     page_title: str | None = None
     page_description: str | None = None
-    page_text: str = ""    # Bounded clean textual representation (specs, features, descriptions)
+    page_text: str = ""  # Bounded clean textual representation (specs, features, descriptions)
 
     structured_facts: list[dict[str, Any]] = Field(default_factory=list)  # Extracted spec pairs
-    source_chunks: list[dict[str, Any]] = Field(default_factory=list)     # Section/page chunks
+    source_chunks: list[dict[str, Any]] = Field(default_factory=list)  # Section/page chunks
     evidence_references: list[Any] = Field(default_factory=list)  # list[EvidenceReference]
-
 
     image_urls: list[str] = Field(default_factory=list)
     document_urls: list[str] = Field(default_factory=list)

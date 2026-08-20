@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from unilog_product_intelligence.retrieval.manufacturer_registry import ManufacturerRegistry
-from unilog_product_intelligence.retrieval.source_discovery import ManufacturerRetrievalProfile
 
 
 def test_manufacturer_registry_static_profiles_precedence() -> None:

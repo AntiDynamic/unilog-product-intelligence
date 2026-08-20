@@ -104,10 +104,7 @@ def test_ref_urls_populated_and_ranked_from_verified_source_context() -> None:
     phase65_res.is_distributor_masked = False
 
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)

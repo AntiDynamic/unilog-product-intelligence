@@ -56,7 +56,7 @@ def test_brand_resolver_detects_mirus_distributor() -> None:
     resolver = BrandManufacturerResolver()
     result = resolver.resolve(
         "Mirka Abrasives Inc (MIRUS)",
-        "5B-332-080 HIOLIT 5\" P80",
+        '5B-332-080 HIOLIT 5" P80',
     )
     assert result.is_distributor is True
     assert result.manufacturer == "mirka abrasives"
@@ -79,7 +79,7 @@ def test_brand_resolver_preserves_real_manufacturer() -> None:
     resolver = BrandManufacturerResolver()
     result = resolver.resolve(
         "Freud Inc (2435)",
-        "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+        'DCB518ASTS06G Diablo 1/2"x18" - Sanding Belt 6pc',
     )
     assert result.is_distributor is False
     assert result.manufacturer == "Freud Inc"
@@ -101,7 +101,7 @@ def test_delivery_adapter_synthesizes_252_columns() -> None:
 
     raw_dict = {
         "Mfg_Part_Num": "DCB518ASTS06G",
-        "Part_Desc": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+        "Part_Desc": 'DCB518ASTS06G Diablo 1/2"x18" - Sanding Belt 6pc',
         "E1_Brand": "-- Unbranded --",
         "Unilog_Brand": "-- No Unilog Brand --",
         "DIB_Brand": "-- No DIB Brand --",

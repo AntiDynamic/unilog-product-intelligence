@@ -76,8 +76,7 @@ class GeminiConcurrencyLimiter:
                         time.sleep(sleep_time)
                         now = time.monotonic()
                         while (
-                            self._request_timestamps
-                            and now - self._request_timestamps[0] >= 60.0
+                            self._request_timestamps and now - self._request_timestamps[0] >= 60.0
                         ):
                             self._request_timestamps.popleft()
 
@@ -319,4 +318,3 @@ def _strip_code_fences(text: str) -> str:
         if stripped.rstrip().endswith("```"):
             stripped = stripped.rstrip()[:-3].rstrip()
     return stripped
-

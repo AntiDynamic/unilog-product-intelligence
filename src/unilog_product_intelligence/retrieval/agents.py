@@ -93,9 +93,7 @@ class ManufacturerDiscoveryAgent:
 
         # ── Step 1: Deterministic domain resolution ───────────────────────────
         strategies.append("domain_resolver")
-        deterministic = self.resolver.resolve(
-            manufacturer_id, manufacturer_name, brand=brand
-        )
+        deterministic = self.resolver.resolve(manufacturer_id, manufacturer_name, brand=brand)
         verified = tuple(
             c for c in deterministic if c.status == SourceDecision.VERIFIED_MANUFACTURER_SOURCE
         )
@@ -152,9 +150,7 @@ class ManufacturerDiscoveryAgent:
     ) -> DiscoveryResult:
         """Explicit Gemini search fallback when deterministic retrieval fails."""
         deterministic = existing_result.candidates if existing_result else []
-        strategies = (
-            list(existing_result.retrieval_strategies_attempted) if existing_result else []
-        )
+        strategies = list(existing_result.retrieval_strategies_attempted) if existing_result else []
         strategies.append("gemini_search_fallback")
         queries = self.resolver.discovery_queries(manufacturer_name, mpn, family, description)
         prompt = _prompt() + "\nQUERIES (discovery data):\n" + "\n".join(queries)

@@ -48,7 +48,12 @@ def test_classify_mpn_match_missing() -> None:
 def test_get_classpath_depth() -> None:
     """TEST F: Classpath depth is correctly measured from delimiter segments."""
     assert get_classpath_depth("Tools > Power Tools > Drills") == 3
-    assert get_classpath_depth("Appliances & Consumer Electronics>Kitchen Appliances>Built-In Dishwashers") == 3
+    assert (
+        get_classpath_depth(
+            "Appliances & Consumer Electronics>Kitchen Appliances>Built-In Dishwashers"
+        )
+        == 3
+    )
     assert get_classpath_depth("Hardware") == 1
     assert get_classpath_depth("") == 0
     assert get_classpath_depth("   ") == 0
@@ -69,11 +74,31 @@ def test_row_with_no_domain_resolution_does_not_increment_domain_resolved(tmp_pa
 
     # Output with no URL and unresolvable domain
     headers = [
-        "MFR URL", "Ref URL 1", "Ref URL 2", "Ref URL 3", "Ref URL 4", "Ref URL 5",
-        "PART_NUMBER", "Dept", "Class", "Fine", "SKU - MY_PART_NUMBER", "Mfg_Part_Num",
-        "Part_Desc", "E1_Brand", "Unilog_Brand", "DIB_Brand", "Part_Manuf",
-        "MANUFACTURER_NAME", "BRAND_NAME", "TRADE_NAME", "MANUFACTURER_PART_NUMBER",
-        "ALTERNATE_PART_NUMBER", "Classpath", "SHORT_DESC", "LONG_DESC1"
+        "MFR URL",
+        "Ref URL 1",
+        "Ref URL 2",
+        "Ref URL 3",
+        "Ref URL 4",
+        "Ref URL 5",
+        "PART_NUMBER",
+        "Dept",
+        "Class",
+        "Fine",
+        "SKU - MY_PART_NUMBER",
+        "Mfg_Part_Num",
+        "Part_Desc",
+        "E1_Brand",
+        "Unilog_Brand",
+        "DIB_Brand",
+        "Part_Manuf",
+        "MANUFACTURER_NAME",
+        "BRAND_NAME",
+        "TRADE_NAME",
+        "MANUFACTURER_PART_NUMBER",
+        "ALTERNATE_PART_NUMBER",
+        "Classpath",
+        "SHORT_DESC",
+        "LONG_DESC1",
     ]
     with output_csv.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -111,11 +136,31 @@ def test_candidate_domain_not_counted_as_verified_domain(tmp_path: Path) -> None
     traces_json = tmp_path / "traces.json"
 
     headers = [
-        "MFR URL", "Ref URL 1", "Ref URL 2", "Ref URL 3", "Ref URL 4", "Ref URL 5",
-        "PART_NUMBER", "Dept", "Class", "Fine", "SKU - MY_PART_NUMBER", "Mfg_Part_Num",
-        "Part_Desc", "E1_Brand", "Unilog_Brand", "DIB_Brand", "Part_Manuf",
-        "MANUFACTURER_NAME", "BRAND_NAME", "TRADE_NAME", "MANUFACTURER_PART_NUMBER",
-        "ALTERNATE_PART_NUMBER", "Classpath", "SHORT_DESC", "LONG_DESC1"
+        "MFR URL",
+        "Ref URL 1",
+        "Ref URL 2",
+        "Ref URL 3",
+        "Ref URL 4",
+        "Ref URL 5",
+        "PART_NUMBER",
+        "Dept",
+        "Class",
+        "Fine",
+        "SKU - MY_PART_NUMBER",
+        "Mfg_Part_Num",
+        "Part_Desc",
+        "E1_Brand",
+        "Unilog_Brand",
+        "DIB_Brand",
+        "Part_Manuf",
+        "MANUFACTURER_NAME",
+        "BRAND_NAME",
+        "TRADE_NAME",
+        "MANUFACTURER_PART_NUMBER",
+        "ALTERNATE_PART_NUMBER",
+        "Classpath",
+        "SHORT_DESC",
+        "LONG_DESC1",
     ]
 
     with input_csv.open("w", newline="", encoding="utf-8") as f:
@@ -144,7 +189,12 @@ def test_candidate_domain_not_counted_as_verified_domain(tmp_path: Path) -> None
                     {
                         "row_number": 2,
                         "domain_candidates": [
-                            {"domain": "candidate.example.com", "status": "candidate_manufacturer_source", "source": "search", "reason": "candidate"}
+                            {
+                                "domain": "candidate.example.com",
+                                "status": "candidate_manufacturer_source",
+                                "source": "search",
+                                "reason": "candidate",
+                            }
                         ],
                         "verified_domains": [],
                         "source_status": "not_found",
@@ -176,11 +226,31 @@ def test_non_authoritative_source_not_counted_as_authoritative(tmp_path: Path) -
     expected_csv = tmp_path / "expected.csv"
 
     headers = [
-        "MFR URL", "Ref URL 1", "Ref URL 2", "Ref URL 3", "Ref URL 4", "Ref URL 5",
-        "PART_NUMBER", "Dept", "Class", "Fine", "SKU - MY_PART_NUMBER", "Mfg_Part_Num",
-        "Part_Desc", "E1_Brand", "Unilog_Brand", "DIB_Brand", "Part_Manuf",
-        "MANUFACTURER_NAME", "BRAND_NAME", "TRADE_NAME", "MANUFACTURER_PART_NUMBER",
-        "ALTERNATE_PART_NUMBER", "Classpath", "SHORT_DESC", "LONG_DESC1"
+        "MFR URL",
+        "Ref URL 1",
+        "Ref URL 2",
+        "Ref URL 3",
+        "Ref URL 4",
+        "Ref URL 5",
+        "PART_NUMBER",
+        "Dept",
+        "Class",
+        "Fine",
+        "SKU - MY_PART_NUMBER",
+        "Mfg_Part_Num",
+        "Part_Desc",
+        "E1_Brand",
+        "Unilog_Brand",
+        "DIB_Brand",
+        "Part_Manuf",
+        "MANUFACTURER_NAME",
+        "BRAND_NAME",
+        "TRADE_NAME",
+        "MANUFACTURER_PART_NUMBER",
+        "ALTERNATE_PART_NUMBER",
+        "Classpath",
+        "SHORT_DESC",
+        "LONG_DESC1",
     ]
 
     with input_csv.open("w", newline="", encoding="utf-8") as f:
@@ -225,11 +295,31 @@ def test_missing_ground_truth_row_does_not_fabricate_accuracy(tmp_path: Path) ->
     expected_csv = tmp_path / "expected.csv"
 
     headers = [
-        "MFR URL", "Ref URL 1", "Ref URL 2", "Ref URL 3", "Ref URL 4", "Ref URL 5",
-        "PART_NUMBER", "Dept", "Class", "Fine", "SKU - MY_PART_NUMBER", "Mfg_Part_Num",
-        "Part_Desc", "E1_Brand", "Unilog_Brand", "DIB_Brand", "Part_Manuf",
-        "MANUFACTURER_NAME", "BRAND_NAME", "TRADE_NAME", "MANUFACTURER_PART_NUMBER",
-        "ALTERNATE_PART_NUMBER", "Classpath", "SHORT_DESC", "LONG_DESC1"
+        "MFR URL",
+        "Ref URL 1",
+        "Ref URL 2",
+        "Ref URL 3",
+        "Ref URL 4",
+        "Ref URL 5",
+        "PART_NUMBER",
+        "Dept",
+        "Class",
+        "Fine",
+        "SKU - MY_PART_NUMBER",
+        "Mfg_Part_Num",
+        "Part_Desc",
+        "E1_Brand",
+        "Unilog_Brand",
+        "DIB_Brand",
+        "Part_Manuf",
+        "MANUFACTURER_NAME",
+        "BRAND_NAME",
+        "TRADE_NAME",
+        "MANUFACTURER_PART_NUMBER",
+        "ALTERNATE_PART_NUMBER",
+        "Classpath",
+        "SHORT_DESC",
+        "LONG_DESC1",
     ]
 
     with input_csv.open("w", newline="", encoding="utf-8") as f:
@@ -282,11 +372,31 @@ def test_url_alone_does_not_count_as_valid_evidence(tmp_path: Path) -> None:
     expected_csv = tmp_path / "expected.csv"
 
     headers = [
-        "MFR URL", "Ref URL 1", "Ref URL 2", "Ref URL 3", "Ref URL 4", "Ref URL 5",
-        "PART_NUMBER", "Dept", "Class", "Fine", "SKU - MY_PART_NUMBER", "Mfg_Part_Num",
-        "Part_Desc", "E1_Brand", "Unilog_Brand", "DIB_Brand", "Part_Manuf",
-        "MANUFACTURER_NAME", "BRAND_NAME", "TRADE_NAME", "MANUFACTURER_PART_NUMBER",
-        "ALTERNATE_PART_NUMBER", "Classpath", "SHORT_DESC", "LONG_DESC1"
+        "MFR URL",
+        "Ref URL 1",
+        "Ref URL 2",
+        "Ref URL 3",
+        "Ref URL 4",
+        "Ref URL 5",
+        "PART_NUMBER",
+        "Dept",
+        "Class",
+        "Fine",
+        "SKU - MY_PART_NUMBER",
+        "Mfg_Part_Num",
+        "Part_Desc",
+        "E1_Brand",
+        "Unilog_Brand",
+        "DIB_Brand",
+        "Part_Manuf",
+        "MANUFACTURER_NAME",
+        "BRAND_NAME",
+        "TRADE_NAME",
+        "MANUFACTURER_PART_NUMBER",
+        "ALTERNATE_PART_NUMBER",
+        "Classpath",
+        "SHORT_DESC",
+        "LONG_DESC1",
     ]
 
     with input_csv.open("w", newline="", encoding="utf-8") as f:
@@ -357,8 +467,20 @@ def test_benchmark_modes_labeled_correctly(tmp_path: Path) -> None:
     with gemini_traces.open("w", encoding="utf-8") as f:
         json.dump({"execution_mode": "live-gemini", "traces": []}, f)
 
-    report_det = evaluate(input_path=input_csv, output_path=output_csv, expected_path=expected_csv, schema_path=schema_json, traces_path=det_traces)
+    report_det = evaluate(
+        input_path=input_csv,
+        output_path=output_csv,
+        expected_path=expected_csv,
+        schema_path=schema_json,
+        traces_path=det_traces,
+    )
     assert report_det["execution_mode"] == "deterministic"
 
-    report_gemini = evaluate(input_path=input_csv, output_path=output_csv, expected_path=expected_csv, schema_path=schema_json, traces_path=gemini_traces)
+    report_gemini = evaluate(
+        input_path=input_csv,
+        output_path=output_csv,
+        expected_path=expected_csv,
+        schema_path=schema_json,
+        traces_path=gemini_traces,
+    )
     assert report_gemini["execution_mode"] == "live-gemini"

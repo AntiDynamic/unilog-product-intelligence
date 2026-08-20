@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import threading
 import time
 from dataclasses import dataclass, field
@@ -81,7 +82,9 @@ class ManufacturerRegistry:
         self._profiles_by_name: dict[str, ManufacturerRetrievalProfile] = {
             p.name.casefold(): p for p in static_profiles
         }
-        self._verified_routes: dict[str, list[VerifiedRoute]] = {}  # mfg_name.casefold() -> list of VerifiedRoute
+        self._verified_routes: dict[
+            str, list[VerifiedRoute]
+        ] = {}  # mfg_name.casefold() -> list of VerifiedRoute
         self._lock = threading.Lock()
 
     def get_profile_by_domain(
@@ -90,8 +93,7 @@ class ManufacturerRegistry:
         """Find a profile where any input domain matches a profile's verified domains."""
         for profile in self._static_profiles:
             if any(
-                any(_same_or_subdomain(d, prof_d) for prof_d in profile.domains)
-                for d in domains
+                any(_same_or_subdomain(d, prof_d) for prof_d in profile.domains) for d in domains
             ):
                 return profile
         return None
@@ -162,9 +164,13 @@ class ManufacturerRegistry:
             The created VerifiedRoute, or None if the manufacturer has a static profile.
         """
         if "{mpn}" not in route_template:
-            raise RegistryTrustError(f"Route template '{route_template}' must contain '{{mpn}}' placeholder.")
+            raise RegistryTrustError(
+                f"Route template '{route_template}' must contain '{{mpn}}' placeholder."
+            )
         if not evidence_id or not evidence_id.strip():
-            raise RegistryTrustError("A valid, non-empty evidence_id is required to record a verified route.")
+            raise RegistryTrustError(
+                "A valid, non-empty evidence_id is required to record a verified route."
+            )
         if not manufacturer or not manufacturer.strip():
             raise RegistryTrustError("Manufacturer name cannot be empty.")
 
@@ -204,15 +210,13 @@ class ManufacturerRegistry:
 
         Silently ignores invalid templates to maintain backward compatibility.
         """
-        try:
+        with contextlib.suppress(RegistryTrustError):
             self.record_verified_route(
                 manufacturer=manufacturer,
                 domain=domain,
                 route_template=route_template,
                 evidence_id="ev-learned-route",
             )
-        except RegistryTrustError:
-            pass
 
     def register_profile(self, profile: ManufacturerRetrievalProfile) -> None:
         """Register a new static manufacturer profile."""

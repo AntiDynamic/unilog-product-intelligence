@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 from collections.abc import Callable
 from enum import StrEnum
 
@@ -93,10 +94,8 @@ class Phase65Pipeline:
         budget: InferenceBudget | None = None,
     ) -> Phase65Result:
         if budget is not None:
-            try:
+            with contextlib.suppress(InferenceBudgetExceeded):
                 budget.consume(phase="phase4", calls=1)
-            except InferenceBudgetExceeded:
-                pass
         product, phase4_job = self.orchestrator.run(product)
         phase4_failed = phase4_job.state == JobState.FAILED
 
@@ -118,9 +117,7 @@ class Phase65Pipeline:
                 brand = resolved.brand or _extract_brand(product)
             else:
                 manufacturer_name = (
-                    _identity_value(product, "manufacturer")
-                    or resolved.manufacturer
-                    or ""
+                    _identity_value(product, "manufacturer") or resolved.manufacturer or ""
                 )
                 brand = _extract_brand(product) or resolved.brand
             try:
@@ -190,9 +187,8 @@ class Phase65Pipeline:
                         product, manufacturer_job = self.manufacturer.process(
                             product, source, profile, refresh=refresh
                         )
-                        if (
-                            manufacturer_job.state != ManufacturerJobState.COMPLETED
-                            and hasattr(self.manufacturer, "recover")
+                        if manufacturer_job.state != ManufacturerJobState.COMPLETED and hasattr(
+                            self.manufacturer, "recover"
                         ):
                             cand_urls = getattr(discovery_result, "search_result_urls", ())
                             product, manufacturer_job = self.manufacturer.recover(
@@ -203,9 +199,7 @@ class Phase65Pipeline:
         source_ctx = (
             manufacturer_job.verified_source_context if manufacturer_job is not None else None
         )
-        evidence_pkt = (
-            manufacturer_job.evidence_packet if manufacturer_job is not None else None
-        )
+        evidence_pkt = manufacturer_job.evidence_packet if manufacturer_job is not None else None
         enrichment_result = self.enrichment.enrich(
             product,
             source_context=source_ctx,

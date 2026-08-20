@@ -271,10 +271,7 @@ def test_delivery_contract_252_columns_preserved() -> None:
     from unilog_product_intelligence.delivery.adapter import DeliverySchemaContract
 
     schema_file = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     if not schema_file.exists():
         pytest.skip("Delivery schema json not found")
@@ -286,4 +283,3 @@ def test_delivery_contract_252_columns_preserved() -> None:
     # Verify adapter uses exactly the 252 headers
     adapter = Phase65ResultDeliveryAdapter(contract)
     assert len(adapter.contract.headers) == 252
-

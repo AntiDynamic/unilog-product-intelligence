@@ -41,9 +41,7 @@ class ConflictEscalationResult(BaseModel):
         default=None,
         description="Value from the selected evidence record",
     )
-    reasoning: str = Field(
-        description="Model explanation for why this evidence was selected"
-    )
+    reasoning: str = Field(description="Model explanation for why this evidence was selected")
     model_name: str = Field(description="Name of the model that resolved the escalation")
     supporting_evidence_ids: tuple[str, ...] = Field(
         default=(),

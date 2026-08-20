@@ -80,6 +80,5 @@ def test_429_metadata_takes_priority_over_search_words() -> None:
 
     assert classify_429(ProviderRateLimit("Google Search quota")) is FailureCategory.RATE_LIMIT
     assert (
-        classify_429(RuntimeError("Google Search quota exceeded"))
-        is FailureCategory.PROJECT_QUOTA
+        classify_429(RuntimeError("Google Search quota exceeded")) is FailureCategory.PROJECT_QUOTA
     )

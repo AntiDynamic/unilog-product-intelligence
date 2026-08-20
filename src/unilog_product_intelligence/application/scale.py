@@ -157,9 +157,7 @@ class QuotaGuard:
         self, estimated_input_tokens: int = 0, estimated_search_queries: int = 0
     ) -> tuple[GuardResult, QuotaReservation | None]:
         with self._lock:
-            guard = self._check_locked(
-                estimated_input_tokens, 0.0, estimated_search_queries, None
-            )
+            guard = self._check_locked(estimated_input_tokens, 0.0, estimated_search_queries, None)
             if guard.decision is not GuardDecision.ALLOW:
                 return guard, None
             now = time.monotonic()
@@ -237,7 +235,6 @@ class QuotaGuard:
             )
 
 
-
 class SearchBudget:
     def __init__(self, max_queries: int = 50) -> None:
         self.max_queries = max_queries
@@ -312,7 +309,6 @@ def classify_429(error: BaseException) -> FailureCategory:
     if "too_many" in text or "rate" in text:
         return FailureCategory.RATE_LIMIT
     return FailureCategory.UNKNOWN_429
-
 
 
 @dataclass(frozen=True)

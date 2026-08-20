@@ -38,7 +38,7 @@ def _create_test_uom_workbook(path: Path) -> None:
     ws.title = "UOM Standards"
     ws.append(["Approved UOM", "Measurement Type", "Capture Form", "Example", "Synonyms"])
     ws.append(["V", "Voltage", "V", "120 V", "Volt, Volts"])
-    ws.append(["in.", "Length", "in.", "4 in.", "Inch, Inches, \""])
+    ws.append(["in.", "Length", "in.", "4 in.", 'Inch, Inches, "'])
     ws.append(["A", "Current", "A", "15 A", "Amp, Amps"])
     wb.save(path)
 
@@ -47,30 +47,34 @@ def _create_test_global_lov_workbook(path: Path) -> None:
     wb = Workbook()
     ws = wb.active
     ws.title = "Global LOV"
-    ws.append([
-        "Classpath",
-        "Leaf Node",
-        "Attribute Label",
-        "Attribute Values",
-        "Normalized Label",
-        "Normalized Values",
-        "Filtering",
-        "Guidelines",
-        "Remarks",
-        "Allowed UOM",
-    ])
-    ws.append([
-        "Abrasives > Cut-Off Wheels",
-        "Cut-Off Wheels",
-        "Abrasive Material",
-        "Aluminum Oxide\nSilicon Carbide\nCeramic",
-        "Abrasive Material",
-        "Aluminum Oxide\nSilicon Carbide\nCeramic",
-        "Yes",
-        "Must be verified manufacturer material",
-        "Required attribute",
-        "none",
-    ])
+    ws.append(
+        [
+            "Classpath",
+            "Leaf Node",
+            "Attribute Label",
+            "Attribute Values",
+            "Normalized Label",
+            "Normalized Values",
+            "Filtering",
+            "Guidelines",
+            "Remarks",
+            "Allowed UOM",
+        ]
+    )
+    ws.append(
+        [
+            "Abrasives > Cut-Off Wheels",
+            "Cut-Off Wheels",
+            "Abrasive Material",
+            "Aluminum Oxide\nSilicon Carbide\nCeramic",
+            "Abrasive Material",
+            "Aluminum Oxide\nSilicon Carbide\nCeramic",
+            "Yes",
+            "Must be verified manufacturer material",
+            "Required attribute",
+            "none",
+        ]
+    )
     wb.save(path)
 
 

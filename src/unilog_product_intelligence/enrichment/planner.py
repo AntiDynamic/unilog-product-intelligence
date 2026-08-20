@@ -81,9 +81,7 @@ class AttributePlanner:
         category = product.classification.class_name or product.classification.fine
 
         # Static schemas for fallback / core required attribute hints
-        static_schema_map = {
-            s.attribute_id: s for s in self.registry.schemas_for(product)
-        }
+        static_schema_map = {s.attribute_id: s for s in self.registry.schemas_for(product)}
 
         # 1. Try official reference pack (Category LOV or Global LOV)
         rules, source = self.reference_pack.resolve_category_rules(classpath, category)
@@ -167,10 +165,7 @@ class AttributePlanner:
             current_value = current.normalized_value if current else None
             evidence_available = bool(
                 current
-                and (
-                    current.evidence_ids
-                    or any(c.evidence_ids for c in current.candidates)
-                )
+                and (current.evidence_ids or any(c.evidence_ids for c in current.candidates))
             )
 
             ref_values = self.reference_pack.get_allowed_values(
@@ -187,11 +182,7 @@ class AttributePlanner:
             )
             uoms = ref_uoms if ref_uoms else schema.allowed_uom
 
-            has_ref = bool(
-                values
-                or uoms
-                or ref_avail == ReferenceAvailability.REFERENCE_AVAILABLE
-            )
+            has_ref = bool(values or uoms or ref_avail == ReferenceAvailability.REFERENCE_AVAILABLE)
             plan_ref_avail = (
                 ReferenceAvailability.REFERENCE_AVAILABLE
                 if has_ref
@@ -208,7 +199,8 @@ class AttributePlanner:
 
             if (
                 current
-                and current_status in {
+                and current_status
+                in {
                     FinalAttributeStatus.VERIFIED,
                     FinalAttributeStatus.NORMALIZED,
                     FinalAttributeStatus.ENRICHED,
@@ -260,12 +252,8 @@ class AttributePlanner:
 
         # Bound plan size while strictly preserving all required attributes
         if len(sorted_plans) > self.max_planned_attributes:
-            required_plans = [
-                p for p in sorted_plans if p.applicability == Applicability.REQUIRED
-            ]
-            other_plans = [
-                p for p in sorted_plans if p.applicability != Applicability.REQUIRED
-            ]
+            required_plans = [p for p in sorted_plans if p.applicability == Applicability.REQUIRED]
+            other_plans = [p for p in sorted_plans if p.applicability != Applicability.REQUIRED]
             remaining_slots = max(0, self.max_planned_attributes - len(required_plans))
             keep_others = other_plans[:remaining_slots]
             sorted_plans = sorted(

@@ -197,7 +197,13 @@ _ATTR_ALIASES: dict[str, list[str]] = {
     "grit": ["grit size", "grit / grade", "grade"],
     "material": ["abrasive material", "backing material", "composition"],
     "package quantity": [
-        "pack qty", "pkg qty", "quantity", "pieces", "box qty", "package qty", "pack of"
+        "pack qty",
+        "pkg qty",
+        "quantity",
+        "pieces",
+        "box qty",
+        "package qty",
+        "pack of",
     ],
     "maximum rpm": ["max rpm", "max speed", "rated rpm", "speed"],
     "color": ["colour"],
@@ -716,9 +722,7 @@ class ProductValidationHarness:
             # Record generated URLs
             if disc.search_result_urls:
                 urls_generated.extend(disc.search_result_urls)
-            candidates = source_disc.discover(
-                p, profile, candidate_urls=disc.search_result_urls
-            )
+            candidates = source_disc.discover(p, profile, candidate_urls=disc.search_result_urls)
             if not candidates:
                 return None
             best = candidates[0]
@@ -786,6 +790,7 @@ class ProductValidationHarness:
 
     def _build_mock_fetcher(self, pool: dict[str, bytes]) -> SourceFetcher:
         """Create a safe SourceFetcher with an in-memory HTTP pool."""
+
         class MockPoolFetcher(SourceFetcher):
             def __init__(self, responses: dict[str, bytes]) -> None:
                 super().__init__()
@@ -1189,10 +1194,7 @@ class EvaluationReporter:
                 f"| **Invention Rate** | `{q['invention_rate'] * 100:.1f}%` | "
                 "**STRICT PASS (0% Hallucination)** |"
             ),
-            (
-                f"| **False READY Decisions** | `{q['false_ready_count']}` | "
-                "**ZERO DEFECTS** |"
-            ),
+            (f"| **False READY Decisions** | `{q['false_ready_count']}` | **ZERO DEFECTS** |"),
             (
                 f"| **Final Pipeline READY Rate** | `{r['22_ready_rate'] * 100:.1f}%` | "
                 f"{'OPTIMAL' if r['22_ready_rate'] > 0.3 else 'FAIL-CLOSED BASELINE'} |"
@@ -1201,10 +1203,7 @@ class EvaluationReporter:
                 f"| **REVIEW_REQUIRED Rate** | `{r['20_review_required_rate'] * 100:.1f}%` | "
                 "Informational (Fail-closed) |"
             ),
-            (
-                f"| **BLOCKED Rate** | `{r['21_blocked_rate'] * 100:.1f}%` | "
-                "Informational |"
-            ),
+            (f"| **BLOCKED Rate** | `{r['21_blocked_rate'] * 100:.1f}%` | Informational |"),
             "",
             "---",
             "",
@@ -1233,182 +1232,183 @@ class EvaluationReporter:
         for cat, cnt in sorted(d["category_distributions"].items()):
             lines.append(f"| {cat} | {cnt} |")
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 3. Retrieval Metrics (All 22 Measured Dimensions)",
-            "",
-            "| Index | Metric Name | Result |",
-            "|---|---|---|",
-            (
-                f"| 1 | Manufacturer Resolution Rate | "
-                f"`{r['1_manufacturer_resolution_rate'] * 100:.2f}%` |"
-            ),
-            f"| 2 | Brand Resolution Rate | `{r['2_brand_resolution_rate'] * 100:.2f}%` |",
-            f"| 3 | Domain Resolution Rate | `{r['3_domain_resolution_rate'] * 100:.2f}%` |",
-            (
-                f"| 4 | Authoritative Source Discovery Rate | "
-                f"`{r['4_authoritative_source_discovery_rate'] * 100:.2f}%` |"
-            ),
-            (
-                f"| 5 | Product Identity Match Rate | "
-                f"`{r['5_product_identity_match_rate'] * 100:.2f}%` |"
-            ),
-            f"| 6 | Evidence Extraction Rate | `{r['6_evidence_extraction_rate'] * 100:.2f}%` |",
-            (
-                f"| 7 | Deterministic Retrieval Success Rate | "
-                f"`{r['7_deterministic_retrieval_success_rate'] * 100:.2f}%` |"
-            ),
-            f"| 8 | Site-Search Success Rate | `{r['8_site_search_success_rate'] * 100:.2f}%` |",
-            f"| 9 | Sitemap Success Rate | `{r['9_sitemap_success_rate'] * 100:.2f}%` |",
-            f"| 10 | Recovery Success Rate | `{r['10_recovery_success_rate'] * 100:.2f}%` |",
-            f"| 11 | Gemini Fallback Rate | `{r['11_gemini_fallback_rate'] * 100:.2f}%` |",
-            (
-                f"| 12 | Gemini Search Call Rate | "
-                f"`{r['12_gemini_search_call_rate']:.2f}` calls/product |"
-            ),
-            f"| 13 | Gemini Failure Rate | `{r['13_gemini_failure_rate'] * 100:.2f}%` |",
-            (
-                f"| 14 | Average HTTP Requests per Product | "
-                f"`{r['14_average_http_requests_per_product']:.2f}` |"
-            ),
-            (
-                f"| 15 | Median HTTP Requests per Product | "
-                f"`{r['15_median_http_requests_per_product']}` |"
-            ),
-            (
-                f"| 16 | Maximum HTTP Requests per Product | "
-                f"`{r['16_maximum_http_requests_per_product']}` |"
-            ),
-            f"| 17 | Cache Hit Rate | `{r['17_cache_hit_rate'] * 100:.2f}%` |",
-            (
-                f"| 18 | Duplicate Retrieval Rate | "
-                f"`{r['18_duplicate_retrieval_rate'] * 100:.2f}%` |"
-            ),
-            (
-                f"| 19 | Average Retrieval Duration | "
-                f"`{r['19_average_retrieval_time_ms']:.1f} ms` |"
-            ),
-            f"| 20 | REVIEW_REQUIRED Rate | `{r['20_review_required_rate'] * 100:.2f}%` |",
-            f"| 21 | BLOCKED Rate | `{r['21_blocked_rate'] * 100:.2f}%` |",
-            f"| 22 | READY (ENRICHED) Rate | `{r['22_ready_rate'] * 100:.2f}%` |",
-            "",
-            "---",
-            "",
-            "## 4. Output Quality & Publication Decision Integrity",
-            "",
-            (
-                f"- **Invention Rate:** `{q['invention_rate'] * 100:.1f}%` "
-                "(Zero hallucinations: all candidate values require verified evidence)."
-            ),
-            (
-                f"- **False READY Count:** `{q['false_ready_count']}` "
-                "(No product was marked READY without verified source and evidence)."
-            ),
-            (
-                f"- **False REVIEW Count:** `{q['false_review_count']}` "
-                "(Products with verified evidence appropriately transitioned to ENRICHED)."
-            ),
-            (
-                f"- **False BLOCK Count:** `{q['false_block_count']}` "
-                "(Zero recoverable products were blocked)."
-            ),
-            "",
-            "---",
-            "",
-            "## 5. Failure Classification & Severities",
-            "",
-            "### Failures by Severity",
-            "",
-            (
-                f"- **CRITICAL:** `{f['by_severity'].get('CRITICAL', 0)}` "
-                "(Zero security or authority violations)"
-            ),
-            (
-                f"- **HIGH:** `{f['by_severity'].get('HIGH', 0)}` "
-                "(Domain unresolvable or source not in offline fixture)"
-            ),
-            (
-                f"- **MEDIUM:** `{f['by_severity'].get('MEDIUM', 0)}` "
-                "(Recoverable candidate adjustments / review notices)"
-            ),
-            (
-                f"- **LOW:** `{f['by_severity'].get('LOW', 0)}` "
-                "(Formatting or minor telemetry)"
-            ),
-            "",
-            "### Failures by Category",
-            "",
-            "| Category | Count | Description |",
-            "|---|---|---|",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 3. Retrieval Metrics (All 22 Measured Dimensions)",
+                "",
+                "| Index | Metric Name | Result |",
+                "|---|---|---|",
+                (
+                    f"| 1 | Manufacturer Resolution Rate | "
+                    f"`{r['1_manufacturer_resolution_rate'] * 100:.2f}%` |"
+                ),
+                f"| 2 | Brand Resolution Rate | `{r['2_brand_resolution_rate'] * 100:.2f}%` |",
+                f"| 3 | Domain Resolution Rate | `{r['3_domain_resolution_rate'] * 100:.2f}%` |",
+                (
+                    f"| 4 | Authoritative Source Discovery Rate | "
+                    f"`{r['4_authoritative_source_discovery_rate'] * 100:.2f}%` |"
+                ),
+                (
+                    f"| 5 | Product Identity Match Rate | "
+                    f"`{r['5_product_identity_match_rate'] * 100:.2f}%` |"
+                ),
+                f"| 6 | Evidence Extraction Rate | `{r['6_evidence_extraction_rate'] * 100:.2f}%` |",
+                (
+                    f"| 7 | Deterministic Retrieval Success Rate | "
+                    f"`{r['7_deterministic_retrieval_success_rate'] * 100:.2f}%` |"
+                ),
+                f"| 8 | Site-Search Success Rate | `{r['8_site_search_success_rate'] * 100:.2f}%` |",
+                f"| 9 | Sitemap Success Rate | `{r['9_sitemap_success_rate'] * 100:.2f}%` |",
+                f"| 10 | Recovery Success Rate | `{r['10_recovery_success_rate'] * 100:.2f}%` |",
+                f"| 11 | Gemini Fallback Rate | `{r['11_gemini_fallback_rate'] * 100:.2f}%` |",
+                (
+                    f"| 12 | Gemini Search Call Rate | "
+                    f"`{r['12_gemini_search_call_rate']:.2f}` calls/product |"
+                ),
+                f"| 13 | Gemini Failure Rate | `{r['13_gemini_failure_rate'] * 100:.2f}%` |",
+                (
+                    f"| 14 | Average HTTP Requests per Product | "
+                    f"`{r['14_average_http_requests_per_product']:.2f}` |"
+                ),
+                (
+                    f"| 15 | Median HTTP Requests per Product | "
+                    f"`{r['15_median_http_requests_per_product']}` |"
+                ),
+                (
+                    f"| 16 | Maximum HTTP Requests per Product | "
+                    f"`{r['16_maximum_http_requests_per_product']}` |"
+                ),
+                f"| 17 | Cache Hit Rate | `{r['17_cache_hit_rate'] * 100:.2f}%` |",
+                (
+                    f"| 18 | Duplicate Retrieval Rate | "
+                    f"`{r['18_duplicate_retrieval_rate'] * 100:.2f}%` |"
+                ),
+                (
+                    f"| 19 | Average Retrieval Duration | "
+                    f"`{r['19_average_retrieval_time_ms']:.1f} ms` |"
+                ),
+                f"| 20 | REVIEW_REQUIRED Rate | `{r['20_review_required_rate'] * 100:.2f}%` |",
+                f"| 21 | BLOCKED Rate | `{r['21_blocked_rate'] * 100:.2f}%` |",
+                f"| 22 | READY (ENRICHED) Rate | `{r['22_ready_rate'] * 100:.2f}%` |",
+                "",
+                "---",
+                "",
+                "## 4. Output Quality & Publication Decision Integrity",
+                "",
+                (
+                    f"- **Invention Rate:** `{q['invention_rate'] * 100:.1f}%` "
+                    "(Zero hallucinations: all candidate values require verified evidence)."
+                ),
+                (
+                    f"- **False READY Count:** `{q['false_ready_count']}` "
+                    "(No product was marked READY without verified source and evidence)."
+                ),
+                (
+                    f"- **False REVIEW Count:** `{q['false_review_count']}` "
+                    "(Products with verified evidence appropriately transitioned to ENRICHED)."
+                ),
+                (
+                    f"- **False BLOCK Count:** `{q['false_block_count']}` "
+                    "(Zero recoverable products were blocked)."
+                ),
+                "",
+                "---",
+                "",
+                "## 5. Failure Classification & Severities",
+                "",
+                "### Failures by Severity",
+                "",
+                (
+                    f"- **CRITICAL:** `{f['by_severity'].get('CRITICAL', 0)}` "
+                    "(Zero security or authority violations)"
+                ),
+                (
+                    f"- **HIGH:** `{f['by_severity'].get('HIGH', 0)}` "
+                    "(Domain unresolvable or source not in offline fixture)"
+                ),
+                (
+                    f"- **MEDIUM:** `{f['by_severity'].get('MEDIUM', 0)}` "
+                    "(Recoverable candidate adjustments / review notices)"
+                ),
+                (f"- **LOW:** `{f['by_severity'].get('LOW', 0)}` (Formatting or minor telemetry)"),
+                "",
+                "### Failures by Category",
+                "",
+                "| Category | Count | Description |",
+                "|---|---|---|",
+            ]
+        )
 
         for cat, cnt in sorted(f["by_category"].items()):
             lines.append(f"| `{cat}` | {cnt} | Recorded during candidate evaluation |")
 
-        lines.extend([
-            "",
-            "---",
-            "",
-            "## 6. Live vs Mocked Retrieval Verification",
-            "",
-            "### Row 2 Controlled Live Test:",
-            "- **Input:** MPN `DCB518ASTS06G`, Brand `Diablo`, Manufacturer `Freud Inc`",
-            "- **Live Target URL:** `https://diablotools.com/products/DCB518ASTS06G`",
-            (
-                "- **Live HTTP Status:** `200 OK` "
-                "(Content-Type: `text/html; charset=utf-8`, 149,256 bytes)"
-            ),
-            (
-                "- **Live Match Result:** `STRONG_MATCH` "
-                "(Identity: `0.70`, MPN: `True`, Brand: `True`)"
-            ),
-            "- **Live Verification Outcome:** **PROVEN LIVE ON INTERNET** without Gemini Search.",
-            "",
-            "---",
-            "",
-            "## 7. Top 5 Engineering Insights Discovered",
-            "",
-            (
-                "1. **Distributor Contamination in Part_Manuf:** 273/1000 (27.3%) rows contain "
-                "cooperative/distributor names (`APPDE`, `BOICA`, `Parksite`, `Jam Industrial`) "
-                "instead of manufacturers. Brand pass-through is mandatory for resolving these."
-            ),
-            (
-                "2. **Sparse Brand Fields:** 554/1000 (55.4%) rows lack brand values in `E1_Brand` "
-                "or `DIB_Brand`. Many brand tokens are embedded directly within `Part_Desc` "
-                "(e.g. `3M`, `Diablo`, `Milw`, `HIOLIT`, `Abranet`)."
-            ),
-            (
-                "3. **Manufacturer Multi-Brand Structure:** Manufacturers like `Freud Inc` operate "
-                "distinct consumer domains (`diablotools.com` vs `freudtools.com`), requiring "
-                "brand-level domain resolution."
-            ),
-            (
-                "4. **Fail-Closed Safety is Maintained:** Products without verified manufacturer "
-                "evidence cleanly transition to `REVIEW_REQUIRED` or `BLOCKED` rather than "
-                "producing false `READY` records."
-            ),
-            (
-                "5. **High Deterministic Retrieval Potential:** Known industrial tool catalogs "
-                "(Milwaukee, Diablo/Freud, Bosch, Makita, Festool, 3M) can be resolved "
-                "deterministically without incurring LLM search costs."
-            ),
-            "",
-            "---",
-            "",
-            "## 8. Final Product Readiness Verdict",
-            "",
-            "### Verdict: `DEMO-READY (STABLE BACKEND)`",
-            "",
-            (
-                "- The deterministic retrieval pipeline is mathematically grounded, fail-closed, "
-                "and proven against both offline fixtures and live internet retrieval."
-            ),
-            "- Zero hallucinations (0.0% invention rate) and zero false READY decisions.",
-            "- Ready for UI integration and evaluation visualization.",
-        ])
+        lines.extend(
+            [
+                "",
+                "---",
+                "",
+                "## 6. Live vs Mocked Retrieval Verification",
+                "",
+                "### Row 2 Controlled Live Test:",
+                "- **Input:** MPN `DCB518ASTS06G`, Brand `Diablo`, Manufacturer `Freud Inc`",
+                "- **Live Target URL:** `https://diablotools.com/products/DCB518ASTS06G`",
+                (
+                    "- **Live HTTP Status:** `200 OK` "
+                    "(Content-Type: `text/html; charset=utf-8`, 149,256 bytes)"
+                ),
+                (
+                    "- **Live Match Result:** `STRONG_MATCH` "
+                    "(Identity: `0.70`, MPN: `True`, Brand: `True`)"
+                ),
+                "- **Live Verification Outcome:** **PROVEN LIVE ON INTERNET** without Gemini Search.",
+                "",
+                "---",
+                "",
+                "## 7. Top 5 Engineering Insights Discovered",
+                "",
+                (
+                    "1. **Distributor Contamination in Part_Manuf:** 273/1000 (27.3%) rows contain "
+                    "cooperative/distributor names (`APPDE`, `BOICA`, `Parksite`, `Jam Industrial`) "
+                    "instead of manufacturers. Brand pass-through is mandatory for resolving these."
+                ),
+                (
+                    "2. **Sparse Brand Fields:** 554/1000 (55.4%) rows lack brand values in `E1_Brand` "
+                    "or `DIB_Brand`. Many brand tokens are embedded directly within `Part_Desc` "
+                    "(e.g. `3M`, `Diablo`, `Milw`, `HIOLIT`, `Abranet`)."
+                ),
+                (
+                    "3. **Manufacturer Multi-Brand Structure:** Manufacturers like `Freud Inc` operate "
+                    "distinct consumer domains (`diablotools.com` vs `freudtools.com`), requiring "
+                    "brand-level domain resolution."
+                ),
+                (
+                    "4. **Fail-Closed Safety is Maintained:** Products without verified manufacturer "
+                    "evidence cleanly transition to `REVIEW_REQUIRED` or `BLOCKED` rather than "
+                    "producing false `READY` records."
+                ),
+                (
+                    "5. **High Deterministic Retrieval Potential:** Known industrial tool catalogs "
+                    "(Milwaukee, Diablo/Freud, Bosch, Makita, Festool, 3M) can be resolved "
+                    "deterministically without incurring LLM search costs."
+                ),
+                "",
+                "---",
+                "",
+                "## 8. Final Product Readiness Verdict",
+                "",
+                "### Verdict: `DEMO-READY (STABLE BACKEND)`",
+                "",
+                (
+                    "- The deterministic retrieval pipeline is mathematically grounded, fail-closed, "
+                    "and proven against both offline fixtures and live internet retrieval."
+                ),
+                "- Zero hallucinations (0.0% invention rate) and zero false READY decisions.",
+                "- Ready for UI integration and evaluation visualization.",
+            ]
+        )
 
         return "\n".join(lines)
 
@@ -1421,9 +1421,7 @@ class EvaluationReporter:
 class EvidenceExtractor:
     """Extracts MPN, brand, and specification evidence from parsed documents."""
 
-    def extract(
-        self, document: ParsedDocument, url: str, product_context: Any
-    ) -> Any:
+    def extract(self, document: ParsedDocument, url: str, product_context: Any) -> Any:
         from unilog_product_intelligence.retrieval.core import (
             EvidenceCandidate,
             EvidenceExtractionResult,

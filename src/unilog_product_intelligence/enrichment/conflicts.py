@@ -80,10 +80,10 @@ class ConflictEngine:
         by_attribute: dict[str, list[EnrichmentCandidate]] = defaultdict(list)
         for c in candidates:
             attr_name = (
-                getattr(c, "attribute", None)
-                or getattr(c, "attribute_id", None)
-                or ""
-            ).casefold().strip()
+                (getattr(c, "attribute", None) or getattr(c, "attribute_id", None) or "")
+                .casefold()
+                .strip()
+            )
             if attr_name:
                 by_attribute[attr_name].append(c)
 
@@ -109,13 +109,10 @@ class ConflictEngine:
             distinct_ev_ids: list[str] = []
             distinct_authorities: list[SourceAuthority] = []
 
-            for val_key, val_cands in value_to_candidates.items():
+            for _val_key, val_cands in value_to_candidates.items():
                 first_cand = val_cands[0]
                 val_repr = str(
-                    first_cand.normalized_value
-                    or first_cand.raw_value
-                    or first_cand.value
-                    or ""
+                    first_cand.normalized_value or first_cand.raw_value or first_cand.value or ""
                 ).strip()
                 distinct_values.append(val_repr)
 
@@ -150,16 +147,17 @@ class ConflictEngine:
         conflict: EvidenceConflict,
         packet: ProductEvidencePacket | None = None,
     ) -> EvidenceConflict:
-        """Resolve a conflict based on source authority hierarchy, optionally verified against packet."""
+        """Resolve a conflict based on source authority hierarchy.
+
+        Optionally verifies the recommended evidence ID against the packet.
+        """
         if len(conflict.values) < 2:
             return conflict
 
         # Pair each value with its authority rank
         ranks = [
             (
-                self._AUTHORITY_RANK.get(
-                    auth, self._AUTHORITY_RANK[SourceAuthority.UNKNOWN]
-                ),
+                self._AUTHORITY_RANK.get(auth, self._AUTHORITY_RANK[SourceAuthority.UNKNOWN]),
                 idx,
                 conflict.values[idx],
                 conflict.evidence_ids[idx] if idx < len(conflict.evidence_ids) else None,
@@ -277,7 +275,11 @@ class ConflictEngine:
                 resp = router(prompt)
 
             content = getattr(resp, "output_text", getattr(resp, "content", str(resp)))
-            parsed = json.loads(content) if isinstance(content, str) and content.strip().startswith("{") else {}
+            parsed = (
+                json.loads(content)
+                if isinstance(content, str) and content.strip().startswith("{")
+                else {}
+            )
             selected_id = parsed.get("selected_evidence_id")
             reasoning = parsed.get("reasoning", "Escalation model selected option.")
 

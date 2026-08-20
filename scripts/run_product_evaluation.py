@@ -68,11 +68,13 @@ def main() -> None:
     row2_record = sampler.records[0]  # Row 1 in list (DCB518ASTS06G)
     try:
         live_trace = harness.evaluate_product(row2_record, live_network=True)
-        print(f"Live Row 2 Result: Status={live_trace.final_status}, "
-              f"Domain={live_trace.phase5.domain}, "
-              f"Verified={live_trace.phase5.source_verified}, "
-              f"IdentityScore={live_trace.phase5.identity_score}, "
-              f"FetchedURLs={live_trace.phase5.urls_fetched}")
+        print(
+            f"Live Row 2 Result: Status={live_trace.final_status}, "
+            f"Domain={live_trace.phase5.domain}, "
+            f"Verified={live_trace.phase5.source_verified}, "
+            f"IdentityScore={live_trace.phase5.identity_score}, "
+            f"FetchedURLs={live_trace.phase5.urls_fetched}"
+        )
     except Exception as e:
         print(f"Live Row 2 Failed with environment exception: {e}")
 

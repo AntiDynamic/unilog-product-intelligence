@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -106,8 +105,6 @@ class ManufacturerJob(BaseModel):
     assets_discovered_count: int = 0
     verified_source_context: VerifiedProductSourceContext | None = None
     evidence_packet: ProductEvidencePacket | None = None
-
-
 
 
 class ManufacturerIntelligenceService:
@@ -305,11 +302,12 @@ class ManufacturerIntelligenceService:
                 job.asset_discovery_error = f"{type(exc).__name__}: {exc}"
 
             # Build ProductEvidencePacket — single source-of-truth for Phase 6 & Delivery.
-            _source_authority = SourceAuthority.SECONDARY if is_secondary else SourceAuthority.AUTHORITATIVE
+            _source_authority = (
+                SourceAuthority.SECONDARY if is_secondary else SourceAuthority.AUTHORITATIVE
+            )
             # Collect image URLs: prefer gallery images, fall back to primary image.
-            _raw_images = (
-                html_data.gallery_images
-                or ([html_data.primary_image_url] if html_data.primary_image_url else [])
+            _raw_images = html_data.gallery_images or (
+                [html_data.primary_image_url] if html_data.primary_image_url else []
             )
             job.evidence_packet = ProductEvidencePacket(
                 product_id=product.product_id,
@@ -332,8 +330,7 @@ class ManufacturerIntelligenceService:
                     for s in html_data.specifications
                 ),
                 features=tuple(
-                    FeatureEvidence(name=feature)
-                    for feature in (html_data.features or [])[:20]
+                    FeatureEvidence(name=feature) for feature in (html_data.features or [])[:20]
                 ),
                 document_urls=tuple(html_data.document_urls),
                 image_urls=tuple(_raw_images),
@@ -611,5 +608,3 @@ def _build_clean_page_text(data: ExtractedProductData) -> str:
         docs_text = "\n".join(f"- {u}" for u in data.document_urls[:10])
         sections.append(f"DOCUMENT LINKS:\n{docs_text}")
     return "\n\n".join(sections)
-
-

@@ -136,14 +136,17 @@ class Phase65ResultDeliveryAdapter:
         mfr_url, ref_urls = _extract_source_urls(phase65_result, product)
         values["MFR URL"] = mfr_url
         for i in range(1, self.MAX_REF_URLS + 1):
-            values[f"Ref URL {i}"] = (
-                ref_urls[i - 1] if i - 1 < len(ref_urls) else None
-            )
+            values[f"Ref URL {i}"] = ref_urls[i - 1] if i - 1 < len(ref_urls) else None
 
         # ── 2. Raw input passthrough ──────────────────────────────────────────
         raw = {f.field_name: f.raw_value for f in product.raw_inputs}
         raw_cols = (
-            "Mfg_Part_Num", "Part_Desc", "E1_Brand", "Unilog_Brand", "DIB_Brand", "Part_Manuf"
+            "Mfg_Part_Num",
+            "Part_Desc",
+            "E1_Brand",
+            "Unilog_Brand",
+            "DIB_Brand",
+            "Part_Manuf",
         )
         for col in raw_cols:
             values[col] = raw.get(col)
@@ -166,9 +169,7 @@ class Phase65ResultDeliveryAdapter:
             if res_mfg and not _is_distributor_string(res_mfg):
                 mfg_name = res_mfg
             else:
-                enriched_mfg = _attr_value(
-                    attr_by_name, "manufacturer", "manufacturer name"
-                )
+                enriched_mfg = _attr_value(attr_by_name, "manufacturer", "manufacturer name")
                 if enriched_mfg and not _is_distributor_string(enriched_mfg):
                     mfg_name = enriched_mfg
                 else:
@@ -180,9 +181,7 @@ class Phase65ResultDeliveryAdapter:
             elif res_mfg and not _is_distributor_string(res_mfg):
                 mfg_name = res_mfg
             else:
-                enriched_mfg = _attr_value(
-                    attr_by_name, "manufacturer", "manufacturer name"
-                )
+                enriched_mfg = _attr_value(attr_by_name, "manufacturer", "manufacturer name")
                 if enriched_mfg and not _is_distributor_string(enriched_mfg):
                     mfg_name = enriched_mfg
                 else:
@@ -233,9 +232,7 @@ class Phase65ResultDeliveryAdapter:
         # ── 6. Item feature bullets ───────────────────────────────────────────
         features = desc.features if desc else []
         for i in range(1, self.MAX_FEATURES + 1):
-            values[f"ITEM_FEATURES_{i}"] = (
-                features[i - 1] if i - 1 < len(features) else None
-            )
+            values[f"ITEM_FEATURES_{i}"] = features[i - 1] if i - 1 < len(features) else None
 
         # ── 7. Attribute triplets (LABEL / VALUE / UOM × 50) ─────────────────
         attr_candidates = _build_attribute_triplets(product)
@@ -293,9 +290,7 @@ class Phase65ResultDeliveryAdapter:
             "package contents",
             "with",
         )
-        values["Product Name"] = _attr_value(
-            attr_by_name, "product name", "name", "product title"
-        )
+        values["Product Name"] = _attr_value(attr_by_name, "product name", "name", "product title")
 
         # ── 9. Identifier columns ─────────────────────────────────────────────
         values["UPC"] = _attr_value(attr_by_name, "upc")
@@ -345,12 +340,13 @@ class Phase65ResultDeliveryAdapter:
         _assign_doc(values, doc_assets, "Warranty Information", ("warranty",))
         _assign_doc(values, doc_assets, "Catalog", ("catalog", "catalogue"))
         _assign_doc(
-            values, doc_assets, "Specification Sheet",
-            ("spec", "specification", "technical")
+            values, doc_assets, "Specification Sheet", ("spec", "specification", "technical")
         )
         _assign_doc(
-            values, doc_assets, "Instruction/Installation Manual",
-            ("install", "instruction", "setup")
+            values,
+            doc_assets,
+            "Instruction/Installation Manual",
+            ("install", "instruction", "setup"),
         )
         _assign_doc(values, doc_assets, "Service Manual", ("service manual",))
         _assign_doc(
@@ -464,6 +460,7 @@ def _clean_name(name: str | None) -> str | None:
     if not name:
         return None
     import re
+
     cleaned = re.sub(r"\s*\(\d{2,8}\)\s*$", "", name).strip()
     return cleaned or name
 
@@ -531,9 +528,7 @@ def _rank_document_url(url: str) -> int:
     return 6
 
 
-def _extract_source_urls(
-    result: Any, product: ProductTruth
-) -> tuple[str | None, list[str]]:
+def _extract_source_urls(result: Any, product: ProductTruth) -> tuple[str | None, list[str]]:
     """Extract MFR URL and ranked reference/document URLs from result and truth."""
     mfr_url: str | None = None
     candidate_urls: list[str] = []
@@ -572,7 +567,6 @@ def _extract_source_urls(
                         mfr_url = url.strip()
                         break
 
-
     # 2. ProductTruth sources
     for source in product.sources:
         url = source.uri
@@ -588,7 +582,6 @@ def _extract_source_urls(
         for doc_url in source_ctx.document_urls:
             if doc_url and doc_url != mfr_url:
                 candidate_urls.append(doc_url)
-
 
     # 4. Digital assets documents
     image_types = {

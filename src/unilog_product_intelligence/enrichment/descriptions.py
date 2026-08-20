@@ -180,7 +180,7 @@ class DescriptionContext:
             if raw_desc:
                 clean_desc = raw_desc
                 if mpn and clean_desc.casefold().startswith(mpn.casefold()):
-                    clean_desc = clean_desc[len(mpn):].strip(" -_")
+                    clean_desc = clean_desc[len(mpn) :].strip(" -_")
                 pname = clean_desc or raw_desc
 
         if not pname:
@@ -192,16 +192,11 @@ class DescriptionContext:
             for attr in product.attributes
             if attr.status.value in {"verified", "normalized", "enriched"}
             and (attr.normalized_value is not None or attr.raw_value is not None)
-            and (
-                bool(attr.evidence_ids)
-                or any(bool(c.evidence_ids) for c in attr.candidates)
-            )
+            and (bool(attr.evidence_ids) or any(bool(c.evidence_ids) for c in attr.candidates))
         )
 
         ev_snippets = tuple(
-            ref.evidence_text
-            for ref in evidence_references(product)
-            if ref.evidence_text
+            ref.evidence_text for ref in evidence_references(product) if ref.evidence_text
         )
 
         approved_uoms = (

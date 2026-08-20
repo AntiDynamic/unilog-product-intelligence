@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from unilog_product_intelligence.application.scale import FailureCategory, classify_429
 from unilog_product_intelligence.providers.base import LLMProvider, LLMRequest, LLMResponse
@@ -30,18 +30,26 @@ def should_fallback(error: Exception) -> bool:
     Rate limits (429), timeouts (408), and transient server errors (5xx) return True.
     """
     status_code = getattr(error, "status_code", None)
-    normalized_status = int(status_code) if str(status_code).isdigit() else None
+    normalized_status = int(str(status_code)) if str(status_code).isdigit() else None
 
     # Check error message if status_code is not directly on exception
     if normalized_status is None:
         err_msg = str(error)
         for code in NON_RETRYABLE_STATUS_CODES:
-            if f"{code}" in err_msg and ("status" in err_msg.casefold() or "error" in err_msg.casefold() or f" {code} " in f" {err_msg} "):
+            if f"{code}" in err_msg and (
+                "status" in err_msg.casefold()
+                or "error" in err_msg.casefold()
+                or f" {code} " in f" {err_msg} "
+            ):
                 normalized_status = code
                 break
         if normalized_status is None:
             for code in RETRYABLE_STATUS_CODES:
-                if f"{code}" in err_msg and ("status" in err_msg.casefold() or "error" in err_msg.casefold() or f" {code} " in f" {err_msg} "):
+                if f"{code}" in err_msg and (
+                    "status" in err_msg.casefold()
+                    or "error" in err_msg.casefold()
+                    or f" {code} " in f" {err_msg} "
+                ):
                     normalized_status = code
                     break
 
@@ -49,12 +57,8 @@ def should_fallback(error: Exception) -> bool:
         return False
 
     if normalized_status == 429:
-        category = classify_429(error)
-        if category == FailureCategory.SPEND_LIMIT:
-            # Spend limit reached — fail fast immediately
-            return False
-        # RATE_LIMIT, PROJECT_QUOTA, CAPACITY, SEARCH_LIMIT can fallback
-        return True
+        # Spend limit reached — fail fast immediately, other 429 categories can fallback
+        return classify_429(error) != FailureCategory.SPEND_LIMIT
 
     if normalized_status in RETRYABLE_STATUS_CODES:
         return True
@@ -64,10 +68,7 @@ def should_fallback(error: Exception) -> bool:
         return True
 
     err_str = str(error).upper()
-    if any(code in err_str for code in RETRYABLE_PROVIDER_CODES):
-        return True
-
-    return False
+    return any(code in err_str for code in RETRYABLE_PROVIDER_CODES)
 
 
 # Backward-compatibility alias
@@ -120,17 +121,15 @@ class GeminiRouter(LLMProvider):
                 return self.fallback.generate(request)
             raise
 
-    def generate_with_tools(
-        self, request: LLMRequest, tools: list[dict[str, Any]]
-    ) -> LLMResponse:
+    def generate_with_tools(self, request: LLMRequest, tools: list[dict[str, Any]]) -> LLMResponse:
         try:
             if hasattr(self.primary, "generate_with_tools"):
-                return self.primary.generate_with_tools(request, tools)
+                return cast(LLMResponse, self.primary.generate_with_tools(request, tools))
             return self.primary.generate(request)
         except Exception as error:
             if self.fallback is not None and should_fallback(error):
                 if hasattr(self.fallback, "generate_with_tools"):
-                    return self.fallback.generate_with_tools(request, tools)
+                    return cast(LLMResponse, self.fallback.generate_with_tools(request, tools))
                 return self.fallback.generate(request)
             raise
 

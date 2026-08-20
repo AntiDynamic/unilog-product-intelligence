@@ -41,7 +41,7 @@ def test_live_benchmark_runner_and_reporter() -> None:
         e1_brand="-- Unbranded --",
         unilog_brand="-- No Unilog Brand --",
         dib_brand="-- No DIB Brand --",
-        description="DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc",
+        description='DCB518ASTS06G Diablo 1/2"x18" - Sanding Belt 6pc',
         category="Known manufacturer + obvious MPN / Standard direct URL candidate",
     )
 

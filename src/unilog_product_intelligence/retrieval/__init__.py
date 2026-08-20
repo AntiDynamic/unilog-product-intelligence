@@ -39,8 +39,8 @@ from .html_extractor import (
     ExtractedProductData,
     HtmlProductEvidenceExtractor,
 )
-from .mpn_normalizer import MpnHypothesis, MpnHypothesisType, MpnNormalizer
 from .manufacturer_registry import ManufacturerRegistry
+from .mpn_normalizer import MpnHypothesis, MpnHypothesisType, MpnNormalizer
 from .service import ManufacturerIntelligenceService
 from .source_discovery import (
     DeterministicUrlStrategy,
@@ -50,7 +50,6 @@ from .source_discovery import (
     ProductSourceCandidate,
     ProductSourceDiscoveryService,
 )
-
 
 __all__ = [
     "AssetAssociationScope",
@@ -82,7 +81,6 @@ __all__ = [
     "ManufacturerProfile",
     "ManufacturerRegistry",
     "MpnHypothesis",
-
     "MpnHypothesisType",
     "MpnMatchClassification",
     "MpnNormalizer",

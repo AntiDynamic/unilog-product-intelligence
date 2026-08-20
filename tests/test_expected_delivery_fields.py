@@ -47,10 +47,7 @@ def _make_test_product(pid: str = "prod-test-fields") -> ProductTruth:
 def test_with_populated_only_when_evidence_exists() -> None:
     """Test that 'With' is populated when structured evidence exists and None when absent."""
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)
@@ -97,19 +94,13 @@ def test_with_populated_only_when_evidence_exists() -> None:
     res_with.is_distributor_masked = False
 
     record_with = adapter.to_record(res_with)
-    assert (
-        record_with.values["With"]
-        == "Infeed/outfeed tables, extra set of knives"
-    )
+    assert record_with.values["With"] == "Infeed/outfeed tables, extra set of knives"
 
 
 def test_standard_approvals_populated_only_when_evidence_exists() -> None:
     """Test that 'Standard/Approvals' is populated when evidence exists and None when absent."""
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)
@@ -162,10 +153,7 @@ def test_standard_approvals_populated_only_when_evidence_exists() -> None:
 def test_marketing_description_populated_from_descriptions() -> None:
     """Test that MARKETING_DESCRIPTION is populated from retail/marketing descriptions."""
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)

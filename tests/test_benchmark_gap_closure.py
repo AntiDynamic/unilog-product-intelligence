@@ -88,8 +88,7 @@ def test_html_evidence_extractor_parses_jsonld_product() -> None:
     assert len(data.specifications) == 4
 
     spec_dict = {
-        s.attribute: (s.normalized_value or s.raw_value, s.unit)
-        for s in data.specifications
+        s.attribute: (s.normalized_value or s.raw_value, s.unit) for s in data.specifications
     }
     assert spec_dict["Diameter"] == ("5", "in")
     assert spec_dict["Thickness"] == (".045", "in")
@@ -315,12 +314,8 @@ def test_description_brand_priority_fallback() -> None:
     product = ProductTruth(
         product_id="prod-brand-test",
         raw_inputs=(
-            RawInputField(
-                field_name="Mfg_Part_Num", raw_value="DCB518ASTS06G", source_id="src-1"
-            ),
-            RawInputField(
-                field_name="Part_Manuf", raw_value="Freud Inc (2435)", source_id="src-1"
-            ),
+            RawInputField(field_name="Mfg_Part_Num", raw_value="DCB518ASTS06G", source_id="src-1"),
+            RawInputField(field_name="Part_Manuf", raw_value="Freud Inc (2435)", source_id="src-1"),
             RawInputField(
                 field_name="Unilog_Brand",
                 raw_value="-- No Unilog Brand --",
@@ -465,6 +460,7 @@ def test_mirka_retrieval_strategy() -> None:
         MpnHypothesis,
         MpnHypothesisType,
     )
+
     hypotheses = [
         MpnHypothesis(
             value="5B-332-080",
@@ -500,6 +496,7 @@ def test_authorized_distributor_fallback_strategy() -> None:
         MpnHypothesis,
         MpnHypothesisType,
     )
+
     hypotheses = [
         MpnHypothesis(
             value="7100075678",

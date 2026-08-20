@@ -68,10 +68,7 @@ def test_wke100hwa_lg_washtower_demasking() -> None:
 
     # Verify adapter delivery output
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)
@@ -111,10 +108,7 @@ def test_ff7011wn_speed_queen_demasking() -> None:
     assert resolved.brand == "Speed Queen"
 
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)
@@ -153,10 +147,7 @@ def test_ptd70gbptdg_ge_profile_demasking() -> None:
     assert resolved.brand == "GE Profile"
 
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)
@@ -183,10 +174,7 @@ def test_ptd70gbptdg_ge_profile_demasking() -> None:
 def test_unresolved_distributor_never_published_as_manufacturer() -> None:
     """Test when distributor is unresolved, MANUFACTURER_NAME is None (never distributor)."""
     schema_path = (
-        Path(__file__).resolve().parent.parent
-        / "docs"
-        / "research"
-        / "delivery-schema.json"
+        Path(__file__).resolve().parent.parent / "docs" / "research" / "delivery-schema.json"
     )
     contract = DeliverySchemaContract.from_json(schema_path)
     adapter = Phase65ResultDeliveryAdapter(contract)

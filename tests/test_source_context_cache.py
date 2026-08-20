@@ -277,6 +277,6 @@ def test_no_silent_typeerror_fallback() -> None:
     with pytest.raises(TypeError, match="Real internal TypeError inside enrichment algorithm"):
         pipeline.run(product)
 
-    assert (
-        len(calls) == 1
-    ), "Enrichment must be called exactly once; TypeError must NOT trigger a second fallback call!"
+    assert len(calls) == 1, (
+        "Enrichment must be called exactly once; TypeError must NOT trigger a second fallback call!"
+    )

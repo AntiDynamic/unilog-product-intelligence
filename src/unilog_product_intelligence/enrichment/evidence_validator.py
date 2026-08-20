@@ -60,7 +60,7 @@ class EvidenceConstraintValidator:
             Accepted and rejected proposals with reasons for each rejection.
         """
         valid_evidence_ids: set[str] = {
-            getattr(ref, "evidence_id", None)
+            str(getattr(ref, "evidence_id"))
             for ref in packet.evidence
             if getattr(ref, "evidence_id", None) is not None
         }

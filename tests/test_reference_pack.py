@@ -92,19 +92,21 @@ def test_uom_loading_and_normalization(tmp_path: Path) -> None:
     wb = Workbook()
     ws = wb.active
     ws.title = "UOM Master"
-    ws.append([
-        "Approved UOM Abbreviation",
-        "Measurement Type",
-        "Capture Form",
-        "Example",
-        "Synonyms / Alternates",
-        "Rule / Description",
-    ])
-    ws.append(["IN", "Length", "in.", '5 IN, 1/2 IN', "inch, inches, IN.", "Standard inch"])
+    ws.append(
+        [
+            "Approved UOM Abbreviation",
+            "Measurement Type",
+            "Capture Form",
+            "Example",
+            "Synonyms / Alternates",
+            "Rule / Description",
+        ]
+    )
+    ws.append(["IN", "Length", "in.", "5 IN, 1/2 IN", "inch, inches, IN.", "Standard inch"])
     ws.append(["FT", "Length", "ft.", "10 FT", "foot, feet", "Standard foot unit"])
-    ws.append([
-        "PSI", "Pressure", "psi", "150 PSI", "lbs/sq in, pounds per square inch", "Pressure unit"
-    ])
+    ws.append(
+        ["PSI", "Pressure", "psi", "150 PSI", "lbs/sq in, pounds per square inch", "Pressure unit"]
+    )
     ws.append(["GPM", "Flow Rate", "gpm", "2.5 GPM", "gallons per minute", "Gallons per min"])
     wb.save(uom_path)
     wb.close()
@@ -234,59 +236,69 @@ def test_global_lov_taxonomy_context_separation(tmp_path: Path) -> None:
     wb = Workbook()
     ws = wb.active
     ws.title = "Global LOV"
-    ws.append([
-        "Classpath",
-        "Leaf Node",
-        "Attribute Label",
-        "Attribute Values",
-        "Filtering Y/N",
-        "Guidelines",
-        "Remarks",
-        "UOM",
-    ])
+    ws.append(
+        [
+            "Classpath",
+            "Leaf Node",
+            "Attribute Label",
+            "Attribute Values",
+            "Filtering Y/N",
+            "Guidelines",
+            "Remarks",
+            "UOM",
+        ]
+    )
     # Category 1: Plumbing > Fittings
-    ws.append([
-        "Plumbing > Fittings",
-        "Fittings",
-        "Material",
-        "Brass\nBronze\nCopper\nPVC\nStainless Steel",
-        "Y",
-        "Select fitting body material",
-        None,
-        None,
-    ])
-    ws.append([
-        "Plumbing > Fittings",
-        "Fittings",
-        "Size",
-        "1/2\n3/4\n1\n2",
-        "Y",
-        "Nominal pipe size",
-        None,
-        "IN",
-    ])
+    ws.append(
+        [
+            "Plumbing > Fittings",
+            "Fittings",
+            "Material",
+            "Brass\nBronze\nCopper\nPVC\nStainless Steel",
+            "Y",
+            "Select fitting body material",
+            None,
+            None,
+        ]
+    )
+    ws.append(
+        [
+            "Plumbing > Fittings",
+            "Fittings",
+            "Size",
+            "1/2\n3/4\n1\n2",
+            "Y",
+            "Nominal pipe size",
+            None,
+            "IN",
+        ]
+    )
 
     # Category 2: Fasteners > Bolts
-    ws.append([
-        "Fasteners > Bolts",
-        "Hex Bolts",
-        "Material",
-        "Grade 5 Steel\nGrade 8 Steel\nTitanium\nZinc Plated",
-        "Y",
-        "Bolt material grade",
-        None,
-        None,
-    ])
-    ws.append([
-        "Fasteners > Bolts",
-        "Hex Bolts",
-        "Size",
-        "1/4-20\n3/8-16\n1/2-13",
-        "Y",
-        "Thread size",
-        None,
-        "IN",
-    ])
+    ws.append(
+        [
+            "Fasteners > Bolts",
+            "Hex Bolts",
+            "Material",
+            "Grade 5 Steel\nGrade 8 Steel\nTitanium\nZinc Plated",
+            "Y",
+            "Bolt material grade",
+            None,
+            None,
+        ]
+    )
+    ws.append(
+        [
+            "Fasteners > Bolts",
+            "Hex Bolts",
+            "Size",
+            "1/4-20\n3/8-16\n1/2-13",
+            "Y",
+            "Thread size",
+            None,
+            "IN",
+        ]
+    )
 
     wb.save(lov_path)
     wb.close()
@@ -417,9 +429,7 @@ def test_per_reference_availability_fail_closed(tmp_path: Path) -> None:
     assert pack.status[ReferenceType.UOM_STANDARD] == ReferenceAvailability.REFERENCE_AVAILABLE
 
     assert pack.lov_available is False
-    assert pack.status[ReferenceType.GLOBAL_LOV] == (
-        ReferenceAvailability.REFERENCE_UNAVAILABLE
-    )
+    assert pack.status[ReferenceType.GLOBAL_LOV] == (ReferenceAvailability.REFERENCE_UNAVAILABLE)
     assert pack.status[ReferenceType.DECIMAL_FRACTION] == (
         ReferenceAvailability.REFERENCE_UNAVAILABLE
     )
@@ -444,18 +454,33 @@ def test_attribute_planner_consumes_category_reference(tmp_path: Path) -> None:
     wb1 = Workbook()
     ws1 = wb1.active
     ws1.append(["Classpath", "Leaf Node", "Attribute Label", "Attribute Values", "UOM"])
-    ws1.append([
-        "Plumbing > Fittings", "Fittings", "Fitting Type",
-        "Adapter\nCoupling\nElbow\nTee", None,
-    ])
-    ws1.append([
-        "Plumbing > Fittings", "Fittings", "Connection Type",
-        "NPT x NPT\nPush-Fit\nSweat", None,
-    ])
-    ws1.append([
-        "Plumbing > Fittings", "Fittings", "Material",
-        "Brass\nBronze\nCopper\nPVC", None,
-    ])
+    ws1.append(
+        [
+            "Plumbing > Fittings",
+            "Fittings",
+            "Fitting Type",
+            "Adapter\nCoupling\nElbow\nTee",
+            None,
+        ]
+    )
+    ws1.append(
+        [
+            "Plumbing > Fittings",
+            "Fittings",
+            "Connection Type",
+            "NPT x NPT\nPush-Fit\nSweat",
+            None,
+        ]
+    )
+    ws1.append(
+        [
+            "Plumbing > Fittings",
+            "Fittings",
+            "Material",
+            "Brass\nBronze\nCopper\nPVC",
+            None,
+        ]
+    )
     ws1.append(["Plumbing > Fittings", "Fittings", "Size", "1/2\n3/4\n1\n2", "IN"])
     wb1.save(lov_path)
     wb1.close()

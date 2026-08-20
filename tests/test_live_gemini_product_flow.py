@@ -93,31 +93,34 @@ class RecordingMockGeminiProvider(LLMProvider):
         self.recorded_requests.append(request)
 
         if request.task == "product_understanding":
-            output = json.dumps({
-                "product_type": "Sanding Belt",
-                "product_family": "Abrasives",
-                "semantic_features": ["60 Grit", "Zirconia Alumina"],
-                "evidence": [],
-                "uncertain_items": []
-            })
+            output = json.dumps(
+                {
+                    "product_type": "Sanding Belt",
+                    "product_family": "Abrasives",
+                    "semantic_features": ["60 Grit", "Zirconia Alumina"],
+                    "evidence": [],
+                    "uncertain_items": [],
+                }
+            )
         elif request.task == "classification":
-            output = json.dumps({
-                "candidates": [
-                    {
-                        "department": "Abrasives",
-                        "class_name": "Sanding Belts & Discs",
-                        "fine": "Sanding Belts",
-                        "classpath": ["Abrasives", "Sanding Belts & Discs", "Sanding Belts"]
-                    }
-                ],
-                "selected_candidate": 0,
-                "unresolved_reason": None
-            })
+            output = json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "department": "Abrasives",
+                            "class_name": "Sanding Belts & Discs",
+                            "fine": "Sanding Belts",
+                            "classpath": ["Abrasives", "Sanding Belts & Discs", "Sanding Belts"],
+                        }
+                    ],
+                    "selected_candidate": 0,
+                    "unresolved_reason": None,
+                }
+            )
         elif request.task == "attribute_extraction":
-            output = json.dumps({
-                "attributes": [],
-                "missing_attributes": ["Diameter", "Thickness", "Grit"]
-            })
+            output = json.dumps(
+                {"attributes": [], "missing_attributes": ["Diameter", "Thickness", "Grit"]}
+            )
         elif request.task == "evidence_grounded_enrichment":
             # Extract evidence IDs from prompt lines
             evidence_ids = []
@@ -125,51 +128,55 @@ class RecordingMockGeminiProvider(LLMProvider):
                 if "evidence_id=" in line:
                     ev_id = line.split("evidence_id=")[1].split()[0]
                     evidence_ids.append(ev_id)
-            
+
             ev_id_1 = evidence_ids[0] if evidence_ids else "evidence-mock-1"
             ev_id_2 = evidence_ids[1] if len(evidence_ids) > 1 else ev_id_1
 
-            output = json.dumps({
-                "candidates": [
-                    {
-                        "attribute": "Diameter",
-                        "value": "5",
-                        "raw_value": "5 in",
-                        "normalized_value": "5",
-                        "uom": "in",
-                        "evidence_id": ev_id_1,
-                        "evidence_text": "Diameter: 5 in",
-                        "status": "enriched",
-                        "reason": "Direct spec table value"
-                    },
-                    {
-                        "attribute": "Thickness",
-                        "value": ".045",
-                        "raw_value": ".045 in",
-                        "normalized_value": ".045",
-                        "uom": "in",
-                        "evidence_id": ev_id_2,
-                        "evidence_text": "Thickness: .045 in",
-                        "status": "enriched",
-                        "reason": "Direct spec table value"
-                    }
-                ]
-            })
+            output = json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "attribute": "Diameter",
+                            "value": "5",
+                            "raw_value": "5 in",
+                            "normalized_value": "5",
+                            "uom": "in",
+                            "evidence_id": ev_id_1,
+                            "evidence_text": "Diameter: 5 in",
+                            "status": "enriched",
+                            "reason": "Direct spec table value",
+                        },
+                        {
+                            "attribute": "Thickness",
+                            "value": ".045",
+                            "raw_value": ".045 in",
+                            "normalized_value": ".045",
+                            "uom": "in",
+                            "evidence_id": ev_id_2,
+                            "evidence_text": "Thickness: .045 in",
+                            "status": "enriched",
+                            "reason": "Direct spec table value",
+                        },
+                    ]
+                }
+            )
         elif request.task == "commerce_description_composition":
-            output = json.dumps({
-                "short_desc": "Diablo DCB518ASTS06G Sanding Belt 5 in 60 Grit",
-                "long_desc1": (
-                    "The Diablo DCB518ASTS06G sanding belt provides heavy duty "
-                    "sanding performance with 5 in diameter and .045 in thickness."
-                ),
-                "mobile_desc": "Diablo DCB518ASTS06G Sanding Belt 5 in",
-                "invoice_desc": "DIABLO DCB518ASTS06G SANDING BELT",
-                "retail_desc": "Heavy-duty Diablo sanding belt for superior stock removal.",
-                "features": [
-                    "Heavy-duty cloth backing for maximum durability",
-                    "Clog-shield technology reduces loading",
-                ],
-            })
+            output = json.dumps(
+                {
+                    "short_desc": "Diablo DCB518ASTS06G Sanding Belt 5 in 60 Grit",
+                    "long_desc1": (
+                        "The Diablo DCB518ASTS06G sanding belt provides heavy duty "
+                        "sanding performance with 5 in diameter and .045 in thickness."
+                    ),
+                    "mobile_desc": "Diablo DCB518ASTS06G Sanding Belt 5 in",
+                    "invoice_desc": "DIABLO DCB518ASTS06G SANDING BELT",
+                    "retail_desc": "Heavy-duty Diablo sanding belt for superior stock removal.",
+                    "features": [
+                        "Heavy-duty cloth backing for maximum durability",
+                        "Clog-shield technology reduces loading",
+                    ],
+                }
+            )
         else:
             output = json.dumps({})
 
@@ -317,6 +324,7 @@ def test_live_gemini_single_product_e2e_flow() -> None:
 
     # 7. Verify Delivery CSV Generation
     from pathlib import Path
+
     root = Path(__file__).resolve().parent.parent
     schema_path = root / "docs" / "research" / "delivery-schema.json"
     contract = DeliverySchemaContract.from_json(schema_path)
@@ -332,4 +340,6 @@ def test_live_gemini_single_product_e2e_flow() -> None:
     assert "Freud" in str(row_dict.get("MANUFACTURER_NAME"))
     assert row_dict.get("BRAND_NAME") == "Diablo" or row_dict.get("Unilog_Brand") == "Diablo"
     assert bool(row_dict.get("Product Image")), "Product Image must be populated!"
-    assert row_dict.get("Product Image") == "https://diablotools.com/images/products/DCB518ASTS06G.jpg"
+    assert (
+        row_dict.get("Product Image") == "https://diablotools.com/images/products/DCB518ASTS06G.jpg"
+    )

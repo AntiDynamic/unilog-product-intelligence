@@ -186,7 +186,12 @@ def test_gemini_provider_failure_does_not_silently_fallback() -> None:
 
     # Phase 4 failure must be recorded honestly
     assert result.phase4_job.state.value == "failed"
-    assert result.blocker in {"GEMINI_FAILURE", "GEMINI_PROVIDER_5XX", "DOMAIN_UNRESOLVED", "SOURCE_NOT_FOUND"}
+    assert result.blocker in {
+        "GEMINI_FAILURE",
+        "GEMINI_PROVIDER_5XX",
+        "DOMAIN_UNRESOLVED",
+        "SOURCE_NOT_FOUND",
+    }
     # Must NOT have produced synthetic deterministic output under the guise of Gemini
     assert len(result.phase4_job.runs) > 0
     assert result.phase4_job.runs[0].status == "failed"

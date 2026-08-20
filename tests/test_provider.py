@@ -54,9 +54,7 @@ def test_gemini_provider_extracts_search_and_url_context_steps() -> None:
                             (),
                             {
                                 "type": "google_search_call",
-                                "arguments": type(
-                                    "Arguments", (), {"queries": ["Acme ABC123"]}
-                                )(),
+                                "arguments": type("Arguments", (), {"queries": ["Acme ABC123"]})(),
                             },
                         )(),
                         type(

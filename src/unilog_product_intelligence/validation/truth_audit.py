@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 from unilog_product_intelligence.domain.conflicts import ConflictResolution, EvidenceConflict
 from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
@@ -47,14 +47,14 @@ class TruthAudit:
     ) -> TruthAuditResult:
         violations: list[str] = []
         valid_ev_ids: set[str] = {
-            getattr(e, "evidence_id", None)
+            str(getattr(e, "evidence_id"))
             for e in packet.evidence
             if getattr(e, "evidence_id", None) is not None
         }
 
         # Also consider structured facts evidence IDs if present
         for fact in packet.structured_facts:
-            if getattr(fact, "evidence_id", None):
+            if fact.evidence_id is not None:
                 valid_ev_ids.add(fact.evidence_id)
 
         grounded_count = 0
@@ -68,8 +68,8 @@ class TruthAudit:
             if attr.evidence_id:
                 if attr.evidence_id not in valid_ev_ids:
                     violations.append(
-                        f"Attribute '{attr.attribute}' cites unknown evidence_id '{attr.evidence_id}' "
-                        f"not found in ProductEvidencePacket."
+                        f"Attribute '{attr.attribute}' cites unknown evidence_id "
+                        f"'{attr.evidence_id}' not found in ProductEvidencePacket."
                     )
                 else:
                     grounded_count += 1
@@ -86,7 +86,8 @@ class TruthAudit:
                 ConflictResolution.ESCALATE_TO_STRONG_MODEL,
             }:
                 violations.append(
-                    f"Conflict for attribute '{conflict.attribute}' has invalid resolution state: {conflict.resolution}"
+                    f"Conflict for attribute '{conflict.attribute}' has invalid "
+                    f"resolution state: {conflict.resolution}"
                 )
 
         audit_passed = len(violations) == 0
