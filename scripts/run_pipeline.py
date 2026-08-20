@@ -46,6 +46,7 @@ from unilog_product_intelligence.delivery.adapter import (  # noqa: E402
     DeliverySchemaContract,
     Phase65ResultDeliveryAdapter,
 )
+from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket  # noqa: E402
 from unilog_product_intelligence.domain.truth import (  # noqa: E402
     Source,
     SourceAuthority,
@@ -63,6 +64,7 @@ from unilog_product_intelligence.enrichment.reference import (  # noqa: E402
     ReferenceType,
 )
 from unilog_product_intelligence.enrichment.service import EnrichmentService  # noqa: E402
+from unilog_product_intelligence.validation.truth_audit import TruthAudit  # noqa: E402
 from unilog_product_intelligence.enrichment.validation import ValidationPipeline  # noqa: E402
 from unilog_product_intelligence.providers.factory import (  # noqa: E402
     ExecutionMode,
@@ -706,6 +708,11 @@ def _build_row_trace(
         "publication_state": p6_publication_state,
         "blocker": result.blocker,
         "failure_reason": p5_failure_reason,
+        "truth_audit": (
+            TruthAudit().audit(result.evidence_packet).model_dump()
+            if isinstance(getattr(result, "evidence_packet", None), ProductEvidencePacket)
+            else None
+        ),
     }
 
 
