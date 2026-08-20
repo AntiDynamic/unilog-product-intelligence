@@ -22,6 +22,7 @@ class TruthAuditResult(BaseModel):
     unresolved_attributes: int = 0
     conflicts_detected: int = 0
     audit_passed: bool = True
+    publication_safe: bool = True
     violations: tuple[str, ...] = ()
 
 
@@ -47,7 +48,7 @@ class TruthAudit:
     ) -> TruthAuditResult:
         violations: list[str] = []
         valid_ev_ids: set[str] = {
-            str(getattr(e, "evidence_id"))
+            str(e.evidence_id)
             for e in packet.evidence
             if getattr(e, "evidence_id", None) is not None
         }
@@ -61,7 +62,7 @@ class TruthAudit:
         unresolved_count = 0
 
         for attr in final_attributes:
-            if attr.value is None or attr.value == "":
+            if attr.value is None or str(attr.value).strip() == "":
                 unresolved_count += 1
                 continue
 
@@ -74,8 +75,12 @@ class TruthAudit:
                 else:
                     grounded_count += 1
             else:
-                # Value without evidence ID
+                # Value provided without an evidence ID is an unsupported claim
                 unresolved_count += 1
+                violations.append(
+                    f"Attribute '{attr.attribute}' asserts value '{attr.value}' "
+                    "without supporting evidence_id."
+                )
 
         # Check conflicts
         conflicts_to_check = tuple(conflicts) or tuple(packet.conflicts)
@@ -91,6 +96,7 @@ class TruthAudit:
                 )
 
         audit_passed = len(violations) == 0
+        publication_safe = audit_passed and len(violations) == 0
 
         return TruthAuditResult(
             product_id=packet.product_id,
@@ -99,6 +105,7 @@ class TruthAudit:
             unresolved_attributes=unresolved_count,
             conflicts_detected=len(conflicts_to_check),
             audit_passed=audit_passed,
+            publication_safe=publication_safe,
             violations=tuple(violations),
         )
 

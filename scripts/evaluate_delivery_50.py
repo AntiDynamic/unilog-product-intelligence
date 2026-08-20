@@ -292,6 +292,13 @@ def evaluate(
     failure_reasons: dict[str, int] = {}
     row_traces: list[dict[str, Any]] = []
 
+    # Truth Audit & Safety counters
+    products_with_truth_audit = 0
+    truth_audit_passed_count = 0
+    publication_safe_count = 0
+    total_grounded_attrs = 0
+    total_audit_violations = 0
+
     for i in range(total_rows):
         in_row = input_rows[i]
         gen_row = gen_rows[i]
@@ -495,7 +502,18 @@ def evaluate(
         if reason:
             failure_reasons[reason] = failure_reasons.get(reason, 0) + 1
 
-        # H. Observable Row Trace
+        # H. Truth Audit & Invariants
+        truth_audit = trace_obj.get("truth_audit") if trace_obj else None
+        if truth_audit:
+            products_with_truth_audit += 1
+            if truth_audit.get("audit_passed"):
+                truth_audit_passed_count += 1
+            if truth_audit.get("publication_safe", True):
+                publication_safe_count += 1
+            total_grounded_attrs += truth_audit.get("grounded_attributes", 0)
+            total_audit_violations += len(truth_audit.get("violations", []))
+
+        # I. Observable Row Trace
         row_traces.append(
             {
                 "row_number": row_num,
@@ -669,6 +687,27 @@ def evaluate(
             "min_non_empty_fields": min_non_empty,
             "max_non_empty_fields": max_non_empty,
         },
+        "truth_safety_metrics": {
+            "products_audited": products_with_truth_audit,
+            "truth_audit_pass_rate_pct": round(
+                truth_audit_passed_count / max(1, products_with_truth_audit) * 100, 2
+            ),
+            "publication_safe_rate_pct": round(
+                publication_safe_count / max(1, products_with_truth_audit) * 100, 2
+            ),
+            "grounded_attributes_count": total_grounded_attrs,
+            "unsupported_claims_count": total_audit_violations,
+            "unsupported_claim_rate_pct": (
+                0.0
+                if (total_grounded_attrs + total_audit_violations) == 0
+                else round(
+                    total_audit_violations
+                    / max(1, total_grounded_attrs + total_audit_violations)
+                    * 100,
+                    2,
+                )
+            ),
+        },
         "status_distribution": status_counts,
         "failure_taxonomy": failure_reasons,
     }
@@ -701,6 +740,7 @@ def _build_markdown_report(report: dict[str, Any], traces: list[dict[str, Any]])
     em = report["evidence_metrics"]
     enm = report["enrichment_metrics"]
     dc = report["delivery_completeness"]
+    tsm = report.get("truth_safety_metrics", {})
     sd = report["status_distribution"]
     ft = report["failure_taxonomy"]
 
@@ -717,6 +757,8 @@ def _build_markdown_report(report: dict[str, Any], traces: list[dict[str, Any]])
         "",
         "| Metric Area | Metric Name | Measured Value | Trust / Status |",
         "| :--- | :--- | :--- | :--- |",
+        f"| **Truth & Safety** | Unsupported Published Claims | **{tsm.get('unsupported_claims_count', 0)}** ({tsm.get('unsupported_claim_rate_pct', 0.0)}%) | **0.0% Hard Invariant** |",
+        f"| **Truth & Safety** | Truth Audit Pass Rate | **{tsm.get('truth_audit_pass_rate_pct', 100.0)}%** ({tsm.get('products_audited', 0)} audited) | Grounded Provenance Gate |",
         f"| **Identity** | Manufacturer Resolved Rate | **{im['manufacturer_resolved_rate_pct']}%** ({im['manufacturer_resolved_count']}/{report['benchmark_sample_size']}) | Measured (Normalized value) |",
         f"| **Identity** | Brand Resolved Rate | **{im['brand_resolved_rate_pct']}%** ({im['brand_resolved_count']}/{report['benchmark_sample_size']}) | Measured |",
         f"| **Identity** | MPN Integrity Rate | **{im['mpn_integrity_rate_pct']}%** (Exact: {im['mpn_exact_match_count']}, Norm: {im['mpn_normalized_match_count']}, Diff: {im['mpn_different_count']}) | Measured (No substring collision) |",

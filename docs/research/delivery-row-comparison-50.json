@@ -2,16 +2,66 @@
   {
     "row_number": 2,
     "input": {
-      "mpn": "ITEM-1",
-      "part_manuf": "Maker",
-      "description": "Item"
+      "mpn": "DCB518ASTS06G",
+      "part_manuf": "Freud Inc (2435)",
+      "description": "DCB518ASTS06G Diablo 1/2\"x18\" - Sanding Belt 6pc"
     },
     "resolution": {
-      "resolved_manufacturer": null,
-      "resolved_brand": null,
-      "manufacturer_resolved": false,
-      "brand_resolved": false,
-      "mpn_match_type": "MISSING",
+      "resolved_manufacturer": "Freud Inc",
+      "resolved_brand": "Diablo",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "verified_domains": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "mfr_url": "https://diablotools.com/products/DCB518ASTS06G",
+      "has_candidate_source": true,
+      "is_verified_source": true,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 15
+    },
+    "delivery": {
+      "non_empty_fields": 78,
+      "total_fields": 252,
+      "completeness_pct": 30.95
+    },
+    "status": {
+      "final_status": "ENRICHED",
+      "failure_reason": null
+    }
+  },
+  {
+    "row_number": 3,
+    "input": {
+      "mpn": "3MABR-7100075678",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P150 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
       "ground_truth_available": false,
       "manufacturer_gt_match": null,
       "brand_gt_match": null,
@@ -32,9 +82,2293 @@
       "attributes_populated": 0
     },
     "delivery": {
-      "non_empty_fields": 0,
+      "non_empty_fields": 21,
       "total_fields": 252,
-      "completeness_pct": 0.0
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 4,
+    "input": {
+      "mpn": "3MABR-7100045865",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P120 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 5,
+    "input": {
+      "mpn": "3MABR-7100048736",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P80 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 6,
+    "input": {
+      "mpn": "3MABR-7100075690",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P180 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 7,
+    "input": {
+      "mpn": "3MABR-7100075692",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P220 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 8,
+    "input": {
+      "mpn": "3MABR-7100145365",
+      "part_manuf": "Jam Industrial Supply LLC (JAMIN)",
+      "description": "3M 775L Stikit Film P320 - Cubitron II 50 Disc/Box"
+    },
+    "resolution": {
+      "resolved_manufacturer": "3m",
+      "resolved_brand": "3M",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [],
+      "verified_domains": [],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 9,
+    "input": {
+      "mpn": "5B-332-080",
+      "part_manuf": "Mirka Abrasives Inc (MIRUS)",
+      "description": "5B-332-080 HIOLIT 5\" P80"
+    },
+    "resolution": {
+      "resolved_manufacturer": "mirka abrasives",
+      "resolved_brand": "Mirka",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "verified_domains": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 10,
+    "input": {
+      "mpn": "5B-332-120",
+      "part_manuf": "Mirka Abrasives Inc (MIRUS)",
+      "description": "5B-332-120 HIOLIT 5\" P120"
+    },
+    "resolution": {
+      "resolved_manufacturer": "mirka abrasives",
+      "resolved_brand": "Mirka",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "verified_domains": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 11,
+    "input": {
+      "mpn": "9A-570-240",
+      "part_manuf": "Mirka Abrasives Inc (MIRUS)",
+      "description": "9A-570-240 Abranet 2.75x30"
+    },
+    "resolution": {
+      "resolved_manufacturer": "mirka abrasives",
+      "resolved_brand": "Mirka",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "verified_domains": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 12,
+    "input": {
+      "mpn": "9A-570-320",
+      "part_manuf": "Mirka Abrasives Inc (MIRUS)",
+      "description": "9A-570-320 Abranet 2.75x30"
+    },
+    "resolution": {
+      "resolved_manufacturer": "mirka abrasives",
+      "resolved_brand": "Mirka",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "verified_domains": [
+        "mirka.com",
+        "mirkausa.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 13,
+    "input": {
+      "mpn": "DBD090094101F",
+      "part_manuf": "Freud Inc (2435)",
+      "description": "DBD090094101F Diablo 9\" - Metal Cut-Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Freud Inc",
+      "resolved_brand": "Diablo",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "verified_domains": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 14,
+    "input": {
+      "mpn": "DBDS12125A01F",
+      "part_manuf": "Freud Inc (2435)",
+      "description": "DBDS12125A01F Diablo 12\" - Steel Demon Metal Cut-Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Freud Inc",
+      "resolved_brand": "Diablo",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "verified_domains": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 15,
+    "input": {
+      "mpn": "DBDS12125G01F",
+      "part_manuf": "Freud Inc (2435)",
+      "description": "DBDS12125G01F Diablo 12\"x20mm - Speed Demon Metal Cut-Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Freud Inc",
+      "resolved_brand": "Diablo",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "verified_domains": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 16,
+    "input": {
+      "mpn": "DBDS14125A01F",
+      "part_manuf": "Freud Inc (2435)",
+      "description": "DBDS14125A01F Diablo 14\"x1\" - Steel Demon Metal Cut-Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Freud Inc",
+      "resolved_brand": "Diablo",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "verified_domains": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 17,
+    "input": {
+      "mpn": "DBDS14125G01F",
+      "part_manuf": "Freud Inc (2435)",
+      "description": "DBDS14125G01F Diablo 14\"x20mm - Steel Demon Metal Cut-Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Freud Inc",
+      "resolved_brand": "Diablo",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "verified_domains": [
+        "diablotools.com",
+        "freudtools.com",
+        "info.freudtools.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 18,
+    "input": {
+      "mpn": "49-94-0013",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0013 Milw 5\"x.045\"x7/8\" Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 19,
+    "input": {
+      "mpn": "49-94-0029",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0029 Milw 6-1/2\"x1/8\"x5/8\" DKO Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 20,
+    "input": {
+      "mpn": "49-94-0033",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0033 Milw 7\"x1/16\"x7/8\" Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 21,
+    "input": {
+      "mpn": "49-94-0001",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0001 Milw 4\"x.040\"x5/8\" Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 22,
+    "input": {
+      "mpn": "49-94-0039",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0039 Milw 7\"x1/8\"x5/8\" DKO Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 23,
+    "input": {
+      "mpn": "49-94-0043",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0043 Milw 9\"x3/32\"x7/8\" Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 24,
+    "input": {
+      "mpn": "49-94-0048",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0048 Milw 12\"x7/64\"x1\" Metal Cut Off Disc General Purpose"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 25,
+    "input": {
+      "mpn": "49-94-0053",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0053 Milw 12\"x1/8\"x1\" Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 26,
+    "input": {
+      "mpn": "49-94-0058",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0058 Milw 12\"x1/8\"x20mm Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 27,
+    "input": {
+      "mpn": "49-94-0063",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0063 Milw 14\"x7/64\"x1\" Metal Cut Off Disc General Purpose"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 28,
+    "input": {
+      "mpn": "49-94-0068",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0068 Milw 14\"x1/8\"x20mm Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 29,
+    "input": {
+      "mpn": "49-94-0073",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0073 Milw 14\"x1/8\"x1\" Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 30,
+    "input": {
+      "mpn": "49-94-0101",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0101 Milw 4-1/2\"x.045\"x7/8\" Perform+ Metal Cut Off Disc 10pc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 31,
+    "input": {
+      "mpn": "49-94-0107",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0107 Milw 4-1/2\"x.045\"x7/8\" Performance+ Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 32,
+    "input": {
+      "mpn": "49-94-0117",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0117 Milw 5\"x.045\"x7/8\" Performance+ Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 33,
+    "input": {
+      "mpn": "49-94-0123",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0123 Milw 6\"x.045\"x7/8\" Performance+ Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 34,
+    "input": {
+      "mpn": "49-94-0023",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0023 Milw 6\"x.045\"x7/8\" Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 35,
+    "input": {
+      "mpn": "49-94-0121",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0121 Milw 6\"x.045\"x7/8\" Performance+ Metal Cut Off Disc 10pc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 36,
+    "input": {
+      "mpn": "49-94-0127",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0127 Milw 6\"x.045\"x7/8\" Performance+Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 37,
+    "input": {
+      "mpn": "49-94-0137",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0137 Milw 7\"x3/32\"x7/8\" Performance+ Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 38,
+    "input": {
+      "mpn": "49-94-0160",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0160 Milw 14\"x7/64\"x1\" Performance+ Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 39,
+    "input": {
+      "mpn": "49-94-0223",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0223 Milw 6\"x.045\"x7/8\" Ceramic+ Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 40,
+    "input": {
+      "mpn": "49-94-0445",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0445 Milw 10\"x3/32\"x5/8\" Performance+ Metal Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 41,
+    "input": {
+      "mpn": "49-94-0803",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0803 Milw 4-1/2\"x1/8\"x7/8\" Dual Metal Cut and Grind Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 42,
+    "input": {
+      "mpn": "49-94-0903",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0903 Milw 4-1/2\"x1/8\"x7/8\"Perform+Dual Metal Cut and Grind Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 43,
+    "input": {
+      "mpn": "49-94-0907",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0907 Milw 4-1/2\"x1/8\"x5/8-11\"Perform+Dual Metal Cut n Grind Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 44,
+    "input": {
+      "mpn": "49-94-0923",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-0923 Milw 6\"x1/8\"x7/8\" Perform+Dual Metal Cut and Grind Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 45,
+    "input": {
+      "mpn": "49-94-1900",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-1900 Milw 4\"x1/8\"x5/8\" Masonry Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 46,
+    "input": {
+      "mpn": "49-94-1905",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-1905 Milw 4-1/2\"x1/8\"x7/8\" Masonry Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 47,
+    "input": {
+      "mpn": "49-94-1915",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-1915 Milw 6-1/2\"x1/8\"x5/8\" DKO Masonry Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 48,
+    "input": {
+      "mpn": "49-94-1920",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-1920 Milw 7\"x1/8\"x5/8\" DKO Masonry Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 49,
+    "input": {
+      "mpn": "49-94-1925",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-1925 Milw 10\"x1/8\"x5/8\" Masonry Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 50,
+    "input": {
+      "mpn": "49-94-1935",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-1935 Milw 12\"x1/8\"x1\" Masonry Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
+    },
+    "status": {
+      "final_status": "REVIEW_REQUIRED",
+      "failure_reason": "SOURCE_NOT_FOUND"
+    }
+  },
+  {
+    "row_number": 51,
+    "input": {
+      "mpn": "49-94-1940",
+      "part_manuf": "Milwaukee Accessory (4031)",
+      "description": "49-94-1940 Milw 14\"x1/8\"x1\" Masonry Cut Off Disc"
+    },
+    "resolution": {
+      "resolved_manufacturer": "Milwaukee Accessory",
+      "resolved_brand": "Milwaukee",
+      "manufacturer_resolved": true,
+      "brand_resolved": true,
+      "mpn_match_type": "EXACT",
+      "ground_truth_available": false,
+      "manufacturer_gt_match": null,
+      "brand_gt_match": null,
+      "classpath_gt_match": null
+    },
+    "retrieval": {
+      "domain_candidates": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "verified_domains": [
+        "www.milwaukeetool.com",
+        "milwaukeetool.com"
+      ],
+      "mfr_url": null,
+      "has_candidate_source": false,
+      "is_verified_source": false,
+      "source_fetch_success": false,
+      "exact_product_verified": false
+    },
+    "evidence_and_enrichment": {
+      "evidence_count": 0,
+      "has_authoritative_evidence": false,
+      "attributes_populated": 0
+    },
+    "delivery": {
+      "non_empty_fields": 21,
+      "total_fields": 252,
+      "completeness_pct": 8.33
     },
     "status": {
       "final_status": "REVIEW_REQUIRED",

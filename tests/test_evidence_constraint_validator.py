@@ -13,7 +13,11 @@ from unilog_product_intelligence.enrichment.schemas import AttributeProposal
 def _make_packet(*evidence_ids: str) -> ProductEvidencePacket:
     """Build a minimal packet with the given evidence IDs."""
     refs = tuple(
-        EvidenceReference(evidence_id=eid, source_id="src-1", evidence_text=f"text for {eid}")
+        EvidenceReference(
+            evidence_id=eid,
+            source_id="src-1",
+            evidence_text=f"Specs: 120V voltage, 15A amps, 1800W wattage for {eid}",
+        )
         for eid in evidence_ids
     )
     return ProductEvidencePacket(product_id="p-test", evidence=refs)

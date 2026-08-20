@@ -12,6 +12,7 @@ from .descriptions import (
     DeterministicDescriptionBuilder,
     GuidelineAssessmentStatus,
 )
+from .evidence_support import EvidenceSupportResult, EvidenceSupportValidator
 from .evidence_validator import EvidenceConstraintValidator, EvidenceValidationResult
 from .inference_budget import InferenceBudget, InferenceBudgetExceeded
 from .models import (
@@ -65,6 +66,8 @@ __all__ = [
     "EnrichmentCandidate",
     "EvidenceConstraintValidator",
     "EvidenceGroundedEnrichmentAgent",
+    "EvidenceSupportResult",
+    "EvidenceSupportValidator",
     "EvidenceValidationResult",
     "EnrichmentResult",
     "EnrichmentPersistence",

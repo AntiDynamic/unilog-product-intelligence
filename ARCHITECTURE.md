@@ -141,10 +141,11 @@ Phase65ResultDeliveryAdapter (projects verified truth into official 252-column d
    - Uses domain value types (`StructuredSpec`, `FeatureEvidence`, `DiscoveredAsset`) with tuple collections (no mutable dicts or lists).
    - Single source of truth flowing from Phase 5 through Phase 6 to Delivery.
 
-2. **`EvidenceConstraintValidator`** (`enrichment/evidence_validator.py`, `enrichment/schemas.py`)
+2. **`EvidenceConstraintValidator` & `EvidenceSupportValidator`** (`enrichment/evidence_validator.py`, `enrichment/evidence_support.py`)
    - Validates all `AttributeProposal` items returned by Gemini.
    - Enforces that every proposal cites non-empty `evidence_ids` that exist in `packet.evidence`.
-   - Rejects ungrounded or hallucinated proposals before they can touch `ProductTruth`.
+   - `EvidenceSupportValidator` mechanically verifies that the text in cited `EvidenceReference` records supports the proposed value (numeric, UOM, range, and categorical token matching), rejecting hallucinations that cite real evidence IDs.
+   - Rejects ungrounded or unsupported proposals before they can touch `ProductTruth`.
 
 3. **Evidence-Aware `ConflictEngine` & Escalation** (`enrichment/conflicts.py`, `domain/conflict_escalation.py`)
    - Strictly higher source authority automatically wins (`AUTHORITATIVE_SOURCE_WINS`).
@@ -160,6 +161,7 @@ Phase65ResultDeliveryAdapter (projects verified truth into official 252-column d
    - Requires valid `evidence_id` and `{mpn}` placeholder for all learned routes.
    - Supports TTL-based expiration and automatic route pruning. Audited static profiles can never be overridden.
 
-6. **`TruthAudit` & Field Provenance** (`validation/truth_audit.py`, `domain/provenance.py`)
+6. **`TruthAudit` Publication Gate & Field Provenance** (`validation/truth_audit.py`, `domain/provenance.py`, `application/phase65.py`)
    - `FinalAttribute` tracks value, unit of measure, `ProvenanceKind`, `evidence_id`, `source_url`, and `source_authority`.
-   - `TruthAudit` validates all invariants on final pipeline execution and attaches audit summaries directly to row traces.
+   - `TruthAudit` acts as a hard delivery gate (`publication_safe`). Any ungrounded attribute assertion, evidence ID mismatch, or unresolved conflict actively transitions the product to `Phase65Status.BLOCKED` (`blocker = "TRUTH_AUDIT_VIOLATION"`).
+   - Real HTML golden fixtures (`tests/golden/fixtures/`) continuously enforce extraction $\to$ packet $\to$ audit invariants across manufacturers.

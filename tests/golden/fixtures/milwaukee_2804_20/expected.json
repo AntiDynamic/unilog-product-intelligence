@@ -1,0 +1,15 @@
+{
+  "product_id": "milwaukee-2804-20",
+  "manufacturer": "Milwaukee",
+  "mpn": "2804-20",
+  "canonical_url": "https://www.milwaukeetool.com/Products/2804-20",
+  "expected_attributes": {
+    "Voltage": "18V",
+    "Peak Torque": "1200 in-lbs",
+    "RPM": "0-550 / 0-2,000 RPM",
+    "BPM": "32000 BPM",
+    "Chuck Size": "1/2 in",
+    "Chuck Type": "All-Metal Ratcheting",
+    "Motor Type": "POWERSTATE Brushless"
+  }
+}

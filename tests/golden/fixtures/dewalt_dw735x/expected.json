@@ -1,0 +1,16 @@
+{
+  "product_id": "dewalt-dw735x",
+  "manufacturer": "DEWALT",
+  "mpn": "DW735X",
+  "canonical_url": "https://www.dewalt.com/products/power-tools/planers/dw735x",
+  "expected_attributes": {
+    "Amps": "15.0 Amps",
+    "Voltage": "120V",
+    "No Load Speed": "20000 (motor) / 10000 (cutterhead) RPM",
+    "Depth Capacity": "6 in",
+    "Max Width Capacity": "13 in",
+    "Number of Knives": "3",
+    "Feed Speed": "96 or 179 CPI",
+    "Planer Type": "Stationary"
+  }
+}

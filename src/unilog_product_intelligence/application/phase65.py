@@ -36,6 +36,7 @@ from unilog_product_intelligence.retrieval.service import (
     ManufacturerJob,
     ManufacturerJobState,
 )
+from unilog_product_intelligence.validation.truth_audit import TruthAudit
 
 _brand_resolver = BrandManufacturerResolver()
 
@@ -212,6 +213,18 @@ class Phase65Pipeline:
             if enrichment_result.status.value == "BLOCKED"
             else Phase65Status.REVIEW_REQUIRED
         )
+
+        # Gate publication through TruthAudit if evidence packet is available
+        if evidence_pkt is not None:
+            audit = TruthAudit().audit(evidence_pkt)
+            if not audit.publication_safe or not audit.audit_passed:
+                status = Phase65Status.BLOCKED
+                blocker = blocker or (
+                    f"TRUTH_AUDIT_VIOLATION: {'; '.join(audit.violations)}"
+                    if audit.violations
+                    else "TRUTH_AUDIT_VIOLATION"
+                )
+
         if blocker and status == Phase65Status.ENRICHED:
             status = Phase65Status.REVIEW_REQUIRED
         return Phase65Result(

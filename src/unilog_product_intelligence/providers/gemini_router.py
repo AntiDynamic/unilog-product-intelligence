@@ -15,12 +15,14 @@ from unilog_product_intelligence.providers.gemini import (
 # Explicit status code matrix for routing decisions
 NON_RETRYABLE_STATUS_CODES: frozenset[int] = frozenset({400, 401, 403, 404, 422})
 RETRYABLE_STATUS_CODES: frozenset[int] = frozenset({408, 429, 500, 502, 503, 504})
-RETRYABLE_PROVIDER_CODES: frozenset[str] = frozenset({
-    "RESOURCE_EXHAUSTED",
-    "UNAVAILABLE",
-    "DEADLINE_EXCEEDED",
-    "INTERNAL",
-})
+RETRYABLE_PROVIDER_CODES: frozenset[str] = frozenset(
+    {
+        "RESOURCE_EXHAUSTED",
+        "UNAVAILABLE",
+        "DEADLINE_EXCEEDED",
+        "INTERNAL",
+    }
+)
 
 
 def should_fallback(error: Exception) -> bool:

@@ -1,0 +1,15 @@
+{
+  "product_id": "diablo-dcb518asts06g",
+  "manufacturer": "Diablo",
+  "mpn": "DCB518ASTS06G",
+  "canonical_url": "https://diablotools.com/products/DCB518ASTS06G",
+  "expected_attributes": {
+    "Diameter": "5 in",
+    "Thickness": "1/8 in",
+    "Arbor Size": "7/8 in",
+    "Abrasive Material": "Ceramic Blend",
+    "Grit": "24 Grit",
+    "Tool Type": "Angle Grinder",
+    "Max RPM": "12200 RPM"
+  }
+}

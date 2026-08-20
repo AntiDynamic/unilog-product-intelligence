@@ -15,6 +15,11 @@ from collections.abc import Sequence
 from pydantic import BaseModel, ConfigDict
 
 from unilog_product_intelligence.domain.evidence_packet import ProductEvidencePacket
+from unilog_product_intelligence.enrichment.evidence_support import (
+    EvidenceSupportResult,
+    EvidenceSupportValidator,
+)
+from unilog_product_intelligence.enrichment.models import EvidenceReference
 from unilog_product_intelligence.enrichment.schemas import AttributeProposal
 
 
@@ -29,15 +34,21 @@ class EvidenceValidationResult(BaseModel):
 
 
 class EvidenceConstraintValidator:
-    """Validates that Gemini proposals cite only real, in-packet evidence IDs.
+    """Validates that Gemini proposals cite only real, in-packet evidence IDs
+
+    and that the cited evidence text mechanically supports the proposed value.
 
     Rules (applied in order for each proposal):
-      1. If evidence_ids is empty       → reject ("missing evidence IDs")
-      2. If any evidence_id is unknown  → reject ("unknown evidence IDs: ...")
-      3. All IDs valid                  → accept
+      1. If evidence_ids is empty              → reject ("missing evidence IDs")
+      2. If any evidence_id is unknown         → reject ("unknown evidence IDs: ...")
+      3. If evidence text does not support val → reject ("Evidence does not support value ...")
+      4. All checks pass                       → accept
 
     This is entirely deterministic — no LLM calls are made here.
     """
+
+    def __init__(self, support_validator: EvidenceSupportValidator | None = None) -> None:
+        self.support_validator = support_validator or EvidenceSupportValidator()
 
     def validate(
         self,
@@ -52,18 +63,19 @@ class EvidenceConstraintValidator:
             The sequence of AttributeProposal objects returned by Gemini.
         packet:
             The ProductEvidencePacket assembled by Phase 5.  The set of valid
-            evidence IDs is derived from `packet.evidence`.
+            evidence IDs and text is derived from `packet.evidence`.
 
         Returns
         -------
         EvidenceValidationResult
             Accepted and rejected proposals with reasons for each rejection.
         """
-        valid_evidence_ids: set[str] = {
-            str(getattr(ref, "evidence_id"))
+        evidence_by_id: dict[str, EvidenceReference] = {
+            str(ref.evidence_id): ref
             for ref in packet.evidence
             if getattr(ref, "evidence_id", None) is not None
         }
+        valid_evidence_ids = set(evidence_by_id.keys())
 
         accepted: list[AttributeProposal] = []
         rejected: list[AttributeProposal] = []
@@ -84,6 +96,25 @@ class EvidenceConstraintValidator:
                 reasons.append(
                     f"{proposal.attribute}: unknown evidence IDs "
                     f"{sorted(unknown_ids)} — IDs must refer to records in the packet"
+                )
+                continue
+
+            # Semantic / mechanical support check
+            cited_refs = [
+                evidence_by_id[eid] for eid in proposal.evidence_ids if eid in evidence_by_id
+            ]
+            support_result: EvidenceSupportResult = self.support_validator.supports(
+                attribute=proposal.attribute,
+                proposed_value=proposal.value,
+                evidence=cited_refs,
+                uom=proposal.uom,
+            )
+
+            if not support_result.supported:
+                rejected.append(proposal)
+                reasons.append(
+                    f"{proposal.attribute}: evidence does not support value '{proposal.value}' "
+                    f"({support_result.reason})"
                 )
                 continue
 
